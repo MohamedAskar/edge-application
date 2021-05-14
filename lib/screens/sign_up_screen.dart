@@ -1,7 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:edge/mory.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/screens/home_screen.dart';
@@ -17,6 +16,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../fade_animation.dart';
 import 'cart_screen.dart';
 
 class SignUpScreen extends StatefulWidget {

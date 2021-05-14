@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 
 class SplashScreen extends StatelessWidget {
+  final String route;
+  SplashScreen({@required this.route});
   @override
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.black);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Container(
@@ -48,8 +51,8 @@ class SplashScreen extends StatelessWidget {
                 ),
                 child: AnimatedTextKit(
                   totalRepeatCount: 1,
-                  onFinished: () => Navigator.of(context)
-                      .pushReplacementNamed(HomePage.routeName),
+                  onFinished: () =>
+                      Navigator.of(context).pushReplacementNamed(route),
                   animatedTexts: [
                     FlickerAnimatedText('you shop,',
                         speed: Duration(seconds: 5)),

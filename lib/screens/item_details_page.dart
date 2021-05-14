@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/cart_item.dart';
@@ -23,37 +25,15 @@ class ItemDetailsPage extends StatefulWidget {
 }
 
 class _ItemDetailsPageState extends State<ItemDetailsPage> {
-  // final item = Item(
-  //   name: "Basic hoodie with a rubberized patch",
-  //   id: "2",
-  //   avilableColors: ["Ecru", "Lime", "Purple", "darkgreen", "Gray", "skyblue"],
-  //   category: "Men",
-  //   description:
-  //       "Basic comfort fit hoodie with an adjustable hood, reflective inner drawstring, front pouch pocket, inside pocket in mesh fabric and rubberized patch detail with logo. Available in a range of colors.",
-  //   images: [
-  //     "https://res.cloudinary.com/djtpiagbk/image/upload/v1618872665/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513712_2_1_8_fboau4.webp",
-  //     "https://res.cloudinary.com/djtpiagbk/image/upload/v1618872665/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513520_2_1_8_e2jkpl.webp",
-  //     "https://res.cloudinary.com/djtpiagbk/image/upload/v1618872666/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513654_2_2_8_gebjhv.jpg",
-  //     "https://res.cloudinary.com/djtpiagbk/image/upload/v1618872666/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513527_2_4_8_r6ezu4.webp",
-  //     "https://res.cloudinary.com/djtpiagbk/image/upload/v1618872666/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513827_2_1_8_ugthqc.webp",
-  //     "https://res.cloudinary.com/djtpiagbk/image/upload/v1618872666/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513403_2_4_8_vcfg3j.webp"
-  //   ],
-  //   price: 29.9,
-  //   seller: "Pull&bear",
-  //   sizes: ["XS", "S", "M", "L", "XL"],
-  //   additionalInformation: "100% Cotton. Made in Turky",
-  //   discount: 0,
-  // );
   int quantity = 1;
+  bool isCacheCleared = false;
   int _currentPage = 0;
   bool _expanded = false;
   bool _expanded1 = false;
   var selectedColor = 0;
   var selectedSize = 0;
-  Future<dynamic> fetchFromAPI;
   List<int> randomizedNumber = [];
 
-  final _formKey = GlobalKey<FormBuilderState>();
   final _controller = PageController(
     initialPage: 0,
   );
@@ -72,18 +52,21 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
 
   @override
   void initState() {
-    fetchFromAPI = ItemsProvider().fetchFromAPI();
-    randomizedNumber = List.generate(38, (index) => index + 1)
-      ..shuffle()
-      ..take(8);
+    Future.delayed(const Duration(seconds: 6), () {
+      setState(() {
+        isCacheCleared = true;
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final String itemID = ModalRoute.of(context).settings.arguments;
-    print('From item page $itemID');
-    print('From item page ${itemID.runtimeType}');
+    final itemData = Provider.of<ItemsProvider>(context, listen: false);
+    final fetchItem = itemData.findById(itemID);
+    final Item item = itemData.item;
+
     //print(widget.id.runtimeType);
 
     final size = MediaQuery.of(context).size;
@@ -136,16 +119,11 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
         padding: const EdgeInsets.symmetric(
           vertical: 12,
         ),
-        child: FutureBuilder<Item>(
-            future: Provider.of<ItemsProvider>(context, listen: false)
-                .findById(itemID),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return Column(
+        child: !isCacheCleared
+            ? Container(
+                height: size.height,
+                child: Center(child: CircularProgressIndicator()))
+            : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -156,7 +134,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         text: '> Category > ',
                         style: Theme.of(context).textTheme.bodyText1,
                         children: [
-                          TextSpan(text: '${snapshot.data.category} > '),
+                          TextSpan(text: '${item.category} > '),
                           TextSpan(text: 'Hoodie')
                         ],
                       ),
@@ -171,7 +149,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         SizedBox(
                           height: size.height / 1.5,
                           child: PageView.builder(
-                            itemCount: snapshot.data.images.length,
+                            itemCount: item.images.length,
                             onPageChanged: (value) {
                               setState(() {
                                 _currentPage = value;
@@ -195,7 +173,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 image: Hero(
                                   tag: itemID,
                                   child: CachedNetworkImage(
-                                    imageUrl: snapshot.data.images[index],
+                                    imageUrl: item.images[index],
                                     fit: BoxFit.fill,
                                     progressIndicatorBuilder:
                                         (context, url, progress) => Container(
@@ -219,7 +197,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                           bottom: 15,
                           child: SmoothPageIndicator(
                             controller: _controller,
-                            count: snapshot.data.images.length,
+                            count: item.images.length,
                             effect: WormEffect(
                                 activeDotColor: Colors.black,
                                 dotColor: Colors.grey,
@@ -238,7 +216,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          snapshot.data.name,
+                          item.name,
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
                         ),
@@ -254,7 +232,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                   color: Colors.black54),
                               children: [
                                 TextSpan(
-                                    text: snapshot.data.seller,
+                                    text: item.seller,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700,
@@ -265,7 +243,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                           height: 20,
                         ),
                         Text(
-                          "${snapshot.data.price} LE",
+                          "${item.price} LE",
                           style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
@@ -276,7 +254,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         ),
 
                         Text(
-                          'Color : ${snapshot.data.avilableColors[selectedColor]}',
+                          'Color : ${item.avilableColors[selectedColor]}',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -288,7 +266,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         SizedBox(
                           height: 40,
                           child: ListView.builder(
-                              itemCount: snapshot.data.avilableColors.length,
+                              itemCount: item.avilableColors.length,
                               physics: NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -316,8 +294,8 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                                 style: BorderStyle.solid)),
                                         child: CircleAvatar(
                                           backgroundColor: Color(ColorPicker()
-                                              .hexColorToInt(snapshot
-                                                  .data.avilableColors[index])),
+                                              .hexColorToInt(
+                                                  item.avilableColors[index])),
                                           radius: 16,
                                         ),
                                       ),
@@ -350,7 +328,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         SizedBox(
                           height: 40,
                           child: ListView.builder(
-                              itemCount: snapshot.data.sizes.length,
+                              itemCount: item.sizes.length,
                               physics: NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -376,7 +354,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                                   style: BorderStyle.solid)),
                                           child: Center(
                                             child: Text(
-                                              snapshot.data.sizes[index],
+                                              item.sizes[index],
                                               style: TextStyle(
                                                   color: selectedSize == index
                                                       ? Colors.black
@@ -474,16 +452,15 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                               child: InkWell(
                                 onTap: () {
                                   cart.addToCart(CartItem(
-                                      id: snapshot.data.id,
-                                      image: snapshot.data.images.first,
-                                      name: snapshot.data.name,
-                                      price: snapshot.data.price,
+                                      id: item.id,
+                                      image: item.images.first,
+                                      name: item.name,
+                                      price: item.price,
                                       quantity: quantity,
-                                      selectedColor: snapshot
-                                          .data.avilableColors[selectedColor],
-                                      selectedSize:
-                                          snapshot.data.sizes[selectedSize],
-                                      seller: snapshot.data.seller));
+                                      selectedColor:
+                                          item.avilableColors[selectedColor],
+                                      selectedSize: item.sizes[selectedSize],
+                                      seller: item.seller));
                                 },
                                 child: Container(
                                   padding:
@@ -547,7 +524,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                           height: 12,
                         ),
                         Text(
-                          snapshot.data.description,
+                          item.description,
                           style: TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w600),
                         ),
@@ -580,7 +557,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              snapshot.data.additionalInformation,
+                              item.additionalInformation,
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),
@@ -614,7 +591,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              snapshot.data.description,
+                              item.description,
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),
@@ -661,8 +638,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                     ),
                   ),
                 ],
-              );
-            }),
+              ),
       ),
     );
   }

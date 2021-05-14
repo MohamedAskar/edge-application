@@ -16,6 +16,20 @@ class Auth with ChangeNotifier {
     return _userID;
   }
 
+  bool get isAuth {
+    return false;
+  }
+
+  // String get token {
+
+  //   if (JwtDecoder.getExpirationDate(_jwtToken) != null &&
+  //       JwtDecoder.getExpirationDate(_jwtToken).isAfter(DateTime.now()) &&
+  //       _jwtToken != null) {
+  //     return _jwtToken;
+  //   }
+  //   return null;
+  // }
+
   Future<void> _authenticate(
       {String name,
       @required String email,

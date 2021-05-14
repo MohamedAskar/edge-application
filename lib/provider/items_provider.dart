@@ -12,34 +12,42 @@ class ItemsProvider with ChangeNotifier {
     return [..._items];
   }
 
-  var dio = Dio();
+  Item _item;
 
-  Future<Item> findById(String id) async {
-    var url = 'https://stormy-dawn-26584.herokuapp.com/api/v1/items?_id=$id';
+  Item get item {
+    return _item;
+  }
+
+  final dio = Dio();
+
+  Future<void> findById(String id) async {
+    var url = 'https://evening-falls-32097.herokuapp.com/api/v1/items?_id=$id';
+    List<Item> loadedItems = [];
+
     var response = await dio.get(url);
-
     final data = response.data as Map<String, dynamic>;
-
-    final dynamic extractedDate = data['data']['items'];
-    final Item item = Item(
-        id: extractedDate['_id'].toString(),
-        name: extractedDate['itemName'],
-        price: extractedDate['price'],
-        images: extractedDate['images'],
-        category: extractedDate['category'],
-        avilableColors: extractedDate['availableColors'],
-        description: extractedDate['description'],
-        seller: extractedDate['seller'],
-        sizes: extractedDate['sizes'],
-        discount: extractedDate['discount'],
-        additionalInformation: extractedDate['additional info']);
-
-    return item;
+    final List<dynamic> extractedDate = data['data']['items'];
+    extractedDate.forEach((item) {
+      loadedItems.add(Item(
+          id: item['_id'].toString(),
+          name: item['itemName'],
+          price: item['price'],
+          images: item['images'],
+          category: item['category'],
+          avilableColors: item['availableColors'],
+          description: item['description'],
+          seller: item['seller'],
+          sizes: item['sizes'],
+          discount: item['discount'],
+          additionalInformation: item['additional info']));
+    });
+    _item = loadedItems.toSet().toList().first;
+    notifyListeners();
   }
 
   Future<void> pagginateFromAPI({int page, int limit}) async {
     var url =
-        'https://stormy-dawn-26584.herokuapp.com/api/v1/items?page=$page&limit=$limit';
+        'https://evening-falls-32097.herokuapp.com/api/v1/items?page=$page&limit=$limit';
     List<ItemSummary> loadedItems = [];
 
     var response = await dio.get(url);

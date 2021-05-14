@@ -42,9 +42,8 @@ dependencies:
   pinch_zoom: ^0.1.0
   flutter_launcher_icons: ^0.9.0
   badges:
-  http: ^0.12.2
   provider:
-  dio:
+  dio: ^4.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

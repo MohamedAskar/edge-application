@@ -1,4 +1,3 @@
-import 'package:edge/mory.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/items_provider.dart';
@@ -33,58 +32,70 @@ class MyApp extends StatelessWidget {
           create: (context) => Auth(),
         )
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'edge.',
-        themeMode: ThemeMode.light,
-        theme: ThemeData(
-          brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
-          primaryColor: Colors.black,
-          backgroundColor: Colors.white,
-          accentColor: Colors.black,
-          textSelectionHandleColor: Colors.black,
-          cursorColor: Colors.grey,
-          splashColor: Colors.black12,
-          appBarTheme: AppBarTheme(
-              brightness: Brightness.light,
-              elevation: 0,
-              centerTitle: true,
-              color: Colors.white),
-          fontFamily: 'Wavehaus',
-          textTheme: TextTheme(
-              headline1: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              ),
-              bodyText1: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15,
-                  color: Colors.black54)),
-        ),
-        home: SignInScreen(),
-        builder: (context, child) => ResponsiveWrapper.builder(child,
-            maxWidth: 1200,
-            minWidth: 480,
-            defaultScale: true,
-            breakpoints: [
-              ResponsiveBreakpoint.resize(480, name: MOBILE),
-              ResponsiveBreakpoint.autoScale(600),
-              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-              ResponsiveBreakpoint.resize(1000, name: DESKTOP),
-            ],
-            background: Container(color: Colors.white)),
-        routes: {
-          CartScreen.routeName: (ctx) => CartScreen(),
-          HomePage.routeName: (ctx) => HomePage(),
-          ItemDetailsPage.routeName: (ctx) => ItemDetailsPage(),
-          CategoryScreen.routeName: (ctx) => CategoryScreen(),
-          SignInScreen.routeName: (ctx) => SignInScreen(),
-          SignUpScreen.routeName: (ctx) => SignUpScreen(),
-          TestPage.routeName: (ctx) => TestPage(),
-        },
-      ),
+      child: Consumer<Auth>(builder: (context, auth, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'edge.',
+          themeMode: ThemeMode.light,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            iconTheme: IconThemeData(color: Colors.black),
+            primaryColor: Colors.black,
+            backgroundColor: Colors.white,
+            accentColor: Colors.black,
+            textSelectionHandleColor: Colors.black,
+            cursorColor: Colors.grey,
+            indicatorColor: Colors.black,
+            splashColor: Colors.black12,
+            appBarTheme: AppBarTheme(
+                brightness: Brightness.light,
+                elevation: 0,
+                centerTitle: true,
+                color: Colors.white),
+            fontFamily: 'Wavehaus',
+            textTheme: TextTheme(
+                headline1: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+                bodyText1: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    color: Colors.black54)),
+          ),
+          home: FutureBuilder(
+              future: auth.tryAutologin(),
+              builder: (context, authResult) {
+                return SplashScreen(
+                    route: !authResult.hasData
+                        ? ''
+                        : authResult.data
+                            ? HomePage.routeName
+                            : SignInScreen.routeName);
+              }),
+          builder: (context, child) => ResponsiveWrapper.builder(child,
+              maxWidth: 1200,
+              minWidth: 480,
+              defaultScale: true,
+              breakpoints: [
+                ResponsiveBreakpoint.resize(480, name: MOBILE),
+                ResponsiveBreakpoint.autoScale(600),
+                ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+              ],
+              background: Container(color: Colors.white)),
+          routes: {
+            CartScreen.routeName: (ctx) => CartScreen(),
+            HomePage.routeName: (ctx) => HomePage(),
+            ItemDetailsPage.routeName: (ctx) => ItemDetailsPage(),
+            CategoryScreen.routeName: (ctx) => CategoryScreen(),
+            SignInScreen.routeName: (ctx) => SignInScreen(),
+            SignUpScreen.routeName: (ctx) => SignUpScreen(),
+            TestPage.routeName: (ctx) => TestPage(),
+          },
+        );
+      }),
     );
   }
 }
