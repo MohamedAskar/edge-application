@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<Auth>(builder: (context, auth, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'edge.',
+          title: "edge.",
           themeMode: ThemeMode.light,
           theme: ThemeData(
             brightness: Brightness.light,

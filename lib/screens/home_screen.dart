@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
+import 'package:edge/models/item.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/screens/category_screen.dart';
@@ -28,17 +30,39 @@ class _HomePageState extends State<HomePage> {
   );
 
   List images = [
-    'https://res.cloudinary.com/djtpiagbk/image/upload/v1618872777/Men/Relaxed%20Fit%20Sweatshirt/hmgoepprod_3_blb60b.jpg',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1618872666/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513403_2_4_8_vcfg3j.webp',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873127/Men/1006/8062320406_6_1_1_vsp8ks.jpg',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873501/Women/WOMAN%20LONG%20SLEEVE%20SHIRT/Screenshot_619_cjnqie.png',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873404/Women/Straight%20Jean%20Trousers/Screenshot_647_gqwewr.png',
   ];
 
-  List category = ['SWEATSHIRTS', 'JEANS', 'TOPS', 'PANTS'];
+  List category = ['HOODIES', 'JEANS', 'TOPS', 'PANTS'];
   List<int> randomizedNumber = [];
+
+  List<Item> listsearch = [];
+  Future getData() async {
+    var url = 'https://evening-falls-32097.herokuapp.com/api/v1/items';
+    var response = await Dio().get(url);
+    final data = response.data as Map<String, dynamic>;
+    for (var item in data['data']['items']) {
+      listsearch.add(Item(
+          id: item['_id'].toString(),
+          name: item['itemName'],
+          price: item['price'],
+          images: item['images'],
+          category: item['category'],
+          avilableColors: item['availableColors'],
+          description: item['description'],
+          seller: item['seller'],
+          sizes: item['sizes'],
+          discount: item['discount'],
+          additionalInformation: item['additional info']));
+    }
+  }
 
   @override
   void initState() {
+    getData();
     randomizedNumber = List.generate(38, (index) => index + 1)
       ..shuffle()
       ..take(8);
@@ -80,7 +104,10 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: Icon(Ionicons.search),
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                  context: context, delegate: DataSearch(data: listsearch));
+            },
           ),
           Consumer<CartProvider>(
             builder: (context, cart, child) {
@@ -227,7 +254,7 @@ class _HomePageState extends State<HomePage> {
             ),
             CategoryWidget(
               image:
-                  'https://res.cloudinary.com/djtpiagbk/image/upload/v1618872777/Men/Relaxed%20Fit%20Sweatshirt/hmgoepprod_3_blb60b.jpg',
+                  'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873197/Women/Half%20Off%20shoulder%20swetshirt/Screenshot_640_ben6e4.png',
               category: 'OFF SHOULDERS',
               subcategory: 'TRENDS',
               underline: 'SEE NOW',
@@ -250,6 +277,69 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class DataSearch extends SearchDelegate<String> {
+  List<Item> data;
+
+  DataSearch({this.data});
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    // Action for AppBar
+    return [
+      IconButton(
+        icon: Icon(Ionicons.close),
+        onPressed: () {
+          query = '';
+        },
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    // Icon leading
+    return IconButton(
+      icon: Icon(Ionicons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // Search Results
+    return null;
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    // Suggestions shown when user write anything
+    // var searchlist = query.isEmpty
+    //     ? data
+    //     : data.where((p) => p.name.startsWith(query)).toList();
+
+    List<dynamic> searchlist = query.isEmpty
+        ? data
+        : data
+            .where(
+                (item) => item.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+    return ListView.builder(
+      itemCount: searchlist.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: Icon(Ionicons.search_outline),
+          title: Text('${searchlist[index].name}'),
+          onTap: () {
+            query = searchlist[index].name;
+            showResults(context);
+          },
+        );
+      },
     );
   }
 }
