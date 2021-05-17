@@ -145,6 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   autocorrect: false,
                                   enableSuggestions: false,
                                   textInputAction: TextInputAction.next,
+                                  cursorColor: Colors.black,
                                   style: Theme.of(context).textTheme.bodyText1,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
@@ -177,6 +178,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                                 child: FormBuilderTextField(
                                   name: 'Password',
+                                  cursorColor: Colors.black,
                                   textInputAction: TextInputAction.done,
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.required(context),

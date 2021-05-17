@@ -43,8 +43,10 @@ class MyApp extends StatelessWidget {
             primaryColor: Colors.black,
             backgroundColor: Colors.white,
             accentColor: Colors.black,
-            textSelectionHandleColor: Colors.black,
-            cursorColor: Colors.grey,
+            textSelectionTheme: TextSelectionThemeData(
+                selectionHandleColor: Colors.black,
+                cursorColor: Colors.black,
+                selectionColor: Colors.black.withOpacity(0.15)),
             indicatorColor: Colors.black,
             splashColor: Colors.black12,
             appBarTheme: AppBarTheme(

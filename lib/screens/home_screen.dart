@@ -106,7 +106,8 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Ionicons.search),
             onPressed: () {
               showSearch(
-                  context: context, delegate: DataSearch(data: listsearch));
+                  context: context,
+                  delegate: DataSearch(data: listsearch, context: context));
             },
           ),
           Consumer<CartProvider>(
@@ -236,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (context, index) {
                       return ItemWidget(
                         id: items[index].id,
-                        itemName: items[index].itemName,
+                        itemName: items[index].itemName.toString().trimRight(),
                         image: items[index].image,
                         price: items[index].price,
                         discount: items[index].discount,
@@ -283,8 +284,15 @@ class _HomePageState extends State<HomePage> {
 
 class DataSearch extends SearchDelegate<String> {
   List<Item> data;
+  BuildContext context;
 
-  DataSearch({this.data});
+  DataSearch({this.data, this.context})
+      : super(
+          searchFieldLabel: 'Looking for something?',
+          searchFieldStyle: TextStyle(
+              color: Colors.black54, fontSize: 17, fontWeight: FontWeight.w600),
+        );
+
   @override
   List<Widget> buildActions(BuildContext context) {
     // Action for AppBar
@@ -312,7 +320,95 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     // Search Results
-    return null;
+    List<dynamic> searchResults = query.isEmpty
+        ? []
+        : data
+            .where((item) =>
+                item.name.toLowerCase().startsWith(query.toLowerCase()))
+            .toList();
+
+    List<dynamic> moreResults = query.isEmpty
+        ? []
+        : data
+            .where(
+                (item) => item.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+    return query.isEmpty
+        ? Center(
+            child: Text(
+              'What\'s on your mind?',
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600),
+            ),
+          )
+        : SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Results',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                      ),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: searchResults.length,
+                      itemBuilder: (context, index) {
+                        return ItemWidget(
+                          id: searchResults[index].id,
+                          itemName:
+                              searchResults[index].name.toString().trimRight(),
+                          image: searchResults[index].images.first,
+                          price: searchResults[index].price,
+                          discount: searchResults[index].discount,
+                        );
+                      }),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'More Results',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                      ),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: moreResults.length,
+                      itemBuilder: (context, index) {
+                        return ItemWidget(
+                          id: moreResults[index].id,
+                          itemName:
+                              moreResults[index].name.toString().trimRight(),
+                          image: moreResults[index].images.first,
+                          price: moreResults[index].price,
+                          discount: moreResults[index].discount,
+                        );
+                      }),
+                ],
+              ),
+            ),
+          );
   }
 
   @override
@@ -325,15 +421,49 @@ class DataSearch extends SearchDelegate<String> {
     List<dynamic> searchlist = query.isEmpty
         ? data
         : data
-            .where(
-                (item) => item.name.toLowerCase().contains(query.toLowerCase()))
+            .where((item) =>
+                item.name.toLowerCase().startsWith(query.toLowerCase()))
             .toList();
     return ListView.builder(
       itemCount: searchlist.length,
       itemBuilder: (context, index) {
         return ListTile(
           leading: Icon(Ionicons.search_outline),
-          title: Text('${searchlist[index].name}'),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.north_west,
+              size: 20,
+            ),
+            onPressed: () {
+              query = searchlist[index].name;
+            },
+          ),
+          title: RichText(
+            text: TextSpan(
+                text: searchlist[index]
+                    .name
+                    .toString()
+                    .substring(0, query.length),
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontFamily: 'Wavehaus',
+                    fontWeight: FontWeight.bold),
+                children: [
+                  TextSpan(
+                    text: searchlist[index]
+                        .name
+                        .toString()
+                        .substring(query.length)
+                        .trimRight(),
+                    style: TextStyle(
+                        color: Colors.black38,
+                        fontFamily: 'Wavehaus',
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold),
+                  )
+                ]),
+          ),
           onTap: () {
             query = searchlist[index].name;
             showResults(context);

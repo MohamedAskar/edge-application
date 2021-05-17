@@ -147,6 +147,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     FormBuilderValidators.required(context),
                                   ]),
                                   keyboardType: TextInputType.name,
+                                  cursorColor: Colors.black,
                                   textCapitalization: TextCapitalization.words,
                                   textInputAction: TextInputAction.next,
                                   style: Theme.of(context).textTheme.bodyText1,
@@ -181,6 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                                 child: FormBuilderTextField(
                                   name: 'Email',
+                                  cursorColor: Colors.black,
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.email(context),
                                     FormBuilderValidators.required(context),
@@ -222,6 +224,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 child: FormBuilderTextField(
                                   name: 'Password',
                                   textInputAction: TextInputAction.done,
+                                  cursorColor: Colors.black,
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.required(context),
                                     FormBuilderValidators.match(
@@ -284,6 +287,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 child: FormBuilderTextField(
                                   name: 'Confirm password',
                                   textInputAction: TextInputAction.done,
+                                  cursorColor: Colors.black,
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.required(context),
                                     // FormBuilderValidators.match(context, _password,
