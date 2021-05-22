@@ -1,6 +1,4 @@
-import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/sign_up_screen.dart';
@@ -13,8 +11,6 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 import '../fade_animation.dart';
-import '../try.dart';
-import 'cart_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = 'sign-in-screen';

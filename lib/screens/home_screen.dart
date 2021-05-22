@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/items_provider.dart';
-import 'package:edge/screens/category_screen.dart';
+import 'package:edge/try.dart';
 import 'package:edge/widgets/category_widget.dart';
 import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +40,8 @@ class _HomePageState extends State<HomePage> {
   List<int> randomizedNumber = [];
 
   List<Item> listsearch = [];
+  ItemsProvider itemData;
+  Future fetchedItems;
   Future getData() async {
     var url = 'https://evening-falls-32097.herokuapp.com/api/v1/items';
     var response = await Dio().get(url);
@@ -79,6 +81,8 @@ class _HomePageState extends State<HomePage> {
             duration: Duration(milliseconds: 350), curve: Curves.easeIn);
       }
     });
+    itemData = Provider.of<ItemsProvider>(context, listen: false);
+    fetchedItems = itemData.pagginateFromAPI(page: 1, limit: 8);
   }
 
   @override
@@ -92,8 +96,6 @@ class _HomePageState extends State<HomePage> {
     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     var size = MediaQuery.of(context).size;
-    final itemData = Provider.of<ItemsProvider>(context);
-    final fetchItems = itemData.pagginateFromAPI(page: 1, limit: 8);
     final items = itemData.items;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -138,8 +140,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.favorite_border),
-            onPressed: () {},
+            icon: Icon(
+              Ionicons.person_outline,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.of(context).pushNamed(TestPage.routeName);
+            },
           )
         ],
       ),

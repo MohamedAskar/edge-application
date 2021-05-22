@@ -1,12 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:edge/models/cart_item.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
-
-import '../models/item.dart';
 
 class CartScreen extends StatefulWidget {
   static final String routeName = 'Cart-Screen';

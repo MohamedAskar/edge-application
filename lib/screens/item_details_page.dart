@@ -23,6 +23,7 @@ class ItemDetailsPage extends StatefulWidget {
 class _ItemDetailsPageState extends State<ItemDetailsPage> {
   int quantity = 1;
   bool isCacheCleared = false;
+  // ignore: unused_field
   int _currentPage = 0;
   bool _expanded = false;
   bool _expanded1 = false;
@@ -47,15 +48,19 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
     });
   }
 
+  ItemsProvider itemData;
+  Future fetchedItems;
+
   @override
   void initState() {
     super.initState();
+    itemData = Provider.of<ItemsProvider>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     final String itemID = ModalRoute.of(context).settings.arguments;
-    final itemData = Provider.of<ItemsProvider>(context, listen: false);
+    // ignore: unused_local_variable
     final fetchedItem = itemData.findById(itemID).whenComplete(() {
       isCacheCleared = true;
       item = itemData.item;
@@ -116,8 +121,11 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
               vertical: 12,
             ),
             child: (!isCacheCleared)
-                ? Center(
-                    child: CircularProgressIndicator(),
+                ? Container(
+                    height: size.height - kToolbarHeight - 24,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

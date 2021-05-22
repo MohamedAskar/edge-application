@@ -1,23 +1,16 @@
-import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
-import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/sign_in_screen.dart';
-import 'package:edge/try.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../fade_animation.dart';
-import 'cart_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = 'sign-up-screen';
@@ -31,7 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _hidePassword = true;
   static const Pattern pattern =
       r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-  String _password;
+  //String _password;
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ),
                                   onSubmitted: (value) {
                                     setState(() {
-                                      _password = value;
+                                      //_password = value;
                                     });
                                   },
                                 ),

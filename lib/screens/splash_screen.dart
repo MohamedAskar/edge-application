@@ -1,6 +1,4 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:edge/main.dart';
-import 'package:edge/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 

@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:edge/models/item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' as services;
 
 class ItemsProvider with ChangeNotifier {
   List<ItemSummary> _items = [];

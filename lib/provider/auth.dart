@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -59,7 +57,7 @@ class Auth with ChangeNotifier {
         print(JwtDecoder.isExpired(response.data['token']));
         print(JwtDecoder.getExpirationDate(response.data['token'])
             .toIso8601String());
-        print(JwtDecoder.getRemainingTime(response.data['token']).inDays);
+        print(JwtDecoder.getRemainingTime(response.data['token']).inHours);
       }
       _autoLogout();
       notifyListeners();
