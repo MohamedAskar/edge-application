@@ -10,6 +10,7 @@ import 'package:edge/try.dart';
 import 'package:edge/widgets/category_widget.dart';
 import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,15 @@ class _HomePageState extends State<HomePage> {
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873127/Men/1006/8062320406_6_1_1_vsp8ks.jpg',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873501/Women/WOMAN%20LONG%20SLEEVE%20SHIRT/Screenshot_619_cjnqie.png',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873404/Women/Straight%20Jean%20Trousers/Screenshot_647_gqwewr.png',
+  ];
+
+  final List canvas = [
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622331736/Canvas/White_Simple_We_Are_Open_Instagram_Post_aqgcur.png',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622332517/Canvas/New_Collection_Instagram_Post_1_sqfaat.png',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622332415/Canvas/logo_1_sedqvu.gif',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622333549/Canvas/Copy_of_Shop_New_Arrivals_Collage_Instagram_Post_kjbci5.png',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622334438/Canvas/Vibrant_Etsy_Shop_Icon_1_hglgdp.png',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622331707/Canvas/Orange_and_Green_Geometric_Apparel_Store_Flyer_vhw2cm.png'
   ];
 
   List category = ['HOODIES', 'JEANS', 'TOPS', 'PANTS'];
@@ -71,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {});
     Timer.periodic(Duration(seconds: 4), (Timer timer) {
-      if (_currentPage < 4) {
+      if (_currentPage < canvas.length) {
         _currentPage++;
       } else {
         _currentPage = 0;
@@ -156,9 +166,9 @@ class _HomePageState extends State<HomePage> {
             Stack(
               children: [
                 SizedBox(
-                  height: 400,
+                  height: 350,
                   child: PageView.builder(
-                    itemCount: 4,
+                    itemCount: canvas.length,
                     onPageChanged: (value) {
                       setState(() {
                         _currentPage = value;
@@ -167,8 +177,7 @@ class _HomePageState extends State<HomePage> {
                     controller: _controller,
                     itemBuilder: (context, index) {
                       return CachedNetworkImage(
-                        imageUrl:
-                            'https://res.cloudinary.com/djtpiagbk/image/upload/v1619903723/Canvas/logo_q6zvwh.gif',
+                        imageUrl: canvas[index],
                         fit: BoxFit.fitHeight,
                         progressIndicatorBuilder: (context, url, progress) =>
                             Container(
@@ -189,9 +198,9 @@ class _HomePageState extends State<HomePage> {
                   bottom: 10,
                   child: SmoothPageIndicator(
                     controller: _controller,
-                    count: 4,
+                    count: canvas.length,
                     effect: WormEffect(
-                        activeDotColor: Colors.white,
+                        activeDotColor: Colors.black,
                         dotColor: Colors.grey,
                         radius: 8.0,
                         dotHeight: 8.0,

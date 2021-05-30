@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/screens/home_screen.dart';
@@ -330,7 +332,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               progress.dismiss();
                               Navigator.pushReplacementNamed(
                                   context, HomePage.routeName);
-                            } on PlatformException catch (e) {
+                            } on HttpException catch (e) {
                               progress.dismiss();
                               showDialog(
                                   context: context,

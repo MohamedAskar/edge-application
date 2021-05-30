@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/screens/home_screen.dart';
@@ -253,16 +255,17 @@ class _SignInScreenState extends State<SignInScreen> {
                               progress.dismiss();
                               Navigator.pushReplacementNamed(
                                   context, HomePage.routeName);
-                            } on PlatformException catch (e) {
+                            } on HttpException catch (e) {
                               progress.dismiss();
                               showDialog(
                                   context: context,
                                   builder: (ctx) {
                                     return AlertDialog(
                                       title: Text('An error occurred!',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold)),
                                       content: Text(
                                         e.message,
                                         style: TextStyle(

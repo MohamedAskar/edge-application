@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -45,7 +47,7 @@ class Auth with ChangeNotifier {
     };
 
     try {
-      final response = await dio.post(url, data: body);
+      final response = await dio.post(url, data: json.encode(body));
 
       if (response.data['status'] != 'success') {
         throw PlatformException(message: response.data['message'], code: '404');
