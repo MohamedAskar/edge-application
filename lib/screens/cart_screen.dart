@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/Cart_provider.dart';
-import 'package:edge/widgets/appBar.dart';
+import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:ionicons/ionicons.dart';

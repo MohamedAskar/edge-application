@@ -1,4 +1,4 @@
-import 'package:edge/widgets/appBar.dart';
+import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatelessWidget {

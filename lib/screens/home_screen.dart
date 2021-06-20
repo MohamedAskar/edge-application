@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/items_provider.dart';
-import 'package:edge/widgets/appBar.dart';
+import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/carousel.dart';
 import 'package:edge/widgets/category_widget.dart';
 import 'package:edge/widgets/item_widget.dart';

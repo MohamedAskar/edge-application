@@ -3,7 +3,7 @@ import 'package:edge/models/item.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/color_picker.dart';
 import 'package:edge/provider/items_provider.dart';
-import 'package:edge/widgets/appBar.dart';
+import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
