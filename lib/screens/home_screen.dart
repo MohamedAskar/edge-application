@@ -165,16 +165,56 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: Drawer(
-        child: Center(
-          child: Text(
-            'Under Construction',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w800,
-              fontSize: 24,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountEmail: Text('morymory@yahoo.com'),
+              accountName: Text('Omar Ahmed'),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.person,
+                  color: Colors.black,
+                ),
+              ),
             ),
-          ),
+            ListTile(
+              leading: Icon(
+                Ionicons.person,
+                color: Colors.black,
+              ),
+              title: Text('My Profile'),
+              onTap: () {
+                Navigator.of(context).pushNamed(TestPage.routeName);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.favorite, color: Colors.black),
+              title: Text('Favourites'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications, color: Colors.black),
+              title: Text('Notifications'),
+              trailing: ClipOval(
+                child: Container(
+                  color: Colors.red,
+                  width: 20,
+                  height: 20,
+                  child: Center(
+                    child: Text(
+                      '10',
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () {},
+            ),
+          ],
         ),
+        elevation: 20,
       ),
     );
   }

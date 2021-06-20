@@ -66,16 +66,17 @@ class MyApp extends StatelessWidget {
                     fontSize: 15,
                     color: Colors.black54)),
           ),
-          home: FutureBuilder(
-              future: auth.tryAutologin(),
-              builder: (context, authResult) {
-                return SplashScreen(
-                    route: !authResult.hasData
-                        ? ''
-                        : authResult.data
-                            ? HomePage.routeName
-                            : SignInScreen.routeName);
-              }),
+          home: HomePage(),
+          // FutureBuilder(
+          //     future: auth.tryAutologin(),
+          //     builder: (context, authResult) {
+          //       return SplashScreen(
+          //           route: !authResult.hasData
+          //               ? ''
+          //               : authResult.data
+          //                   ? HomePage.routeName
+          //                   : SignInScreen.routeName);
+          //     }),
           builder: (context, child) => ResponsiveWrapper.builder(child,
               maxWidth: 1200,
               minWidth: 480,

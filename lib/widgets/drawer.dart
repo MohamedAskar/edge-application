@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-class name extends StatelessWidget {
-  const name({Key key}) : super(key: key);
-
+class Drawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(''),
-    );
+    return Scaffold();
   }
 }
