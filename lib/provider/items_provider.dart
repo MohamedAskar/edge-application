@@ -51,7 +51,6 @@ class ItemsProvider with ChangeNotifier {
 
     final data = response.data as Map<String, dynamic>;
     final List<dynamic> extractedItems = data['data']['items'];
-
     extractedItems.forEach((item) {
       loadedItems.add(ItemSummary(
         id: item['_id'].toString(),

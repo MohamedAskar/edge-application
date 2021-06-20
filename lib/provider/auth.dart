@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,36 +38,52 @@ class Auth with ChangeNotifier {
       @required String password,
       @required String urlSegment}) async {
     final url =
-        'https://evening-falls-32097.herokuapp.com/api/v1/users/$urlSegment';
+        'https://whispering-tor-21325.herokuapp.com/api/v1/users/$urlSegment';
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    Map<String, String> data = {};
 
-    Map body = {
-      "name": name,
-      "email": email.trim(),
-      "password": password,
-      "passwordConfirm": password
-    };
+    if (name != null) {
+      data = {
+        "name": name,
+        "email": email.trim(),
+        "password": password,
+        "passwordConfirm": password
+      };
+    } else {
+      data = {
+        "email": email.trim(),
+        "password": password,
+      };
+    }
+
+    String body = json.encode(data);
 
     try {
-      final response = await dio.post(url, data: json.encode(body));
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: body,
+      );
 
-      if (response.data['status'] != 'success') {
-        throw PlatformException(message: response.data['message'], code: '404');
+      final responseData = json.decode(response.body);
+      print(responseData);
+      if (responseData['status'] == 'fail') {
+        throw HttpException(responseData['message']);
       } else {
-        _userID = JwtDecoder.decode(response.data['token'])['id'];
-        _jwtToken = response.data['token'];
-        print(response.data);
-        print(JwtDecoder.decode(response.data['token']));
-        print(JwtDecoder.isExpired(response.data['token']));
-        print(JwtDecoder.getExpirationDate(response.data['token'])
+        _userID = JwtDecoder.decode(responseData['token'])['id'];
+        _jwtToken = responseData['token'];
+        print(responseData);
+        print(JwtDecoder.decode(responseData['token']));
+        print(JwtDecoder.isExpired(responseData['token']));
+        print(JwtDecoder.getExpirationDate(responseData['token'])
             .toIso8601String());
-        print(JwtDecoder.getRemainingTime(response.data['token']).inHours);
+        print(JwtDecoder.getRemainingTime(responseData['token']).inHours);
       }
       _autoLogout();
       notifyListeners();
-      sharedPreferences.setString('jwt', response.data['token']);
+      sharedPreferences.setString('jwt', responseData['token']);
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 

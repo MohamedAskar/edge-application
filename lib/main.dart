@@ -7,8 +7,8 @@ import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/item_details_page.dart';
 import 'package:edge/screens/sign_in_screen.dart';
 import 'package:edge/screens/sign_up_screen.dart';
+import 'package:edge/screens/profile_screen.dart';
 import 'package:edge/screens/splash_screen.dart';
-import 'package:edge/try.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -94,7 +94,7 @@ class MyApp extends StatelessWidget {
             CategoryScreen.routeName: (ctx) => CategoryScreen(),
             SignInScreen.routeName: (ctx) => SignInScreen(),
             SignUpScreen.routeName: (ctx) => SignUpScreen(),
-            TestPage.routeName: (ctx) => TestPage(),
+            ProfileScreen.routeName: (ctx) => ProfileScreen(),
           },
         );
       }),

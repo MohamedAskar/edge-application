@@ -24,8 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   bool _hidePassword = true;
-  static const Pattern pattern =
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+  static const Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
   //String _password;
 
   @override
@@ -339,9 +338,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   builder: (ctx) {
                                     return AlertDialog(
                                       title: Text('An error occurred!',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold)),
                                       content: Text(
                                         e.message,
                                         style: TextStyle(

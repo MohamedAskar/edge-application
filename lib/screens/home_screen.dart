@@ -1,22 +1,16 @@
 import 'dart:async';
 
-import 'package:badges/badges.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:edge/models/item.dart';
-import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/items_provider.dart';
-import 'package:edge/try.dart';
+import 'package:edge/widgets/appBar.dart';
+import 'package:edge/widgets/carousel.dart';
 import 'package:edge/widgets/category_widget.dart';
 import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import 'cart_screen.dart';
 
 class HomePage extends StatefulWidget {
   static final String routeName = 'Home-Screen';
@@ -25,11 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentPage = 0;
-  final _controller = PageController(
-    initialPage: 0,
-  );
-
   List images = [
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618872666/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513403_2_4_8_vcfg3j.webp',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873127/Men/1006/8062320406_6_1_1_vsp8ks.jpg',
@@ -47,11 +36,11 @@ class _HomePageState extends State<HomePage> {
   ];
 
   List category = ['HOODIES', 'JEANS', 'TOPS', 'PANTS'];
-  List<int> randomizedNumber = [];
 
   List<Item> listsearch = [];
   ItemsProvider itemData;
   Future fetchedItems;
+
   Future getData() async {
     var url = 'https://evening-falls-32097.herokuapp.com/api/v1/items';
     var response = await Dio().get(url);
@@ -75,140 +64,33 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getData();
-    randomizedNumber = List.generate(38, (index) => index + 1)
-      ..shuffle()
-      ..take(8);
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
-    Timer.periodic(Duration(seconds: 4), (Timer timer) {
-      if (_currentPage < canvas.length) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-      if (_controller.hasClients) {
-        _controller.animateToPage(_currentPage,
-            duration: Duration(milliseconds: 350), curve: Curves.easeIn);
-      }
-    });
-    itemData = Provider.of<ItemsProvider>(context, listen: false);
-    fetchedItems = itemData.pagginateFromAPI(page: 1, limit: 8);
-  }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    itemData = Provider.of<ItemsProvider>(context, listen: false);
+    fetchedItems = itemData
+        .pagginateFromAPI(page: 1, limit: 8)
+        .whenComplete(() => print('pagginated.'));
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
-    var size = MediaQuery.of(context).size;
     final items = itemData.items;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: false,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text('edge.', style: Theme.of(context).textTheme.headline1),
-        actions: [
-          IconButton(
-            icon: Icon(Ionicons.search),
-            onPressed: () {
-              showSearch(
-                  context: context,
-                  delegate: DataSearch(data: listsearch, context: context));
-            },
-          ),
-          Consumer<CartProvider>(
-            builder: (context, cart, child) {
-              return Badge(
-                badgeColor: Colors.black,
-                toAnimate: true,
-                alignment: Alignment.center,
-                animationType: BadgeAnimationType.scale,
-                badgeContent: Text(
-                  cart.totalQuantity.toString(),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12),
-                ),
-                position: BadgePosition.topEnd(end: 6, top: 8),
-                child: child,
-              );
-            },
-            child: IconButton(
-              icon: Icon(
-                Ionicons.bag_handle_outline,
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(CartScreen.routeName);
-              },
-            ),
-          ),
-          IconButton(
-            icon: Icon(
-              Ionicons.person_outline,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.of(context).pushNamed(TestPage.routeName);
-            },
-          )
-        ],
-      ),
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: EdgeAppBar(
+            listsearch: listsearch,
+            profile: true,
+            cart: true,
+            search: true,
+          )),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              children: [
-                SizedBox(
-                  height: 350,
-                  child: PageView.builder(
-                    itemCount: canvas.length,
-                    onPageChanged: (value) {
-                      setState(() {
-                        _currentPage = value;
-                      });
-                    },
-                    controller: _controller,
-                    itemBuilder: (context, index) {
-                      return CachedNetworkImage(
-                        imageUrl: canvas[index],
-                        fit: BoxFit.fitHeight,
-                        progressIndicatorBuilder: (context, url, progress) =>
-                            Container(
-                          height: 60,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              value: progress.progress,
-                            ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      );
-                    },
-                  ),
-                ),
-                Positioned(
-                  right: size.width / 2 - 32,
-                  bottom: 10,
-                  child: SmoothPageIndicator(
-                    controller: _controller,
-                    count: canvas.length,
-                    effect: WormEffect(
-                        activeDotColor: Colors.black,
-                        dotColor: Colors.grey,
-                        radius: 8.0,
-                        dotHeight: 8.0,
-                        dotWidth: 8.0),
-                  ),
-                )
-              ],
-            ),
+            EdgeCarousel(images: canvas, height: 350),
             SizedBox(
               height: 32,
             ),

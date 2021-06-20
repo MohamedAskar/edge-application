@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/Cart_provider.dart';
+import 'package:edge/widgets/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:ionicons/ionicons.dart';
@@ -21,21 +22,13 @@ class _CartScreenState extends State<CartScreen> {
     final cartItems = Provider.of<CartProvider>(context).cartItems;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: false,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text('edge.', style: Theme.of(context).textTheme.headline1),
-        actions: [
-          IconButton(
-            icon: Icon(Ionicons.search),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.favorite_border),
-            onPressed: () {},
-          )
-        ],
-      ),
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: EdgeAppBar(
+            profile: true,
+            cart: false,
+            search: false,
+          )),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 12),
         child: Column(

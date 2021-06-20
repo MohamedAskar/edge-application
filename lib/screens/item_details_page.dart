@@ -1,17 +1,13 @@
-import 'package:badges/badges.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/cart_item.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/color_picker.dart';
 import 'package:edge/provider/items_provider.dart';
+import 'package:edge/widgets/appBar.dart';
+import 'package:edge/widgets/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:provider/provider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import 'cart_screen.dart';
 
 class ItemDetailsPage extends StatefulWidget {
   static final String routeName = 'Item-Details-Screen';
@@ -23,18 +19,12 @@ class ItemDetailsPage extends StatefulWidget {
 class _ItemDetailsPageState extends State<ItemDetailsPage> {
   int quantity = 1;
   bool isCacheCleared = false;
-  // ignore: unused_field
-  int _currentPage = 0;
   bool _expanded = false;
   bool _expanded1 = false;
   var selectedColor = 0;
   var selectedSize = 0;
   List<int> randomizedNumber = [];
   Item item;
-
-  final _controller = PageController(
-    initialPage: 0,
-  );
 
   void changeSelectedColor(int index) {
     setState(() {
@@ -62,8 +52,12 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
     final String itemID = ModalRoute.of(context).settings.arguments;
     // ignore: unused_local_variable
     final fetchedItem = itemData.findById(itemID).whenComplete(() {
-      isCacheCleared = true;
-      item = itemData.item;
+      if (mounted) {
+        setState(() {
+          isCacheCleared = true;
+        });
+        item = itemData.item;
+      }
       //itemData.clear();
     });
     //item = itemData.item;
@@ -74,48 +68,14 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
     final cart = Provider.of<CartProvider>(context, listen: false);
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          centerTitle: false,
-          iconTheme: IconThemeData(color: Colors.black),
-          title: Text('edge.', style: Theme.of(context).textTheme.headline1),
-          actions: [
-            IconButton(
-              icon: Icon(Ionicons.search),
-              onPressed: () {},
-            ),
-            Consumer<CartProvider>(
-              builder: (context, cart, child) {
-                return Badge(
-                  badgeColor: Colors.black,
-                  toAnimate: true,
-                  alignment: Alignment.center,
-                  animationType: BadgeAnimationType.scale,
-                  badgeContent: Text(
-                    cart.totalQuantity.toString(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12),
-                  ),
-                  position: BadgePosition.topEnd(end: 6, top: 8),
-                  child: child,
-                );
-              },
-              child: IconButton(
-                icon: Icon(
-                  Ionicons.bag_handle_outline,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.favorite_border),
-              onPressed: () {},
-            )
-          ],
-        ),
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: EdgeAppBar(
+              listsearch: [],
+              profile: false,
+              cart: true,
+              search: true,
+            )),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
               vertical: 12,
@@ -148,71 +108,8 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         height: 12,
                       ),
                       SafeArea(
-                        child: Stack(
-                          children: [
-                            SizedBox(
-                              height: size.height / 1.5,
-                              child: PageView.builder(
-                                itemCount: item.images.length,
-                                onPageChanged: (value) {
-                                  setState(() {
-                                    _currentPage = value;
-                                  });
-                                },
-                                controller: _controller,
-                                itemBuilder: (context, index) {
-                                  return PinchZoom(
-                                    zoomedBackgroundColor:
-                                        Colors.black.withOpacity(0.1),
-                                    resetDuration:
-                                        const Duration(milliseconds: 100),
-                                    maxScale: 3,
-                                    zoomEnabled: true,
-                                    onZoomStart: () {
-                                      print('Start zooming');
-                                    },
-                                    onZoomEnd: () {
-                                      print('Stop zooming');
-                                    },
-                                    image: Hero(
-                                      tag: itemID,
-                                      child: CachedNetworkImage(
-                                        imageUrl: item.images[index],
-                                        fit: BoxFit.fill,
-                                        progressIndicatorBuilder:
-                                            (context, url, progress) =>
-                                                Container(
-                                          height: 60,
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              value: progress.progress,
-                                            ),
-                                          ),
-                                        ),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            Positioned(
-                              right: size.width / 2 - 42,
-                              bottom: 15,
-                              child: SmoothPageIndicator(
-                                controller: _controller,
-                                count: item.images.length,
-                                effect: WormEffect(
-                                    activeDotColor: Colors.black,
-                                    dotColor: Colors.grey,
-                                    radius: 8.0,
-                                    dotHeight: 8.0,
-                                    dotWidth: 8.0),
-                              ),
-                            )
-                          ],
-                        ),
+                        child: EdgeCarousel(
+                            images: item.images, height: size.height / 1.5),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
