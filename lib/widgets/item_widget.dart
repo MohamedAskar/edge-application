@@ -58,7 +58,7 @@ class ItemWidget extends StatelessWidget {
               height: 8,
             ),
             Text(
-              '$price LE',
+              '\$$price',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )
           ],

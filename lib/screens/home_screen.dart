@@ -309,16 +309,10 @@ class DataSearch extends SearchDelegate<String> {
     List<dynamic> searchResults = query.isEmpty
         ? []
         : data
-            .where((item) =>
-                item.name.toLowerCase().startsWith(query.toLowerCase()))
-            .toList();
-
-    List<dynamic> moreResults = query.isEmpty
-        ? []
-        : data
             .where(
                 (item) => item.name.toLowerCase().contains(query.toLowerCase()))
             .toList();
+
     return query.isEmpty
         ? Center(
             child: Text(
@@ -363,34 +357,34 @@ class DataSearch extends SearchDelegate<String> {
                           discount: searchResults[index].discount,
                         );
                       }),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'More Results',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                      ),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: moreResults.length,
-                      itemBuilder: (context, index) {
-                        return ItemWidget(
-                          id: moreResults[index].id,
-                          itemName:
-                              moreResults[index].name.toString().trimRight(),
-                          image: moreResults[index].images.first,
-                          price: moreResults[index].price,
-                          discount: moreResults[index].discount,
-                        );
-                      }),
+                  //       Padding(
+                  //         padding: const EdgeInsets.all(8.0),
+                  //         child: Text(
+                  //           'More Results',
+                  //           style: TextStyle(
+                  //               color: Colors.black,
+                  //               fontSize: 22,
+                  //               fontWeight: FontWeight.bold),
+                  //         ),
+                  //       ),
+                  //       GridView.builder(
+                  //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //             crossAxisCount: 2,
+                  //             childAspectRatio: 0.7,
+                  //           ),
+                  //           shrinkWrap: true,
+                  //           physics: NeverScrollableScrollPhysics(),
+                  //           itemCount: moreResults.length,
+                  //           itemBuilder: (context, index) {
+                  //             return ItemWidget(
+                  //               id: moreResults[index].id,
+                  //               itemName:
+                  //                   moreResults[index].name.toString().trimRight(),
+                  //               image: moreResults[index].images.first,
+                  //               price: moreResults[index].price,
+                  //               discount: moreResults[index].discount,
+                  //             );
+                  //           }),
                 ],
               ),
             ),
@@ -407,8 +401,8 @@ class DataSearch extends SearchDelegate<String> {
     List<dynamic> searchlist = query.isEmpty
         ? data
         : data
-            .where((item) =>
-                item.name.toLowerCase().startsWith(query.toLowerCase()))
+            .where(
+                (item) => item.name.toLowerCase().contains(query.toLowerCase()))
             .toList();
     return ListView.builder(
       itemCount: searchlist.length,
@@ -424,32 +418,40 @@ class DataSearch extends SearchDelegate<String> {
               query = searchlist[index].name;
             },
           ),
-          title: RichText(
-            text: TextSpan(
-                text: searchlist[index]
-                    .name
-                    .toString()
-                    .substring(0, query.length),
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontFamily: 'Wavehaus',
-                    fontWeight: FontWeight.bold),
-                children: [
-                  TextSpan(
-                    text: searchlist[index]
-                        .name
-                        .toString()
-                        .substring(query.length)
-                        .trimRight(),
-                    style: TextStyle(
-                        color: Colors.black38,
-                        fontFamily: 'Wavehaus',
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold),
-                  )
-                ]),
+          title: Text(
+            searchlist[index].name.toString(),
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 17,
+                fontFamily: 'Wavehaus',
+                fontWeight: FontWeight.bold),
           ),
+          // RichText(
+          //   text: TextSpan(
+          //       text: searchlist[index]
+          //           .name
+          //           .toString()
+          //           .substring(0, query.length),
+          //       style: TextStyle(
+          //           color: Colors.black,
+          //           fontSize: 17,
+          //           fontFamily: 'Wavehaus',
+          //           fontWeight: FontWeight.bold),
+          //       children: [
+          //         TextSpan(
+          //           text: searchlist[index]
+          //               .name
+          //               .toString()
+          //               .substring(query.length)
+          //               .trimRight(),
+          //           style: TextStyle(
+          //               color: Colors.black38,
+          //               fontFamily: 'Wavehaus',
+          //               fontSize: 17,
+          //               fontWeight: FontWeight.bold),
+          //         )
+          //       ]),
+          // ),
           onTap: () {
             query = searchlist[index].name;
             showResults(context);
