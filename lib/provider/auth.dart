@@ -38,7 +38,7 @@ class Auth with ChangeNotifier {
       @required String password,
       @required String urlSegment}) async {
     final url =
-        'https://whispering-tor-21325.herokuapp.com/api/v1/users/$urlSegment';
+        'https://sleepy-lake-90434.herokuapp.com/api/v1/users/$urlSegment';
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map<String, String> data = {};
 

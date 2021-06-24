@@ -1,13 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/cart_item.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/color_picker.dart';
 import 'package:edge/provider/items_provider.dart';
+import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
-import 'package:edge/widgets/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ItemDetailsPage extends StatefulWidget {
   static final String routeName = 'Item-Details-Screen';
@@ -17,6 +20,11 @@ class ItemDetailsPage extends StatefulWidget {
 }
 
 class _ItemDetailsPageState extends State<ItemDetailsPage> {
+  int _currentPage = 0;
+  final _controller = PageController(
+    initialPage: 0,
+  );
+
   int quantity = 1;
   bool isCacheCleared = false;
   bool _expanded = false;
@@ -25,6 +33,8 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   var selectedSize = 0;
   List<int> randomizedNumber = [];
   Item item;
+
+  bool isItemAdded = false;
 
   void changeSelectedColor(int index) {
     setState(() {
@@ -38,6 +48,80 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
     });
   }
 
+  bool isLoading = false;
+
+  _showModalBottomSheet(double height) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: height,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 22),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(4),
+                topRight: Radius.circular(4),
+              )),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 24,
+              ),
+              Icon(
+                Ionicons.bag_check_outline,
+                size: 100,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Text(
+                'ADDED TO CART',
+                style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).maybePop();
+                      },
+                      child: Text(
+                        'Continue Shopping',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16),
+                      )),
+                  SizedBox(
+                    width: 32,
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, CheckoutScreen.routeName);
+                      },
+                      child: Text(
+                        'Checkout',
+                        style: TextStyle(
+                            color: Colors.blue[900],
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16),
+                      )),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   ItemsProvider itemData;
   Future fetchedItems;
 
@@ -45,6 +129,12 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   void initState() {
     super.initState();
     itemData = Provider.of<ItemsProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -99,7 +189,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                             style: Theme.of(context).textTheme.bodyText1,
                             children: [
                               TextSpan(text: '${item.category} > '),
-                              TextSpan(text: 'Hoodie')
+                              TextSpan(text: '${item.subcategory}')
                             ],
                           ),
                         ),
@@ -108,8 +198,63 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         height: 12,
                       ),
                       SafeArea(
-                        child: EdgeCarousel(
-                            images: item.images, height: size.height / 1.5),
+                        child: Hero(
+                          tag: itemID,
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: size.height / 1.5,
+                                child: PageView.builder(
+                                  itemCount: item.images.length,
+                                  onPageChanged: (value) {
+                                    setState(() {
+                                      _currentPage = value;
+                                    });
+                                  },
+                                  controller: _controller,
+                                  itemBuilder: (context, index) {
+                                    return PinchZoom(
+                                      zoomedBackgroundColor: Colors.transparent,
+                                      image: CachedNetworkImage(
+                                        imageUrl: item.images[index],
+                                        fit: BoxFit.cover,
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) =>
+                                                Container(
+                                          height: 60,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                            ),
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Container(
+                                height: size.height / 1.5,
+                                padding: const EdgeInsets.only(bottom: 18),
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: SmoothPageIndicator(
+                                    controller: _controller,
+                                    count: item.images.length,
+                                    effect: WormEffect(
+                                        activeDotColor: Colors.black,
+                                        dotColor: Colors.grey,
+                                        radius: 8.0,
+                                        dotHeight: 8.0,
+                                        dotWidth: 8.0),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -364,6 +509,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
+                                      _showModalBottomSheet(size.height / 2.25);
                                       cart.addToCart(CartItem(
                                           id: item.id,
                                           image: item.images.first,
@@ -376,20 +522,23 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                               item.sizes[selectedSize],
                                           seller: item.seller));
                                     },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12),
-                                      color: Colors.black,
-                                      child: Center(
-                                        child: Text(
-                                          'ADD TO CART',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
+                                    child: isLoading
+                                        ? CircularProgressIndicator()
+                                        : Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12),
+                                            color: Colors.black,
+                                            child: Center(
+                                              child: Text(
+                                                'ADD TO CART',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
                                   ),
                                 )
                               ],
@@ -472,7 +621,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
-                                  item.additionalInformation,
+                                  "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
                                   style: TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.w600),
@@ -508,7 +657,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
-                                  item.description,
+                                  "It is a short established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
                                   style: TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.w600),

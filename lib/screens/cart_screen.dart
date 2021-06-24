@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:edge/models/cart_item.dart';
 import 'package:edge/provider/Cart_provider.dart';
+import 'package:edge/provider/color_picker.dart';
+import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -16,10 +19,18 @@ class _CartScreenState extends State<CartScreen> {
   final _couponFormKey = GlobalKey<FormBuilderState>();
   final _addressFormKey = GlobalKey<FormBuilderState>();
   bool _expanded = false;
+  Map<String, CartItem> cartData;
+  List<CartItem> cartItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    cartData = Provider.of<CartProvider>(context, listen: false).cartItems;
+    cartItems = cartData.values.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cartItems = Provider.of<CartProvider>(context).cartItems;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -59,7 +70,7 @@ class _CartScreenState extends State<CartScreen> {
                       height: 160,
                       width: 145,
                       child: CachedNetworkImage(
-                        imageUrl: cartItems.values.toList()[index].image,
+                        imageUrl: cartItems[index].image,
                         fit: BoxFit.fitWidth,
                         progressIndicatorBuilder: (context, url, progress) =>
                             Container(
@@ -78,14 +89,15 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     Expanded(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            cartItems.values.toList()[index].name,
+                            cartItems[index].name,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w700),
                           ),
                           SizedBox(
-                            height: 14,
+                            height: 18,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,7 +112,7 @@ class _CartScreenState extends State<CartScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 12),
                                     child: Text(
-                                      '${cartItems.values.toList()[index].quantity}',
+                                      '${cartItems[index].quantity}',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 20),
@@ -124,14 +136,10 @@ class _CartScreenState extends State<CartScreen> {
                                             size: 22,
                                           ),
                                           onTap: () {
-                                            if (cartItems.values
-                                                    .toList()[index]
-                                                    .quantity <
+                                            if (cartItems[index].quantity <
                                                 10) {
                                               setState(() {
-                                                cartItems.values
-                                                    .toList()[index]
-                                                    .quantity++;
+                                                cartItems[index].quantity++;
                                               });
                                             }
                                           },
@@ -153,14 +161,9 @@ class _CartScreenState extends State<CartScreen> {
                                             size: 22,
                                           ),
                                           onTap: () {
-                                            if (cartItems.values
-                                                    .toList()[index]
-                                                    .quantity >
-                                                1) {
+                                            if (cartItems[index].quantity > 1) {
                                               setState(() {
-                                                cartItems.values
-                                                    .toList()[index]
-                                                    .quantity--;
+                                                cartItems[index].quantity--;
                                               });
                                             }
                                           },
@@ -171,7 +174,7 @@ class _CartScreenState extends State<CartScreen> {
                                 ],
                               ),
                               Text(
-                                '${cartItems.values.toList()[index].price} LE',
+                                '${cartItems[index].price} LE',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w700),
                               ),
@@ -181,6 +184,61 @@ class _CartScreenState extends State<CartScreen> {
                               )
                             ],
                           ),
+                          SizedBox(
+                            height: 14,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(2),
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.black,
+                                            width: 1.5,
+                                            style: BorderStyle.solid)),
+                                    child: CircleAvatar(
+                                      backgroundColor: Color(ColorPicker()
+                                          .hexColorToInt(
+                                              cartItems[index].selectedColor)),
+                                      radius: 16,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    '${cartItems[index].selectedColor}',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.black,
+                                          width: 1.5,
+                                          style: BorderStyle.solid)),
+                                  child: Center(
+                                    child: Text(
+                                      cartItems[index].selectedSize,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )),
+                            ],
+                          )
                         ],
                       ),
                     )
@@ -525,7 +583,9 @@ class _CartScreenState extends State<CartScreen> {
                     height: 32,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, CheckoutScreen.routeName);
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 24),
                       color: Colors.black,

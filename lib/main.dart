@@ -3,8 +3,10 @@ import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/screens/cart_screen.dart';
 import 'package:edge/screens/category_screen.dart';
+import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/item_details_page.dart';
+import 'package:edge/screens/orders_screen.dart';
 import 'package:edge/screens/sign_in_screen.dart';
 import 'package:edge/screens/sign_up_screen.dart';
 import 'package:edge/screens/profile_screen.dart';
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
           title: "edge.",
           themeMode: ThemeMode.light,
           theme: ThemeData(
+            canvasColor: Colors.transparent,
             brightness: Brightness.light,
             iconTheme: IconThemeData(color: Colors.black),
             primaryColor: Colors.black,
@@ -66,17 +69,16 @@ class MyApp extends StatelessWidget {
                     fontSize: 15,
                     color: Colors.black54)),
           ),
-          home: HomePage(),
-          // FutureBuilder(
-          //     future: auth.tryAutologin(),
-          //     builder: (context, authResult) {
-          //       return SplashScreen(
-          //           route: !authResult.hasData
-          //               ? ''
-          //               : authResult.data
-          //                   ? HomePage.routeName
-          //                   : SignInScreen.routeName);
-          //     }),
+          home: FutureBuilder(
+              future: auth.tryAutologin(),
+              builder: (context, authResult) {
+                return SplashScreen(
+                    route: !authResult.hasData
+                        ? ''
+                        : authResult.data
+                            ? HomePage.routeName
+                            : SignInScreen.routeName);
+              }),
           builder: (context, child) => ResponsiveWrapper.builder(child,
               maxWidth: 1200,
               minWidth: 480,
@@ -96,6 +98,8 @@ class MyApp extends StatelessWidget {
             SignInScreen.routeName: (ctx) => SignInScreen(),
             SignUpScreen.routeName: (ctx) => SignUpScreen(),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
+            CheckoutScreen.routeName: (ctx) => CheckoutScreen(),
+            OrdersScreen.routeName: (ctx) => OrdersScreen(),
           },
         );
       }),

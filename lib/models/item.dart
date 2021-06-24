@@ -22,6 +22,7 @@ class Item with ChangeNotifier {
   final dynamic price;
   final List<dynamic> images;
   final String category;
+  final String subcategory;
   final List<dynamic> avilableColors;
   final String description;
   final dynamic discount;
@@ -35,6 +36,7 @@ class Item with ChangeNotifier {
     @required this.price,
     @required this.images,
     @required this.category,
+    @required this.subcategory,
     @required this.avilableColors,
     @required this.description,
     @required this.seller,

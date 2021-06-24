@@ -1,3 +1,4 @@
+import 'package:edge/screens/orders_screen.dart';
 import 'package:edge/settings_ui/settings_list.dart';
 import 'package:edge/settings_ui/settings_section.dart';
 import 'package:edge/settings_ui/settings_tile.dart';
@@ -18,7 +19,9 @@ class _SettingsState extends State<Settings> {
           tiles: [
             SettingsTile(
               enabled: true,
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, OrdersScreen.routeName);
+              },
               title: 'My Orders',
               leading: Icon(
                 Icons.shopping_bag_outlined,

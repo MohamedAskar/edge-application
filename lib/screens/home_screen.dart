@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/items_provider.dart';
+import 'package:edge/screens/profile_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/carousel.dart';
 import 'package:edge/widgets/category_widget.dart';
@@ -20,9 +21,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List images = [
-    'https://res.cloudinary.com/djtpiagbk/image/upload/v1618872666/Men/Basic%20hoodie%20with%20a%20rubberized%20patch/9594513403_2_4_8_vcfg3j.webp',
-    'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873127/Men/1006/8062320406_6_1_1_vsp8ks.jpg',
-    'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873501/Women/WOMAN%20LONG%20SLEEVE%20SHIRT/Screenshot_619_cjnqie.png',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209297/Men/Summer/19/4241932250_2_3_8_uhogxg.jpg',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209179/Men/Summer/24/4685511407_2_3_8_od7lsp.webp',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209420/Men/Summer/23/4470513401_2_1_8_owrmmi.webp',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873404/Women/Straight%20Jean%20Trousers/Screenshot_647_gqwewr.png',
   ];
 
@@ -35,29 +36,31 @@ class _HomePageState extends State<HomePage> {
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1622331707/Canvas/Orange_and_Green_Geometric_Apparel_Store_Flyer_vhw2cm.png'
   ];
 
-  List category = ['HOODIES', 'JEANS', 'TOPS', 'PANTS'];
+  List category = ['T-SHIRTS', 'JEANS', 'SHIRTS', 'PANTS'];
 
   List<Item> listsearch = [];
   ItemsProvider itemData;
   Future fetchedItems;
 
   Future getData() async {
-    var url = 'https://evening-falls-32097.herokuapp.com/api/v1/items';
+    var url = 'https://sleepy-lake-90434.herokuapp.com/api/v1/items';
     var response = await Dio().get(url);
     final data = response.data as Map<String, dynamic>;
     for (var item in data['data']['items']) {
       listsearch.add(Item(
           id: item['_id'].toString(),
           name: item['itemName'],
-          price: item['price'],
+          price: item['Price'],
           images: item['images'],
-          category: item['category'],
+          category: item['Category'],
+          subcategory: item['SubCategory'],
           avilableColors: item['availableColors'],
           description: item['description'],
-          seller: item['seller'],
-          sizes: item['sizes'],
+          seller: item['Seller'],
+          sizes: item['AvailavleSizes'],
           discount: item['discount'],
-          additionalInformation: item['additional info']));
+          additionalInformation:
+              "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."));
     }
   }
 
@@ -67,7 +70,7 @@ class _HomePageState extends State<HomePage> {
 
     itemData = Provider.of<ItemsProvider>(context, listen: false);
     fetchedItems = itemData
-        .pagginateFromAPI(page: 1, limit: 8)
+        .pagginateFromAPI(page: 1, limit: 16)
         .whenComplete(() => print('pagginated.'));
     super.initState();
   }
@@ -131,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: 8,
+                    itemCount: 10,
                     itemBuilder: (context, index) {
                       return ItemWidget(
                         id: items[index].id,
@@ -153,8 +156,8 @@ class _HomePageState extends State<HomePage> {
             ),
             CategoryWidget(
               image:
-                  'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873197/Women/Half%20Off%20shoulder%20swetshirt/Screenshot_640_ben6e4.png',
-              category: 'OFF SHOULDERS',
+                  'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209091/Men/Summer/13/8240526400_2_3_8_bnd5rc.webp',
+              category: 'TIE DYE',
               subcategory: 'TRENDS',
               underline: 'SEE NOW',
             ),
@@ -165,54 +168,57 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            UserAccountsDrawerHeader(
-              accountEmail: Text('morymory@yahoo.com'),
-              accountName: Text('Omar Ahmed'),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(
-                Ionicons.person,
-                color: Colors.black,
-              ),
-              title: Text('My Profile'),
-              onTap: () {
-                Navigator.of(context).pushNamed(TestPage.routeName);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.favorite, color: Colors.black),
-              title: Text('Favourites'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Icon(Icons.notifications, color: Colors.black),
-              title: Text('Notifications'),
-              trailing: ClipOval(
-                child: Container(
-                  color: Colors.red,
-                  width: 20,
-                  height: 20,
-                  child: Center(
-                    child: Text(
-                      '10',
-                      style: TextStyle(color: Colors.white, fontSize: 10),
-                    ),
+        child: Container(
+          color: Colors.white,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              UserAccountsDrawerHeader(
+                accountEmail: Text('morymory@yahoo.com'),
+                accountName: Text('Omar Ahmed'),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.black,
                   ),
                 ),
               ),
-              onTap: () {},
-            ),
-          ],
+              ListTile(
+                leading: Icon(
+                  Ionicons.person,
+                  color: Colors.black,
+                ),
+                title: Text('My Profile'),
+                onTap: () {
+                  Navigator.of(context).pushNamed(ProfileScreen.routeName);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.favorite, color: Colors.black),
+                title: Text('Favourites'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.notifications, color: Colors.black),
+                title: Text('Notifications'),
+                trailing: ClipOval(
+                  child: Container(
+                    color: Colors.red,
+                    width: 20,
+                    height: 20,
+                    child: Center(
+                      child: Text(
+                        '10',
+                        style: TextStyle(color: Colors.white, fontSize: 10),
+                      ),
+                    ),
+                  ),
+                ),
+                onTap: () {},
+              ),
+            ],
+          ),
         ),
         elevation: 20,
       ),
