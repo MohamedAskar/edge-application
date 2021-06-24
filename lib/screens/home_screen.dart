@@ -169,39 +169,78 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: Drawer(
         child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 42, horizontal: 12),
           color: Colors.white,
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              UserAccountsDrawerHeader(
-                accountEmail: Text('morymory@yahoo.com'),
-                accountName: Text('Omar Ahmed'),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.black,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/avatar.png',
+                    height: 100,
                   ),
-                ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'Edge.',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    'user@edge.com',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Divider()
+                ],
               ),
               ListTile(
                 leading: Icon(
-                  Ionicons.person,
+                  Ionicons.person_outline,
                   color: Colors.black,
                 ),
-                title: Text('My Profile'),
+                title: Text(
+                  'My Profile',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
                 onTap: () {
                   Navigator.of(context).pushNamed(ProfileScreen.routeName);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.favorite, color: Colors.black),
-                title: Text('Favourites'),
+                leading: Icon(Ionicons.heart_outline, color: Colors.black),
+                title: Text(
+                  'Favourites',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
                 onTap: () {},
               ),
               ListTile(
-                leading: Icon(Icons.notifications, color: Colors.black),
-                title: Text('Notifications'),
+                leading:
+                    Icon(Ionicons.notifications_outline, color: Colors.black),
+                title: Text(
+                  'Notifications',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
                 trailing: ClipOval(
                   child: Container(
                     color: Colors.red,
@@ -209,8 +248,11 @@ class _HomePageState extends State<HomePage> {
                     height: 20,
                     child: Center(
                       child: Text(
-                        '10',
-                        style: TextStyle(color: Colors.white, fontSize: 10),
+                        '1',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),

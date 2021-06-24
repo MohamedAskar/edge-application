@@ -50,7 +50,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
 
   bool isLoading = false;
 
-  _showModalBottomSheet(double height) {
+  _showModalBottomSheet(double height, double width) {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -60,27 +60,37 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(4),
-                topRight: Radius.circular(4),
+                topLeft: Radius.circular(25),
+                topRight: Radius.circular(25),
               )),
           child: Column(
             children: [
               SizedBox(
-                height: 24,
+                height: 10,
               ),
-              Icon(
-                Ionicons.bag_check_outline,
-                size: 100,
+              Image.asset(
+                'assets/images/cart.png',
+                scale: 3,
               ),
               SizedBox(
-                height: 16,
+                height: 24,
               ),
               Text(
-                'ADDED TO CART',
+                'Hurray! Your Item has been added.',
                 style: TextStyle(
                     color: Colors.green,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700),
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              Text(
+                'We still have a lot more to match with this item!',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700),
               ),
               SizedBox(
                 height: 32,
@@ -88,31 +98,47 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).maybePop();
+                  Container(
+                    width: width / 3,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.maybePop(context);
                       },
-                      child: Text(
-                        'Continue Shopping',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16),
-                      )),
-                  SizedBox(
-                    width: 32,
+                      child: Center(
+                        child: Text(
+                          'CONTINUE SHOPPING',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
                   ),
-                  TextButton(
-                      onPressed: () {
+                  SizedBox(
+                    width: 24,
+                  ),
+                  Container(
+                    width: width / 3,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black, width: 1.5)),
+                    child: InkWell(
+                      onTap: () {
                         Navigator.pushNamed(context, CheckoutScreen.routeName);
                       },
-                      child: Text(
-                        'Checkout',
-                        style: TextStyle(
-                            color: Colors.blue[900],
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16),
-                      )),
+                      child: Center(
+                        child: Text(
+                          'CHECKOUT',
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               )
             ],
@@ -509,7 +535,8 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
-                                      _showModalBottomSheet(size.height / 2.25);
+                                      _showModalBottomSheet(
+                                          size.height / 2.25, size.width);
                                       cart.addToCart(CartItem(
                                           id: item.id,
                                           image: item.images.first,

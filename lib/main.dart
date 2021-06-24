@@ -6,6 +6,7 @@ import 'package:edge/screens/category_screen.dart';
 import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/item_details_page.dart';
+import 'package:edge/screens/order_placed.dart';
 import 'package:edge/screens/orders_screen.dart';
 import 'package:edge/screens/sign_in_screen.dart';
 import 'package:edge/screens/sign_up_screen.dart';
@@ -100,6 +101,7 @@ class MyApp extends StatelessWidget {
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
             CheckoutScreen.routeName: (ctx) => CheckoutScreen(),
             OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            OrderPlacedScreen.routeName: (ctx) => OrderPlacedScreen(),
           },
         );
       }),

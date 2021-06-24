@@ -3,6 +3,7 @@ import 'package:edge/screens/sign_in_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
@@ -36,6 +37,8 @@ class ProfileScreen extends StatelessWidget {
                         tag: 'profile',
                         child: CircleAvatar(
                           radius: 75.0,
+                          backgroundColor: Colors.transparent,
+                          child: Image.asset('assets/images/avatar.png'),
                         ),
                       ),
                     ),
@@ -51,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
                     height: 4.0,
                   ),
                   Text(
-                    'test@edge.com',
+                    'user@edge.com',
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16,

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/Cart_provider.dart';
+import 'package:edge/screens/order_placed.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -375,7 +376,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Container(
             height: 70,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacementNamed(
+                    context, OrderPlacedScreen.routeName);
+                Provider.of<CartProvider>(context, listen: false).clearCart();
+              },
               child: Container(
                 color: Colors.white,
                 padding:

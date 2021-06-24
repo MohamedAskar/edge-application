@@ -587,14 +587,14 @@ class _CartScreenState extends State<CartScreen> {
                       Navigator.pushNamed(context, CheckoutScreen.routeName);
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      padding: const EdgeInsets.symmetric(vertical: 18),
                       color: Colors.black,
                       child: Center(
                         child: Text(
                           'PROCEED TO CHECKOUT',
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 22,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
