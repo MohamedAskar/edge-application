@@ -1,5 +1,6 @@
 class ColorPicker {
   static final Map<String, String> colours = {
+    'lilac': "#C8A2C8",
     'iceblue': "#f0f8ff",
     'antiquewhite': "#faebd7",
     'aqua': "#00ffff",
@@ -125,6 +126,7 @@ class ColorPicker {
     'royalblue': "#4169e1",
     'saddlebrown': "#8b4513",
     'salmon': "#fa8072",
+    'sand': "#C2B280",
     'sandybrown': "#f4a460",
     'seagreen': "#2e8b57",
     'seashell': "#fff5ee",
