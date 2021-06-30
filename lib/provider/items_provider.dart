@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:edge/models/item.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ItemsProvider with ChangeNotifier {
   List<ItemSummary> _items = [];
@@ -15,15 +18,47 @@ class ItemsProvider with ChangeNotifier {
     return _item;
   }
 
+  int totalNoItems = 0;
+
+  List<ItemSummary> _allItems = [];
+
+  List<ItemSummary> get allItems {
+    return [..._allItems];
+  }
+
   final dio = Dio();
 
-  Future<void> findById(String id) async {
-    var url = 'https://sleepy-lake-90434.herokuapp.com/api/v1/items?_id=$id';
+  Future getAllItems() async {
+    List<ItemSummary> allData = [];
+    var url = 'http://192.168.33.44/api/v1/items';
+    var response = await http.get(Uri.parse(url));
+    final data = json.encode(response.body) as Map<String, dynamic>;
+    for (var item in data['data']['allItems']) {
+      allData.add(ItemSummary(
+        id: item['_id'].toString(),
+        itemName: item['itemName'],
+        price: item['Price'],
+        image: item['images'][0],
+        discount: item['discount'],
+      ));
+    }
+    _allItems = allData;
+    notifyListeners();
+  }
+
+  Future<void> findById({String id, String userID}) async {
+    var url = 'http://192.168.33.44:3000/api/v1/items/filter?_id=$id';
     List<Item> loadedItems = [];
 
-    var response = await dio.get(url);
-    final data = response.data as Map<String, dynamic>;
-    final List<dynamic> extractedDate = data['data']['items'];
+    final body = {"owner": userID};
+
+    var response = await http.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: {"Content-Type": "application/json"},
+    );
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    final List<dynamic> extractedDate = data['data']['filteredItems'];
     extractedDate.forEach((item) {
       loadedItems.add(Item(
         id: item['_id'].toString(),
@@ -42,15 +77,37 @@ class ItemsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pagginateFromAPI({int page, int limit}) async {
-    var url =
-        'https://sleepy-lake-90434.herokuapp.com/api/v1/items?page=$page&limit=$limit';
+  Future<void> paginateFromAPI({
+    @required int page,
+    @required int limit,
+    String subcategory,
+    String category,
+  }) async {
+    String url;
+    if (subcategory != null && category == null) {
+      url =
+          'http://192.168.33.44:3000/api/v1/items/paginate?SubCategory=$subcategory&page=$page&limit=$limit';
+    }
+    if (category != null) {
+      url =
+          'http://192.168.33.44:3000/api/v1/items/paginate?SubCategory=$subcategory&Category=$category&page=$page&limit=$limit';
+    }
+    if (category == null && subcategory == null) {
+      url =
+          'http://192.168.33.44:3000/api/v1/items/paginate?page=$page&limit=$limit';
+    }
+
+    print(url);
+
     List<ItemSummary> loadedItems = [];
 
-    var response = await dio.get(url);
+    var response = await http.get(Uri.parse(url));
+    //print(response.data);
 
-    final data = response.data as Map<String, dynamic>;
-    final List<dynamic> extractedItems = data['data']['items'];
+    _items = [];
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    totalNoItems = data['results'];
+    final List<dynamic> extractedItems = data['data']['paginatedItems'];
     extractedItems.forEach((item) {
       loadedItems.add(ItemSummary(
         id: item['_id'].toString(),

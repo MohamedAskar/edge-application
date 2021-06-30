@@ -15,7 +15,7 @@ class EdgeAppBar extends StatelessWidget {
       @required this.profile,
       @required this.search});
 
-  final List<Item> listsearch;
+  final List<ItemSummary> listsearch;
   final bool cart;
   final bool search;
   final bool profile;
@@ -37,32 +37,32 @@ class EdgeAppBar extends StatelessWidget {
             },
           ),
         if (cart)
-          Consumer<CartProvider>(
-            builder: (context, cart, child) {
-              return Badge(
-                badgeColor: Colors.black,
-                toAnimate: true,
-                alignment: Alignment.center,
-                animationType: BadgeAnimationType.scale,
-                badgeContent: Text(
-                  cart.totalQuantity.toString(),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12),
-                ),
-                position: BadgePosition.topEnd(end: 6, top: 8),
-                child: child,
-              );
-            },
-            child: IconButton(
-              icon: Icon(
+          InkWell(
+            child: Consumer<CartProvider>(
+              builder: (context, cart, child) {
+                return Badge(
+                  badgeColor: Colors.black,
+                  toAnimate: true,
+                  alignment: Alignment.center,
+                  animationType: BadgeAnimationType.scale,
+                  badgeContent: Text(
+                    cart.totalQuantity.toString(),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12),
+                  ),
+                  position: BadgePosition.topEnd(end: 0, top: 6),
+                  child: child,
+                );
+              },
+              child: Icon(
                 Ionicons.bag_handle_outline,
               ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(CartScreen.routeName);
-              },
             ),
+            onTap: () {
+              Navigator.of(context).pushNamed(CartScreen.routeName);
+            },
           ),
         if (profile)
           IconButton(

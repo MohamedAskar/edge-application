@@ -1,17 +1,23 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:edge/models/cart_item.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {
-  Map<String, CartItem> _cartItem = {};
+  List<CartItem> _cartItems = [];
 
-  Map<String, CartItem> get cartItems {
-    return {..._cartItem};
+  List<CartItem> get cartItems {
+    return [..._cartItems];
   }
 
-  double _totalAmount = 0.0;
+  dynamic _totalAmount = 0;
   int _totalQuantity = 0;
 
-  double get totalAmount {
+  final dio = new Dio();
+
+  dynamic get totalAmount {
     return double.parse(_totalAmount.toStringAsFixed(2));
   }
 
@@ -19,45 +25,115 @@ class CartProvider with ChangeNotifier {
     return _totalQuantity;
   }
 
-  void addToCart(CartItem cartItem) {
-    if (_cartItem.containsKey(cartItem.id)) {
-      _cartItem.update(
-          cartItem.id,
-          (existingItem) => CartItem(
-              id: existingItem.id,
-              quantity: existingItem.quantity + 1,
-              name: existingItem.name,
-              price: existingItem.price,
-              image: existingItem.image,
-              selectedColor: cartItem.selectedColor,
-              selectedSize: cartItem.selectedSize,
-              seller: existingItem.seller));
+  Future<void> getTotalQty({@required String userID}) async {
+    var qty = 0;
+    final url = 'http://192.168.33.44:3000/api/v1/cart/qty?owner=$userID';
+    print(url);
 
-      print('Item updated');
+    var response = await http.get(Uri.parse(url));
+    final responseData = json.decode(response.body) as Map<String, dynamic>;
+    print(responseData);
+
+    if (responseData['status'] == 'error') {
+      qty = 0;
     } else {
-      _cartItem.putIfAbsent(
-          cartItem.id,
-          () => CartItem(
-              id: cartItem.id,
-              quantity: cartItem.quantity,
-              name: cartItem.name,
-              price: cartItem.price,
-              image: cartItem.image,
-              selectedColor: cartItem.selectedColor,
-              selectedSize: cartItem.selectedSize,
-              seller: cartItem.seller));
-
-      print('item added');
+      qty = responseData['quantity'];
     }
-    print(cartItems.length);
+
+    _totalQuantity = qty;
     notifyListeners();
   }
 
-  void removeItem(String id) {
-    _cartItem.remove(id);
+  Future<void> addToCart({@required CartItem item, @required userID}) async {
+    final url = 'http://192.168.33.44:3000/api/v1/cart';
+    Map<String, dynamic> data = {
+      'owner': userID,
+      'items': {
+        'itemId': item.id,
+        'itemName': item.name,
+        'qty': item.quantity,
+        'price': item.price,
+        'images': item.image,
+        'color': item.selectedColor,
+        'size': item.selectedSize,
+        'seller': item.seller,
+        'SubCategory': item.subCategory
+      }
+    };
+    final body = json.encode(data);
+    final response = await http.post(
+      Uri.parse(url),
+      body: body,
+      headers: {"Content-Type": "application/json"},
+    );
+    print(response.body);
+    getTotalQty(userID: userID);
+
+    notifyListeners();
+  }
+
+  Future<void> getCartItems({@required String userID}) async {
+    final url = 'http://192.168.33.44:3000/api/v1/cart/getcart?owner=$userID';
+    print(url);
+    List<CartItem> loadedItems = [];
+
+    final response = await http.get(
+      Uri.parse(url),
+    );
+
+    final decodedData = json.decode(response.body) as Map<String, dynamic>;
+    print(decodedData);
+
+    final List<dynamic> extractedData = decodedData['data']['items'];
+    if (extractedData == []) {
+      _cartItems = [];
+      _totalAmount = 0.0;
+    } else {
+      extractedData.forEach((cartItem) {
+        if (cartItem != null) {
+          loadedItems.add(
+            CartItem(
+              id: cartItem['itemId'].toString(),
+              quantity: cartItem['qty'],
+              name: cartItem['itemName'],
+              price: cartItem["price"],
+              image: cartItem['images'],
+              selectedColor: cartItem['color'],
+              selectedSize: cartItem['size'],
+              seller: cartItem['seller'],
+              subCategory: cartItem['SubCategory'],
+            ),
+          );
+        }
+      });
+      _totalAmount = decodedData['data']['totalPrice'];
+      _cartItems = loadedItems;
+    }
+    notifyListeners();
+  }
+
+  Future<void> removeItem(String id, String userID) async {
+    //_cartItems.remove(id);
+    final url = 'http://192.168.33.44:3000/api/v1/cart';
+
+    final body = json.encode(
+      {'owner': userID, 'itemId': id},
+    );
+
+    print(body);
+    final response = await http.delete(
+      Uri.parse(url),
+      body: body,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    print(response.body);
+    getCartItems(userID: userID);
+    getTotalQty(userID: userID);
+    notifyListeners();
   }
 
   void clearCart() {
-    _cartItem = {};
+    _cartItems = [];
   }
 }

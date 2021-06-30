@@ -37,8 +37,7 @@ class Auth with ChangeNotifier {
       @required String email,
       @required String password,
       @required String urlSegment}) async {
-    final url =
-        'https://sleepy-lake-90434.herokuapp.com/api/v1/users/$urlSegment';
+    final url = 'http://192.168.33.44:3000/api/v1/users/$urlSegment';
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map<String, String> data = {};
 

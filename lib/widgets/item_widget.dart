@@ -35,6 +35,8 @@ class ItemWidget extends StatelessWidget {
                 height: size.height / 4,
                 imageUrl: image,
                 fit: BoxFit.fitWidth,
+                filterQuality: FilterQuality.none,
+                fadeInCurve: Curves.easeInOut,
                 progressIndicatorBuilder: (context, url, progress) => Container(
                   height: 60,
                   child: Center(

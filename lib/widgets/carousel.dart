@@ -24,7 +24,7 @@ class _EdgeCarouselState extends State<EdgeCarousel> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {});
-    Timer.periodic(Duration(seconds: 4), (Timer timer) {
+    Timer.periodic(Duration(seconds: 6), (Timer timer) {
       if (_currentPage < widget.images.length) {
         _currentPage++;
       } else {
@@ -61,6 +61,7 @@ class _EdgeCarouselState extends State<EdgeCarousel> {
               return CachedNetworkImage(
                 imageUrl: widget.images[index],
                 fit: BoxFit.cover,
+                filterQuality: FilterQuality.none,
                 progressIndicatorBuilder: (context, url, progress) => Container(
                   height: 60,
                   child: Center(

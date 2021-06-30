@@ -21,8 +21,8 @@ class CategoryWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
         onTap: () {
-          Navigator.of(context)
-              .pushNamed(CategoryScreen.routeName, arguments: category);
+          Navigator.of(context).pushNamed(CategoryScreen.routeName,
+              arguments: {'category': category, 'image': image});
         },
         child: Stack(
           children: [
@@ -31,6 +31,7 @@ class CategoryWidget extends StatelessWidget {
               height: size.height / 3,
               imageUrl: image,
               fit: BoxFit.cover,
+              filterQuality: FilterQuality.none,
               progressIndicatorBuilder: (context, url, progress) => Container(
                 height: 60,
                 child: Center(

@@ -1,9 +1,12 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/cart_item.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/Cart_provider.dart';
+import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/color_picker.dart';
 import 'package:edge/provider/items_provider.dart';
+import 'package:edge/screens/cart_screen.dart';
 import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/material.dart';
@@ -128,11 +131,11 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         border: Border.all(color: Colors.black, width: 1.5)),
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, CheckoutScreen.routeName);
+                        Navigator.pushNamed(context, CartScreen.routeName);
                       },
                       child: Center(
                         child: Text(
-                          'CHECKOUT',
+                          'YOUR CART',
                           style: TextStyle(
                               color: Colors.black, fontWeight: FontWeight.w700),
                         ),
@@ -150,11 +153,14 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
 
   ItemsProvider itemData;
   Future fetchedItems;
+  String userID;
+  bool isItemFetched = false;
 
   @override
   void initState() {
     super.initState();
     itemData = Provider.of<ItemsProvider>(context, listen: false);
+    userID = Provider.of<Auth>(context, listen: false).userID;
   }
 
   @override
@@ -167,15 +173,19 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   Widget build(BuildContext context) {
     final String itemID = ModalRoute.of(context).settings.arguments;
     // ignore: unused_local_variable
-    final fetchedItem = itemData.findById(itemID).whenComplete(() {
-      if (mounted) {
-        setState(() {
-          isCacheCleared = true;
-        });
-        item = itemData.item;
-      }
-      //itemData.clear();
-    });
+    if (!isItemFetched) {
+      final fetchedItem =
+          itemData.findById(id: itemID, userID: userID).whenComplete(() {
+        if (mounted) {
+          setState(() {
+            isCacheCleared = true;
+            isItemFetched = true;
+          });
+          item = itemData.item;
+        }
+        //itemData.clear();
+      });
+    }
     //item = itemData.item;
 
     //print(widget.id.runtimeType);
@@ -316,7 +326,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                               height: 20,
                             ),
                             Text(
-                              "${item.price} LE",
+                              "\$${item.price}",
                               style: TextStyle(
                                   fontSize: 26,
                                   fontWeight: FontWeight.w700,
@@ -534,38 +544,73 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 ),
                                 Expanded(
                                   child: InkWell(
-                                    onTap: () {
-                                      _showModalBottomSheet(
-                                          size.height / 2.25, size.width);
-                                      cart.addToCart(CartItem(
-                                          id: item.id,
-                                          image: item.images.first,
-                                          name: item.name,
-                                          price: item.price,
-                                          quantity: quantity,
-                                          selectedColor: item
-                                              .avilableColors[selectedColor],
-                                          selectedSize:
-                                              item.sizes[selectedSize],
-                                          seller: item.seller));
+                                    onTap: () async {
+                                      if (!isItemAdded) {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        await cart
+                                            .addToCart(
+                                                item: CartItem(
+                                                    id: item.id,
+                                                    image: item.images.first,
+                                                    name: item.name,
+                                                    price: item.price,
+                                                    quantity: quantity,
+                                                    selectedColor:
+                                                        item.avilableColors[
+                                                            selectedColor],
+                                                    selectedSize: item
+                                                        .sizes[selectedSize],
+                                                    subCategory:
+                                                        item.subcategory,
+                                                    seller: item.seller),
+                                                userID: Provider.of<Auth>(
+                                                        context,
+                                                        listen: false)
+                                                    .userID)
+                                            .whenComplete(() {
+                                          setState(() {
+                                            isLoading = false;
+                                            isItemAdded = true;
+                                          });
+                                        });
+                                        _showModalBottomSheet(
+                                            size.height / 2.25, size.width);
+                                      }
                                     },
-                                    child: isLoading
-                                        ? CircularProgressIndicator()
-                                        : Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 12),
-                                            color: Colors.black,
-                                            child: Center(
-                                              child: Text(
-                                                'ADD TO CART',
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
+                                      color: Colors.black,
+                                      child: Center(
+                                        child: isLoading
+                                            ? AnimatedTextKit(
+                                                animatedTexts: [
+                                                  FlickerAnimatedText(
+                                                    'Adding To Cart...',
+                                                    speed: Duration(
+                                                        milliseconds: 2000),
+                                                    textStyle: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 22,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ],
+                                              )
+                                            : Text(
+                                                isItemAdded
+                                                    ? 'ITEM ADDED'
+                                                    : 'ADD TO CART',
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 22,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                            ),
-                                          ),
+                                      ),
+                                    ),
                                   ),
                                 )
                               ],
@@ -614,7 +659,9 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                               height: 12,
                             ),
                             Text(
-                              item.description,
+                              (item.description != null)
+                                  ? item.description
+                                  : "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),

@@ -9,15 +9,16 @@ class CartItem {
   final String selectedColor;
   final String seller;
   final String selectedSize;
+  final String subCategory;
 
-  CartItem({
-    @required this.id,
-    @required this.quantity,
-    @required this.name,
-    @required this.price,
-    @required this.image,
-    @required this.selectedColor,
-    @required this.selectedSize,
-    @required this.seller,
-  });
+  CartItem(
+      {@required this.id,
+      @required this.quantity,
+      @required this.name,
+      @required this.price,
+      @required this.image,
+      @required this.selectedColor,
+      @required this.selectedSize,
+      @required this.seller,
+      @required this.subCategory});
 }

@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
-import 'package:dio/dio.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:http/http.dart' as http;
 import 'package:edge/models/item.dart';
+import 'package:edge/provider/Cart_provider.dart';
+import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/screens/profile_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
@@ -9,6 +14,7 @@ import 'package:edge/widgets/carousel.dart';
 import 'package:edge/widgets/category_widget.dart';
 import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209297/Men/Summer/19/4241932250_2_3_8_uhogxg.jpg',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209179/Men/Summer/24/4685511407_2_3_8_od7lsp.webp',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209420/Men/Summer/23/4470513401_2_1_8_owrmmi.webp',
-    'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873404/Women/Straight%20Jean%20Trousers/Screenshot_647_gqwewr.png',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1624642767/Women/Summer/22/cn19986748_imrvos.webp',
   ];
 
   final List canvas = [
@@ -36,41 +42,39 @@ class _HomePageState extends State<HomePage> {
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1622331707/Canvas/Orange_and_Green_Geometric_Apparel_Store_Flyer_vhw2cm.png'
   ];
 
-  List category = ['T-SHIRTS', 'JEANS', 'SHIRTS', 'PANTS'];
+  List category = ['T-Shirt', 'Jeans', 'Shirt', 'Pants'];
 
-  List<Item> listsearch = [];
+  List<ItemSummary> listsearch = [];
   ItemsProvider itemData;
   Future fetchedItems;
 
   Future getData() async {
-    var url = 'https://sleepy-lake-90434.herokuapp.com/api/v1/items';
-    var response = await Dio().get(url);
-    final data = response.data as Map<String, dynamic>;
-    for (var item in data['data']['items']) {
-      listsearch.add(Item(
-          id: item['_id'].toString(),
-          name: item['itemName'],
-          price: item['Price'],
-          images: item['images'],
-          category: item['Category'],
-          subcategory: item['SubCategory'],
-          avilableColors: item['availableColors'],
-          description: item['description'],
-          seller: item['Seller'],
-          sizes: item['AvailavleSizes'],
-          discount: item['discount'],
-          additionalInformation:
-              "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."));
+    var url = 'http://192.168.33.44:3000/api/v1/items';
+    var response = await http.get(Uri.parse(url));
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    for (var item in data['data']['allItems']) {
+      listsearch.add(ItemSummary(
+        id: item['_id'].toString(),
+        itemName: item['itemName'],
+        price: item['Price'],
+        image: item['images'][0],
+        discount: item['discount'],
+      ));
     }
   }
 
   @override
   void initState() {
     getData();
+    final userID = Provider.of<Auth>(context, listen: false).userID;
+    print(userID);
+    final qty = Provider.of<CartProvider>(context, listen: false)
+        .getTotalQty(userID: userID);
 
+    print('From Home: $qty');
     itemData = Provider.of<ItemsProvider>(context, listen: false);
     fetchedItems = itemData
-        .pagginateFromAPI(page: 1, limit: 16)
+        .paginateFromAPI(page: Random().nextInt(8), limit: 10)
         .whenComplete(() => print('pagginated.'));
     super.initState();
   }
@@ -97,57 +101,86 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 32,
             ),
-            Text(
+            AutoSizeText(
               'SHOP BY CATEGORY',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              maxFontSize: 26,
+              minFontSize: 22,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 22,
             ),
-            ListView.builder(
-              itemCount: images.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.only(bottom: 8),
-              itemBuilder: (context, index) => CategoryWidget(
-                image: images[index],
-                category: category[index],
-                underline: 'SHOP NOW',
+            AnimationLimiter(
+              child: ListView.builder(
+                itemCount: images.length,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 8),
+                itemBuilder: (context, index) =>
+                    AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: Duration(milliseconds: 1500),
+                  child: ScaleAnimation(
+                    child: FadeInAnimation(
+                      child: CategoryWidget(
+                        image: images[index],
+                        category: category[index],
+                        underline: 'SHOP NOW',
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
             SizedBox(
               height: 32,
             ),
-            Text(
+            AutoSizeText(
               'BESTSELLERS',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              maxFontSize: 26,
+              minFontSize: 22,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 22,
             ),
             (items.length == 0)
                 ? Center(child: CircularProgressIndicator())
-                : GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.7,
-                    ),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return ItemWidget(
-                        id: items[index].id,
-                        itemName: items[index].itemName.toString().trimRight(),
-                        image: items[index].image,
-                        price: items[index].price,
-                        discount: items[index].discount,
-                      );
-                    }),
+                : AnimationLimiter(
+                    child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.7,
+                        ),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return AnimationConfiguration.staggeredGrid(
+                            columnCount: 2,
+                            position: index,
+                            duration: const Duration(milliseconds: 1500),
+                            child: ScaleAnimation(
+                              child: FadeInAnimation(
+                                child: ItemWidget(
+                                  id: items[index].id,
+                                  itemName: items[index]
+                                      .itemName
+                                      .toString()
+                                      .trimRight(),
+                                  image: items[index].image,
+                                  price: items[index].price,
+                                  discount: items[index].discount,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
             CategoryWidget(
               image:
                   'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873501/Women/WOMAN%20LONG%20SLEEVE%20SHIRT/Screenshot_619_cjnqie.png',
-              category: 'TEES AND TOPS',
+              category: 'Tops',
               subcategory: 'NEW COLLECTION',
               underline: 'SEE NOW',
             ),
@@ -157,7 +190,7 @@ class _HomePageState extends State<HomePage> {
             CategoryWidget(
               image:
                   'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209091/Men/Summer/13/8240526400_2_3_8_bnd5rc.webp',
-              category: 'TIE DYE',
+              category: 'Tie-Dye',
               subcategory: 'TRENDS',
               underline: 'SEE NOW',
             ),
@@ -184,19 +217,19 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 16,
                   ),
-                  Text(
+                  AutoSizeText(
                     'Edge.',
+                    maxFontSize: 28,
+                    minFontSize: 24,
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
-                  Text(
+                  AutoSizeText(
                     'user@edge.com',
+                    maxFontSize: 20,
+                    minFontSize: 16,
                     style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600),
+                        color: Colors.black54, fontWeight: FontWeight.w600),
                   ),
                   SizedBox(
                     height: 16,
@@ -209,12 +242,12 @@ class _HomePageState extends State<HomePage> {
                   Ionicons.person_outline,
                   color: Colors.black,
                 ),
-                title: Text(
+                title: AutoSizeText(
                   'My Profile',
+                  maxFontSize: 20,
+                  minFontSize: 16,
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
+                      color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 onTap: () {
                   Navigator.of(context).pushNamed(ProfileScreen.routeName);
@@ -222,24 +255,24 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: Icon(Ionicons.heart_outline, color: Colors.black),
-                title: Text(
+                title: AutoSizeText(
                   'Favourites',
+                  maxFontSize: 20,
+                  minFontSize: 16,
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
+                      color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 onTap: () {},
               ),
               ListTile(
                 leading:
                     Icon(Ionicons.notifications_outline, color: Colors.black),
-                title: Text(
+                title: AutoSizeText(
                   'Notifications',
+                  maxFontSize: 20,
+                  minFontSize: 16,
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
+                      color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 trailing: ClipOval(
                   child: Container(
@@ -269,7 +302,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class DataSearch extends SearchDelegate<String> {
-  List<Item> data;
+  List<ItemSummary> data;
   BuildContext context;
 
   DataSearch({this.data, this.context})
@@ -309,18 +342,18 @@ class DataSearch extends SearchDelegate<String> {
     List<dynamic> searchResults = query.isEmpty
         ? []
         : data
-            .where(
-                (item) => item.name.toLowerCase().contains(query.toLowerCase()))
+            .where((item) =>
+                item.itemName.toLowerCase().contains(query.toLowerCase()))
             .toList();
 
     return query.isEmpty
         ? Center(
-            child: Text(
+            child: AutoSizeText(
               'What\'s on your mind?',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600),
+              maxFontSize: 21,
+              minFontSize: 17,
+              style:
+                  TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
             ),
           )
         : SingleChildScrollView(
@@ -331,12 +364,12 @@ class DataSearch extends SearchDelegate<String> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
+                    child: AutoSizeText(
                       'Results',
+                      maxFontSize: 26,
+                      minFontSize: 22,
                       style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
+                          color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                   ),
                   GridView.builder(
@@ -350,9 +383,11 @@ class DataSearch extends SearchDelegate<String> {
                       itemBuilder: (context, index) {
                         return ItemWidget(
                           id: searchResults[index].id,
-                          itemName:
-                              searchResults[index].name.toString().trimRight(),
-                          image: searchResults[index].images.first,
+                          itemName: searchResults[index]
+                              .itemName
+                              .toString()
+                              .trimRight(),
+                          image: searchResults[index].image,
                           price: searchResults[index].price,
                           discount: searchResults[index].discount,
                         );
@@ -401,8 +436,8 @@ class DataSearch extends SearchDelegate<String> {
     List<dynamic> searchlist = query.isEmpty
         ? data
         : data
-            .where(
-                (item) => item.name.toLowerCase().contains(query.toLowerCase()))
+            .where((item) =>
+                item.itemName.toLowerCase().contains(query.toLowerCase()))
             .toList();
     return ListView.builder(
       itemCount: searchlist.length,
@@ -418,11 +453,12 @@ class DataSearch extends SearchDelegate<String> {
               query = searchlist[index].name;
             },
           ),
-          title: Text(
-            searchlist[index].name.toString(),
+          title: AutoSizeText(
+            searchlist[index].itemName.toString().trimRight(),
+            maxFontSize: 21,
+            minFontSize: 17,
             style: TextStyle(
                 color: Colors.black,
-                fontSize: 17,
                 fontFamily: 'Wavehaus',
                 fontWeight: FontWeight.bold),
           ),
@@ -453,7 +489,7 @@ class DataSearch extends SearchDelegate<String> {
           //       ]),
           // ),
           onTap: () {
-            query = searchlist[index].name;
+            query = searchlist[index].itemName;
             showResults(context);
           },
         );

@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:edge/models/cart_item.dart';
 import 'package:edge/provider/Cart_provider.dart';
+import 'package:edge/provider/auth.dart';
+import 'package:edge/provider/orders_provider.dart';
 import 'package:edge/screens/order_placed.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +24,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _paymenFormKey = GlobalKey<FormBuilderState>();
   bool isCard = true;
   bool option = true;
+
+  CartProvider cartData;
+  List<CartItem> cartItems;
+  String userID;
+  OrdersProvider ordersProvider;
+
+  @override
+  void initState() {
+    userID = Provider.of<Auth>(context, listen: false).userID;
+    ordersProvider = Provider.of<OrdersProvider>(context, listen: false);
+    cartData = Provider.of<CartProvider>(context, listen: false);
+    cartItems = cartData.cartItems;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -361,11 +378,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   SizedBox(
                     height: 16,
                   ),
-                  OrderSummary(),
+                  OrderSummary(
+                    total: cartData.totalAmount,
+                  ),
                   SizedBox(
                     height: 16,
                   ),
-                  ReviewYourOrder(),
+                  ReviewYourOrder(
+                    cartItems: cartItems,
+                  ),
                   SizedBox(
                     height: 20,
                   )
@@ -376,7 +397,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Container(
             height: 70,
             child: InkWell(
-              onTap: () {
+              onTap: () async {
+                await Provider.of<OrdersProvider>(context, listen: false)
+                    .placeOrder(
+                        userID: userID,
+                        cart: cartItems,
+                        totalAmount: cartData.totalAmount);
                 Navigator.pushReplacementNamed(
                     context, OrderPlacedScreen.routeName);
                 Provider.of<CartProvider>(context, listen: false).clearCart();
@@ -407,10 +433,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 }
 
 class ReviewYourOrder extends StatelessWidget {
+  final List<CartItem> cartItems;
+  ReviewYourOrder({@required this.cartItems});
   @override
   Widget build(BuildContext context) {
-    final cartData = Provider.of<CartProvider>(context).cartItems;
-    final cartItems = cartData.values.toList();
     final deviceSize = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
@@ -427,7 +453,7 @@ class ReviewYourOrder extends StatelessWidget {
             height: 18,
           ),
           ListView.builder(
-            itemCount: cartData.values.toList().length,
+            itemCount: cartItems.length,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
@@ -537,6 +563,8 @@ class ReviewYourOrder extends StatelessWidget {
 }
 
 class OrderSummary extends StatelessWidget {
+  final double total;
+  OrderSummary({@required this.total});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -567,7 +595,7 @@ class OrderSummary extends StatelessWidget {
                         fontWeight: FontWeight.w700, color: Colors.black54),
                   ),
                   Text(
-                    '\$100',
+                    '\$$total',
                     style: Theme.of(context).textTheme.bodyText1,
                   )
                 ],
@@ -624,7 +652,7 @@ class OrderSummary extends StatelessWidget {
                     fontWeight: FontWeight.w500, color: Colors.black54),
               ),
               Text(
-                '\$14',
+                '\$0',
                 style: Theme.of(context).textTheme.bodyText1,
               )
             ],
@@ -640,7 +668,7 @@ class OrderSummary extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               Text(
-                '\$114',
+                '\$$total',
                 style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: Colors.black,

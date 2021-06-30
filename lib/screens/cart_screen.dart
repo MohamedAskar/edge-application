@@ -1,6 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/cart_item.dart';
 import 'package:edge/provider/Cart_provider.dart';
+import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/color_picker.dart';
 import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
@@ -19,18 +21,21 @@ class _CartScreenState extends State<CartScreen> {
   final _couponFormKey = GlobalKey<FormBuilderState>();
   final _addressFormKey = GlobalKey<FormBuilderState>();
   bool _expanded = false;
-  Map<String, CartItem> cartData;
-  List<CartItem> cartItems = [];
+  Future<void> cartData;
+  CartProvider cart;
+  String userID;
 
   @override
   void initState() {
     super.initState();
-    cartData = Provider.of<CartProvider>(context, listen: false).cartItems;
-    cartItems = cartData.values.toList();
+    userID = Provider.of<Auth>(context, listen: false).userID;
+    cart = Provider.of<CartProvider>(context, listen: false);
+    cartData = cart.getCartItems(userID: userID);
   }
 
   @override
   Widget build(BuildContext context) {
+    final cartItems = cart.cartItems;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -48,9 +53,11 @@ class _CartScreenState extends State<CartScreen> {
               height: 20,
             ),
             Center(
-              child: Text(
+              child: AutoSizeText(
                 'YOUR SHOPPING CART',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                maxFontSize: 28,
+                minFontSize: 24,
+                style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
             Divider(
@@ -111,11 +118,12 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 12),
-                                    child: Text(
+                                    child: AutoSizeText(
                                       '${cartItems[index].quantity}',
+                                      maxFontSize: 24,
+                                      minFontSize: 20,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 20),
+                                          fontWeight: FontWeight.w700),
                                     ),
                                   ),
                                   SizedBox(
@@ -174,13 +182,16 @@ class _CartScreenState extends State<CartScreen> {
                                 ],
                               ),
                               Text(
-                                '${cartItems[index].price} LE',
+                                '\$${cartItems[index].price}',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w700),
                               ),
                               IconButton(
                                 icon: Icon(Ionicons.close_outline),
-                                onPressed: () {},
+                                onPressed: () async {
+                                  await cart.removeItem(
+                                      cartItems[index].id, userID);
+                                },
                               )
                             ],
                           ),
@@ -541,29 +552,6 @@ class _CartScreenState extends State<CartScreen> {
                     child: Row(
                       children: [
                         Text(
-                          'Tax',
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: 100,
-                        ),
-                        Text(
-                          '\$10',
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Text(
                           'Total',
                           style: TextStyle(
                               fontSize: 26, fontWeight: FontWeight.bold),
@@ -572,7 +560,7 @@ class _CartScreenState extends State<CartScreen> {
                           width: 100,
                         ),
                         Text(
-                          '\$100',
+                          '\$${cart.totalAmount}',
                           style: TextStyle(
                               fontSize: 26, fontWeight: FontWeight.bold),
                         ),

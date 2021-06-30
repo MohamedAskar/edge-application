@@ -1,6 +1,7 @@
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/items_provider.dart';
+import 'package:edge/provider/orders_provider.dart';
 import 'package:edge/screens/cart_screen.dart';
 import 'package:edge/screens/category_screen.dart';
 import 'package:edge/screens/checkout_screen.dart';
@@ -33,7 +34,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => Auth(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => OrdersProvider(),
+        ),
       ],
       child: Consumer<Auth>(builder: (context, auth, _) {
         return MaterialApp(
