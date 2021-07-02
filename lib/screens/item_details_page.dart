@@ -662,7 +662,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                     ),
                                     onPressed: () async {
                                       final progress = ProgressHUD.of(context);
-                                      progress.showWithText('Loading...');
+                                      progress.showWithText('Loading....');
                                       if (!isFavorite) {
                                         print('adding');
                                         await itemData
@@ -679,8 +679,10 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                         itemData
                                             .removeWishlist(
                                                 userID: userID, itemID: item.id)
-                                            .whenComplete(
-                                                () => print('removed'));
+                                            .whenComplete(() {
+                                          isFavorite = false;
+                                          print('removed');
+                                        });
                                       }
                                       progress.dismiss();
                                     },
