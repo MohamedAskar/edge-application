@@ -111,9 +111,9 @@ class ItemsProvider with ChangeNotifier {
           'itemId': item.id,
           'itemName': item.name,
           'price': item.price,
-          'images': item.images[0],
-          'color': item.avilableColors[0],
-          'size': item.sizes[0],
+          'images': item.images,
+          'color': item.avilableColors,
+          'size': item.sizes,
           'seller': item.seller,
           'SubCategory': item.subcategory
         }
@@ -154,7 +154,7 @@ class ItemsProvider with ChangeNotifier {
           id: item['itemId'].toString(),
           itemName: item['itemName'],
           price: item['price'],
-          image: item['images'],
+          image: item['images'][0],
         ));
       });
     }
