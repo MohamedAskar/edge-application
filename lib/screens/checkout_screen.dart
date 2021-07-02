@@ -8,6 +8,7 @@ import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
@@ -53,380 +54,414 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           search: false,
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: ProgressHUD(
+        barrierColor: Colors.black26,
+        borderColor: Colors.black54,
+        indicatorColor: Colors.black,
+        backgroundColor: Colors.white54,
+        padding: const EdgeInsets.all(30),
+        textStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            shadows: [
+              Shadow(
+                blurRadius: 2,
+                color: Color.fromRGBO(0, 0, 0, 0.25),
+                offset: Offset(0, 4),
+              )
+            ],
+            fontWeight: FontWeight.w600),
+        child: Builder(builder: (context) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'SHIPPING ADDRESS:',
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w700),
-                              ),
-                              InkWell(
-                                child: Text(
-                                  'Change Address',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.blue[800],
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          Row(
-                            children: [
-                              Icon(Ionicons.home_outline),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'HOME',
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          Text(
-                            Provider.of<Auth>(context, listen: false).userName,
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'Tanta, Gharbia, Egypt',
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            '+20 777 5000',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 14,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'PAYMENT METHOD',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        SizedBox(
-                          height: 14,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    isCard = false;
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: !isCard
-                                              ? Colors.black
-                                              : Colors.black12,
-                                          width: 1),
-                                      color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(4))),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Ionicons.wallet_outline,
-                                        size: 28,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Pay With Cash',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700),
-                                      ),
-                                    ],
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'SHIPPING ADDRESS:',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700),
                                   ),
-                                ),
+                                  InkWell(
+                                    child: Text(
+                                      'Change Address',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.blue[800],
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  )
+                                ],
                               ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Ionicons.home_outline),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'HOME',
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              Text(
+                                Provider.of<Auth>(context, listen: false)
+                                    .userName,
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Tanta, Gharbia, Egypt',
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                '+20 777 5000',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'PAYMENT METHOD',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700),
                             ),
                             SizedBox(
-                              width: 12,
+                              height: 14,
                             ),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    isCard = true;
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: isCard
-                                              ? Colors.black
-                                              : Colors.black12,
-                                          width: 1),
-                                      color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(4))),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Ionicons.card_outline,
-                                        size: 28,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        isCard = false;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: !isCard
+                                                  ? Colors.black
+                                                  : Colors.black12,
+                                              width: 1),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(4))),
+                                      padding: const EdgeInsets.all(12),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Ionicons.wallet_outline,
+                                            size: 28,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Pay With Cash',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Pay With Card',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        isCard = true;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: isCard
+                                                  ? Colors.black
+                                                  : Colors.black12,
+                                              width: 1),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(4))),
+                                      padding: const EdgeInsets.all(12),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Ionicons.card_outline,
+                                            size: 28,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Pay With Card',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'DELIVERY OPTIONS',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700),
                         ),
-                        SizedBox(
-                          height: 18,
-                        ),
-                        ListView(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                      ),
+                      Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      FlutterSwitch(
-                                        activeColor: Colors.black,
-                                        value: doorOption,
-                                        onToggle: (value) {
-                                          setState(() {
-                                            doorOption = !doorOption;
-                                          });
-                                        },
-                                        height: 26,
-                                        width: 48,
-                                      ),
-                                      SizedBox(
-                                        width: 14,
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Leave At My Door',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w700),
-                                            ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              'It is a short established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w600),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
+                            Text(
+                              'DELIVERY OPTIONS',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700),
                             ),
-                            Divider(),
-                            Row(
+                            SizedBox(
+                              height: 18,
+                            ),
+                            ListView(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
                               children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      FlutterSwitch(
-                                        activeColor: Colors.black,
-                                        value: tomorrowOption,
-                                        onToggle: (value) {
-                                          setState(() {
-                                            tomorrowOption = !tomorrowOption;
-                                          });
-                                        },
-                                        height: 26,
-                                        width: 48,
-                                      ),
-                                      SizedBox(
-                                        width: 14,
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Get It Tomorrow',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w700),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          FlutterSwitch(
+                                            activeColor: Colors.black,
+                                            value: doorOption,
+                                            onToggle: (value) {
+                                              setState(() {
+                                                doorOption = !doorOption;
+                                              });
+                                            },
+                                            height: 26,
+                                            width: 48,
+                                          ),
+                                          SizedBox(
+                                            width: 14,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Leave At My Door',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text(
+                                                  'It is a short established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )
+                                              ],
                                             ),
-                                            SizedBox(
-                                              height: 8,
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Divider(),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          FlutterSwitch(
+                                            activeColor: Colors.black,
+                                            value: tomorrowOption,
+                                            onToggle: (value) {
+                                              setState(() {
+                                                tomorrowOption =
+                                                    !tomorrowOption;
+                                              });
+                                            },
+                                            height: 26,
+                                            width: 48,
+                                          ),
+                                          SizedBox(
+                                            width: 14,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Get It Tomorrow',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text(
+                                                  'It is a short established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )
+                                              ],
                                             ),
-                                            Text(
-                                              'It is a short established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w600),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  OrderSummary(
-                    total: cartData.totalAmount,
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  ReviewYourOrder(
-                    cartItems: cartItems,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  )
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 70,
-            child: InkWell(
-              onTap: () async {
-                await Provider.of<OrdersProvider>(context, listen: false)
-                    .placeOrder(
-                        userID: userID,
-                        cart: cartItems,
-                        totalAmount: cartData.totalAmount);
-                Navigator.pushReplacementNamed(
-                    context, OrderPlacedScreen.routeName);
-              },
-              child: Container(
-                color: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Container(
-                  color: Colors.black,
-                  child: Center(
-                    child: Text(
-                      'PLACE ORDER',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      OrderSummary(
+                        total: cartData.totalAmount,
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      ReviewYourOrder(
+                        cartItems: cartItems,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      )
+                    ],
                   ),
                 ),
               ),
-            ),
-          )
-        ],
+              Container(
+                height: 70,
+                child: InkWell(
+                  onTap: () async {
+                    final progress = ProgressHUD.of(context);
+                    progress.showWithText('Loading...');
+                    await Provider.of<OrdersProvider>(context, listen: false)
+                        .placeOrder(
+                            userID: userID,
+                            cart: cartItems,
+                            totalAmount: cartData.totalAmount);
+                    progress.dismiss();
+                    Navigator.pushReplacementNamed(
+                        context, OrderPlacedScreen.routeName);
+                  },
+                  child: Container(
+                    color: Colors.white,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Container(
+                      color: Colors.black,
+                      child: Center(
+                        child: Text(
+                          'PLACE ORDER',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          );
+        }),
       ),
     );
   }
@@ -487,7 +522,7 @@ class ReviewYourOrder extends StatelessWidget {
                                 height: 14,
                               ),
                               Text(
-                                '${cartItems[index].price} LE',
+                                '\$${cartItems[index].price}',
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w800),
                               ),

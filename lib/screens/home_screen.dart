@@ -396,7 +396,7 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 leading: Icon(Ionicons.heart_outline, color: Colors.black),
                 title: AutoSizeText(
-                  'Favourites',
+                  'Wishlist',
                   maxFontSize: 20,
                   minFontSize: 16,
                   style: TextStyle(
