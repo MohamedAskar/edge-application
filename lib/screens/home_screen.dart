@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   Future fetchedItems;
 
   Future getData() async {
-    var url = 'http://192.168.33.44:3000/api/v1/items';
+    var url = 'https://evening-fjord-90730.herokuapp.com/api/v1/items';
     var response = await http.get(Uri.parse(url));
     final data = json.decode(response.body) as Map<String, dynamic>;
     for (var item in data['data']['allItems']) {

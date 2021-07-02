@@ -24,7 +24,8 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Future<void> findById({String id, String userID}) async {
-    var url = 'http://192.168.33.44:3000/api/v1/items/filter?_id=$id';
+    var url =
+        'https://evening-fjord-90730.herokuapp.com/api/v1/items/filter?_id=$id';
     List<Item> loadedItems = [];
 
     final body = {"owner": userID};
@@ -67,15 +68,15 @@ class ItemsProvider with ChangeNotifier {
     String url;
     if (subcategory != null && category == null) {
       url =
-          'http://192.168.33.44:3000/api/v1/items/paginate?SubCategory=$subcategory&page=$page&limit=$limit';
+          'https://evening-fjord-90730.herokuapp.com/api/v1/items/paginate?SubCategory=$subcategory&page=$page&limit=$limit';
     }
     if (category != null) {
       url =
-          'http://192.168.33.44:3000/api/v1/items/paginate?SubCategory=$subcategory&Category=$category&page=$page&limit=$limit';
+          'https://evening-fjord-90730.herokuapp.com/api/v1/items/paginate?SubCategory=$subcategory&Category=$category&page=$page&limit=$limit';
     }
     if (category == null && subcategory == null) {
       url =
-          'http://192.168.33.44:3000/api/v1/items/paginate?page=$page&limit=$limit';
+          'https://evening-fjord-90730.herokuapp.com/api/v1/items/paginate?page=$page&limit=$limit';
     }
 
     print(url);
@@ -102,7 +103,7 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Future<void> addToWishlist({@required Item item, @required userID}) async {
-    final url = 'http://192.168.33.44:3000/api/v1/favorite';
+    final url = 'https://evening-fjord-90730.herokuapp.com/api/v1/favorite';
     Map<String, dynamic> data = {
       'owner': userID,
       'items': [
@@ -132,7 +133,8 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Future<void> getWishList({@required String userID}) async {
-    final url = 'http://192.168.33.44:3000/api/v1/favorite?owner=$userID';
+    final url =
+        'https://evening-fjord-90730.herokuapp.com/api/v1/favorite?owner=$userID';
     print(url);
     List<ItemSummary> loadedItems = [];
 
@@ -161,7 +163,7 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Future<void> removeWishlist({@required userID, @required itemID}) async {
-    final url = 'http://192.168.33.44:3000/api/v1/favorite';
+    final url = 'https://evening-fjord-90730.herokuapp.com/api/v1/favorite';
 
     final body = json.encode(
       {'owner': userID, 'itemId': itemID},

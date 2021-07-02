@@ -27,7 +27,8 @@ class CartProvider with ChangeNotifier {
 
   Future<void> getTotalQty({@required String userID}) async {
     var qty = 0;
-    final url = 'http://192.168.33.44:3000/api/v1/cart/qty?owner=$userID';
+    final url =
+        'https://evening-fjord-90730.herokuapp.com/api/v1/cart/qty?owner=$userID';
     print(url);
 
     var response = await http.get(Uri.parse(url));
@@ -45,7 +46,7 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> addToCart({@required CartItem item, @required userID}) async {
-    final url = 'http://192.168.33.44:3000/api/v1/cart';
+    final url = 'https://evening-fjord-90730.herokuapp.com/api/v1/cart';
     Map<String, dynamic> data = {
       'owner': userID,
       'items': {
@@ -73,7 +74,8 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> getCartItems({@required String userID}) async {
-    final url = 'http://192.168.33.44:3000/api/v1/cart/getcart?owner=$userID';
+    final url =
+        'https://evening-fjord-90730.herokuapp.com/api/v1/cart/getcart?owner=$userID';
     print(url);
     List<CartItem> loadedItems = [];
 
@@ -114,7 +116,7 @@ class CartProvider with ChangeNotifier {
 
   Future<void> removeItem(String id, String userID) async {
     //_cartItems.remove(id);
-    final url = 'http://192.168.33.44:3000/api/v1/cart';
+    final url = 'https://evening-fjord-90730.herokuapp.com/api/v1/cart';
 
     final body = json.encode(
       {'owner': userID, 'itemId': id},
