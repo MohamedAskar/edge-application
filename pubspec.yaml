@@ -74,6 +74,7 @@ flutter:
     - assets/images/sign.jpg
     - assets/images/spaceman.gif
     - assets/images/search.gif
+    - assets/images/wishlist.png
   #   - assets\images\canvas1.jpg
   #   - assets/items.json
 

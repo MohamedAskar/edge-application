@@ -24,7 +24,7 @@ class Auth with ChangeNotifier {
 
   Future<void> getUserData() async {
     final url =
-        'https://evening-fjord-90730.herokuapp.com/api/v1/users/getuser?_id=$_userID';
+        'https://shrouded-citadel-37368.herokuapp.com/api/v1/users/getuser?_id=$_userID';
     final response = await http.get(
       Uri.parse(url),
     );
@@ -45,7 +45,7 @@ class Auth with ChangeNotifier {
       @required String password,
       @required String urlSegment}) async {
     final url =
-        'https://evening-fjord-90730.herokuapp.com/api/v1/users/$urlSegment';
+        'https://shrouded-citadel-37368.herokuapp.com/api/v1/users/$urlSegment';
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map<String, String> data = {};
 

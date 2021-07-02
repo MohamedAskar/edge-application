@@ -22,7 +22,7 @@ class OrdersProvider with ChangeNotifier {
       @required List<CartItem> cart,
       @required double totalAmount}) async {
     final url =
-        'https://evening-fjord-90730.herokuapp.com/api/v1/order/checkout';
+        'https://shrouded-citadel-37368.herokuapp.com/api/v1/order/checkout';
     List<Map<String, dynamic>> cartItems = [];
     cart.forEach((item) {
       cartItems.add({
@@ -66,7 +66,7 @@ class OrdersProvider with ChangeNotifier {
 
   Future<void> getUserOrders({@required userID}) async {
     final url =
-        'https://evening-fjord-90730.herokuapp.com/api/v1/order/getorder?owner=$userID';
+        'https://shrouded-citadel-37368.herokuapp.com/api/v1/order/getorder?owner=$userID';
     print(url);
     List<Order> loadedorders = [];
 
