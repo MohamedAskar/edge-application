@@ -34,6 +34,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   bool _expanded1 = false;
   var selectedColor = 0;
   var selectedSize = 0;
+  var isFavorite = false;
   List<int> randomizedNumber = [];
   Item item;
 
@@ -624,13 +625,35 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                     (states) => Colors.black12,
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () async {
+                                  if (!isFavorite) {
+                                    print('adding');
+                                    await itemData
+                                        .addToWishlist(
+                                            item: item, userID: userID)
+                                        .whenComplete(() {
+                                      setState(() {
+                                        isFavorite = true;
+                                        print('Done');
+                                      });
+                                    });
+                                  } else {
+                                    itemData
+                                        .removeWishlist(
+                                            userID: userID, itemID: item.id)
+                                        .whenComplete(() => print('removed'));
+                                  }
+                                },
                                 icon: Icon(
-                                  Ionicons.heart_outline,
-                                  color: Colors.black,
+                                  isFavorite
+                                      ? Ionicons.heart
+                                      : Ionicons.heart_outline,
+                                  color: isFavorite ? Colors.red : Colors.black,
                                 ),
                                 label: Text(
-                                  'ADD TO WISHLIST',
+                                  isFavorite
+                                      ? 'ADDED TO YOUR WISHLIST'
+                                      : 'ADD TO WISHLIST',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16,

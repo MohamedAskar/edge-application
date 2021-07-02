@@ -11,7 +11,7 @@ class ItemSummary with ChangeNotifier {
     @required this.id,
     @required this.itemName,
     @required this.image,
-    @required this.discount,
+    this.discount,
     @required this.price,
   });
 }
@@ -29,6 +29,7 @@ class Item with ChangeNotifier {
   final String seller;
   final String additionalInformation;
   final List<dynamic> sizes;
+  bool isFavorite;
 
   Item({
     @required this.id,
@@ -41,6 +42,7 @@ class Item with ChangeNotifier {
     @required this.description,
     @required this.seller,
     @required this.sizes,
+    this.isFavorite,
     this.additionalInformation,
     this.discount,
   });

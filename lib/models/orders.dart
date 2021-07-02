@@ -5,8 +5,8 @@ import 'cart_item.dart';
 class Order with ChangeNotifier {
   final String id;
   //final Address address;
-  final double totalPrice;
-  final DateTime dateTime;
+  final dynamic totalPrice;
+  final String dateTime;
   //final String orderStatus;
   final List<CartItem> items;
   //final Payment paymentMethod;

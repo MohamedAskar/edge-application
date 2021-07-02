@@ -53,9 +53,9 @@ class SplashScreen extends StatelessWidget {
                       Navigator.of(context).pushReplacementNamed(route),
                   animatedTexts: [
                     FlickerAnimatedText('you shop,',
-                        speed: Duration(milliseconds: 500)),
+                        speed: Duration(seconds: 3)),
                     TypewriterAnimatedText('we ship.',
-                        speed: Duration(milliseconds: 5)),
+                        speed: Duration(milliseconds: 70)),
                   ],
                   onTap: () {
                     print("Tap Event");

@@ -69,7 +69,11 @@ flutter:
   assets:
     - assets/images/avatar.png
     - assets/images/cart.png
+    - assets/images/empty.png
     - assets/images/done.png
+    - assets/images/sign.jpg
+    - assets/images/spaceman.gif
+    - assets/images/search.gif
   #   - assets\images\canvas1.jpg
   #   - assets/items.json
 

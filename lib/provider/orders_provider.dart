@@ -4,6 +4,7 @@ import 'package:edge/models/cart_item.dart';
 import 'package:edge/models/orders.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class OrdersProvider with ChangeNotifier {
   List<Order> _orders = [];
@@ -35,24 +36,27 @@ class OrdersProvider with ChangeNotifier {
         'SubCategory': item.subCategory
       });
     });
+    final orderID = UniqueKey().toString();
     Map<String, dynamic> data = {
       'owner': userID,
       'orders': [
         {
+          'orderID':
+              'EDG0021${orderID.substring(2, orderID.length - 1).toUpperCase()}',
           'order': cartItems,
           'totalPrice': totalAmount,
-          'date': '30-6-2021',
+          'date': DateFormat("EEE, MMM dd").format(DateTime.now()),
         }
       ],
     };
     print(url);
-    print(data);
 
     final body = json.encode(data);
+    print(body);
     final response = await http.post(
       Uri.parse(url),
       body: body,
-      //headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json"},
     );
     print(response.body);
 
@@ -68,20 +72,21 @@ class OrdersProvider with ChangeNotifier {
       Uri.parse(url),
     );
 
-    final decodedData = json.decode(response.body) as Map<String, dynamic>;
+    final decodedData = json.decode(response.body) as Map<dynamic, dynamic>;
 
-    if (decodedData['status'] == 'error') {
+    print(decodedData['data']);
+
+    if (decodedData['data'].isEmpty) {
       _orders = [];
     } else {
-      final List<dynamic> orders = decodedData['data']['order'];
-      List<Map<String, dynamic>> orderItems = [];
+      final List<dynamic> orders = decodedData['data'][0]['orders'];
 
       orders.forEach((order) {
         List<CartItem> cartItems = [];
-        List<dynamic> orderItems = order['items'];
+        List<dynamic> orderItems = order['order'];
         orderItems.forEach((cartItem) {
           cartItems.add(CartItem(
-            id: cartItem['_id'].toString(),
+            id: cartItem['itemId'].toString(),
             quantity: cartItem['qty'],
             name: cartItem['itemName'],
             price: cartItem["price"],
@@ -93,12 +98,14 @@ class OrdersProvider with ChangeNotifier {
           ));
         });
         loadedorders.add(Order(
-            id: order['_id'].toString(),
+            id: order['orderID'],
             items: cartItems,
-            dateTime: order['datetime'],
+            dateTime: order['date'],
             totalPrice: order['totalPrice']));
       });
     }
+    print(loadedorders.length);
+    _orders = loadedorders;
     notifyListeners();
   }
 }

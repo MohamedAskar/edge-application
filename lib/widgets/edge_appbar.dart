@@ -37,32 +37,35 @@ class EdgeAppBar extends StatelessWidget {
             },
           ),
         if (cart)
-          InkWell(
-            child: Consumer<CartProvider>(
-              builder: (context, cart, child) {
-                return Badge(
-                  badgeColor: Colors.black,
-                  toAnimate: true,
-                  alignment: Alignment.center,
-                  animationType: BadgeAnimationType.scale,
-                  badgeContent: Text(
-                    cart.totalQuantity.toString(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12),
-                  ),
-                  position: BadgePosition.topEnd(end: 0, top: 6),
-                  child: child,
-                );
-              },
-              child: Icon(
-                Ionicons.bag_handle_outline,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: InkWell(
+              child: Consumer<CartProvider>(
+                builder: (context, cart, child) {
+                  return Badge(
+                    badgeColor: Colors.black,
+                    toAnimate: true,
+                    alignment: Alignment.center,
+                    animationType: BadgeAnimationType.scale,
+                    badgeContent: Text(
+                      cart.totalQuantity.toString(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12),
+                    ),
+                    position: BadgePosition.topEnd(end: 0, top: 6),
+                    child: child,
+                  );
+                },
+                child: Icon(
+                  Ionicons.bag_handle_outline,
+                ),
               ),
+              onTap: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
             ),
-            onTap: () {
-              Navigator.of(context).pushNamed(CartScreen.routeName);
-            },
           ),
         if (profile)
           IconButton(

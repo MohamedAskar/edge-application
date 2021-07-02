@@ -24,8 +24,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   bool _hidePassword = true;
-  static const Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+  static const Pattern pattern = r'^(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
   //String _password;
+
+  _showBetaDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Beta User!',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold)),
+          content: Text(
+            'You are very special to us. \n\nSome features may have some bugs, We are still working on it.',
+            style: TextStyle(
+                color: Colors.black54,
+                fontSize: 16,
+                fontWeight: FontWeight.w600),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Okay',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      _showBetaDialog();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +105,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ], begin: Alignment.bottomCenter),
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(
-                  'https://c0.wallpaperflare.com/preview/18/521/74/grayscale-photography-of-person-wearing-sneakers.jpg',
-                ),
+                image: AssetImage('assets/images/sign.jpg'),
               ),
             ),
             child: SingleChildScrollView(
@@ -217,7 +257,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                                 child: FormBuilderTextField(
                                   name: 'Password',
-                                  textInputAction: TextInputAction.done,
+                                  textInputAction: TextInputAction.next,
                                   cursorColor: Colors.black,
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.required(context),

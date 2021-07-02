@@ -13,6 +13,7 @@ import 'package:edge/screens/sign_in_screen.dart';
 import 'package:edge/screens/sign_up_screen.dart';
 import 'package:edge/screens/profile_screen.dart';
 import 'package:edge/screens/splash_screen.dart';
+import 'package:edge/screens/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
                         ? ''
                         : authResult.data
                             ? HomePage.routeName
-                            : SignInScreen.routeName);
+                            : SignUpScreen.routeName);
               }),
           builder: (context, child) => ResponsiveWrapper.builder(child,
               maxWidth: 1200,
@@ -106,6 +107,7 @@ class MyApp extends StatelessWidget {
             CheckoutScreen.routeName: (ctx) => CheckoutScreen(),
             OrdersScreen.routeName: (ctx) => OrdersScreen(),
             OrderPlacedScreen.routeName: (ctx) => OrderPlacedScreen(),
+            WishListScreen.routeName: (ctx) => WishListScreen(),
           },
         );
       }),

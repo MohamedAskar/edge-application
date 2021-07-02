@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:edge/screens/wishlist_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/Cart_provider.dart';
@@ -31,6 +32,8 @@ class _HomePageState extends State<HomePage> {
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209179/Men/Summer/24/4685511407_2_3_8_od7lsp.webp',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1624209420/Men/Summer/23/4470513401_2_1_8_owrmmi.webp',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1624642767/Women/Summer/22/cn19986748_imrvos.webp',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1624639522/Men/Summer/41/cn20356615_ywpftm.webp',
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1618873278/Women/Long%20Sleeve%20Woven%20Dress/Screenshot_628_bdcm5i.png',
   ];
 
   final List canvas = [
@@ -39,13 +42,14 @@ class _HomePageState extends State<HomePage> {
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1622332415/Canvas/logo_1_sedqvu.gif',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1622333549/Canvas/Copy_of_Shop_New_Arrivals_Collage_Instagram_Post_kjbci5.png',
     'https://res.cloudinary.com/djtpiagbk/image/upload/v1622334438/Canvas/Vibrant_Etsy_Shop_Icon_1_hglgdp.png',
-    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622331707/Canvas/Orange_and_Green_Geometric_Apparel_Store_Flyer_vhw2cm.png'
+    'https://res.cloudinary.com/djtpiagbk/image/upload/v1622331707/Canvas/Orange_and_Green_Geometric_Apparel_Store_Flyer_vhw2cm.png',
   ];
 
-  List category = ['T-Shirt', 'Jeans', 'Shirt', 'Pants'];
+  List category = ['T-Shirt', 'Jeans', 'Shirt', 'Pants', 'Polo', 'Dress'];
 
   List<ItemSummary> listsearch = [];
   ItemsProvider itemData;
+  Auth auth;
   Future fetchedItems;
 
   Future getData() async {
@@ -66,7 +70,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getData();
-    final userID = Provider.of<Auth>(context, listen: false).userID;
+    auth = Provider.of<Auth>(context, listen: false);
+    final userData = auth.getUserData();
+    final userID = auth.userID;
     print(userID);
     final qty = Provider.of<CartProvider>(context, listen: false)
         .getTotalQty(userID: userID);
@@ -74,7 +80,7 @@ class _HomePageState extends State<HomePage> {
     print('From Home: $qty');
     itemData = Provider.of<ItemsProvider>(context, listen: false);
     fetchedItems = itemData
-        .paginateFromAPI(page: Random().nextInt(8), limit: 10)
+        .paginateFromAPI(page: Random().nextInt(5), limit: 12)
         .whenComplete(() => print('pagginated.'));
     super.initState();
   }
@@ -112,7 +118,7 @@ class _HomePageState extends State<HomePage> {
             ),
             AnimationLimiter(
               child: ListView.builder(
-                itemCount: images.length,
+                itemCount: 2,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(bottom: 8),
@@ -154,7 +160,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: items.length,
+                        itemCount: 4,
                         itemBuilder: (context, index) {
                           return AnimationConfiguration.staggeredGrid(
                             columnCount: 2,
@@ -171,6 +177,140 @@ class _HomePageState extends State<HomePage> {
                                   image: items[index].image,
                                   price: items[index].price,
                                   discount: items[index].discount,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+            AnimationLimiter(
+              child: ListView.builder(
+                itemCount: 2,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 8),
+                itemBuilder: (context, index) =>
+                    AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: Duration(milliseconds: 1500),
+                  child: ScaleAnimation(
+                    child: FadeInAnimation(
+                      child: CategoryWidget(
+                        image: images[index + 2],
+                        category: category[index + 2],
+                        underline: 'SHOP NOW',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 32,
+            ),
+            AutoSizeText(
+              'YOU MAY ALSO LIKE',
+              maxFontSize: 26,
+              minFontSize: 22,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 22,
+            ),
+            (items.length == 0)
+                ? Center(child: CircularProgressIndicator())
+                : AnimationLimiter(
+                    child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.7,
+                        ),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 4,
+                        itemBuilder: (context, index) {
+                          return AnimationConfiguration.staggeredGrid(
+                            columnCount: 2,
+                            position: index,
+                            duration: const Duration(milliseconds: 1500),
+                            child: ScaleAnimation(
+                              child: FadeInAnimation(
+                                child: ItemWidget(
+                                  id: items[index + 4].id,
+                                  itemName: items[index + 4]
+                                      .itemName
+                                      .toString()
+                                      .trimRight(),
+                                  image: items[index + 4].image,
+                                  price: items[index + 4].price,
+                                  discount: items[index + 4].discount,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+            AnimationLimiter(
+              child: ListView.builder(
+                itemCount: 2,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 8),
+                itemBuilder: (context, index) =>
+                    AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: Duration(milliseconds: 1500),
+                  child: ScaleAnimation(
+                    child: FadeInAnimation(
+                      child: CategoryWidget(
+                        image: images[index + 4],
+                        category: category[index + 4],
+                        underline: 'SHOP NOW',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 32,
+            ),
+            AutoSizeText(
+              'THERE\'S ALWAYS MORE',
+              maxFontSize: 26,
+              minFontSize: 22,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 22,
+            ),
+            (items.length == 0)
+                ? Center(child: CircularProgressIndicator())
+                : AnimationLimiter(
+                    child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.7,
+                        ),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 4,
+                        itemBuilder: (context, index) {
+                          return AnimationConfiguration.staggeredGrid(
+                            columnCount: 2,
+                            position: index,
+                            duration: const Duration(milliseconds: 1500),
+                            child: ScaleAnimation(
+                              child: FadeInAnimation(
+                                child: ItemWidget(
+                                  id: items[index + 8].id,
+                                  itemName: items[index + 8]
+                                      .itemName
+                                      .toString()
+                                      .trimRight(),
+                                  image: items[index + 8].image,
+                                  price: items[index + 8].price,
+                                  discount: items[index + 8].discount,
                                 ),
                               ),
                             ),
@@ -218,14 +358,14 @@ class _HomePageState extends State<HomePage> {
                     height: 16,
                   ),
                   AutoSizeText(
-                    'Edge.',
+                    (auth.userName == null) ? "" : auth.userName,
                     maxFontSize: 28,
                     minFontSize: 24,
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   AutoSizeText(
-                    'user@edge.com',
+                    (auth.email == null) ? "" : auth.email,
                     maxFontSize: 20,
                     minFontSize: 16,
                     style: TextStyle(
@@ -262,7 +402,9 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w600),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, WishListScreen.routeName);
+                },
               ),
               ListTile(
                 leading:
@@ -356,74 +498,93 @@ class DataSearch extends SearchDelegate<String> {
                   TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
             ),
           )
-        : SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: AutoSizeText(
-                      'Results',
-                      maxFontSize: 26,
-                      minFontSize: 22,
+        : (searchResults.isEmpty)
+            ? Center(
+                child: Column(
+                  children: [
+                    Image.asset('assets/images/search.gif'),
+                    AutoSizeText(
+                      'NO RESULT!',
+                      maxFontSize: 21,
+                      minFontSize: 17,
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                          color: Colors.black,
+                          fontFamily: 'Wavehaus',
+                          fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
+                  ],
+                ),
+              )
+            : SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AutoSizeText(
+                          'Results',
+                          maxFontSize: 26,
+                          minFontSize: 22,
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: searchResults.length,
-                      itemBuilder: (context, index) {
-                        return ItemWidget(
-                          id: searchResults[index].id,
-                          itemName: searchResults[index]
-                              .itemName
-                              .toString()
-                              .trimRight(),
-                          image: searchResults[index].image,
-                          price: searchResults[index].price,
-                          discount: searchResults[index].discount,
-                        );
-                      }),
-                  //       Padding(
-                  //         padding: const EdgeInsets.all(8.0),
-                  //         child: Text(
-                  //           'More Results',
-                  //           style: TextStyle(
-                  //               color: Colors.black,
-                  //               fontSize: 22,
-                  //               fontWeight: FontWeight.bold),
-                  //         ),
-                  //       ),
-                  //       GridView.builder(
-                  //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  //             crossAxisCount: 2,
-                  //             childAspectRatio: 0.7,
-                  //           ),
-                  //           shrinkWrap: true,
-                  //           physics: NeverScrollableScrollPhysics(),
-                  //           itemCount: moreResults.length,
-                  //           itemBuilder: (context, index) {
-                  //             return ItemWidget(
-                  //               id: moreResults[index].id,
-                  //               itemName:
-                  //                   moreResults[index].name.toString().trimRight(),
-                  //               image: moreResults[index].images.first,
-                  //               price: moreResults[index].price,
-                  //               discount: moreResults[index].discount,
-                  //             );
-                  //           }),
-                ],
-              ),
-            ),
-          );
+                      GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.7,
+                          ),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: searchResults.length,
+                          itemBuilder: (context, index) {
+                            return ItemWidget(
+                              id: searchResults[index].id,
+                              itemName: searchResults[index]
+                                  .itemName
+                                  .toString()
+                                  .trimRight(),
+                              image: searchResults[index].image,
+                              price: searchResults[index].price,
+                              discount: searchResults[index].discount,
+                            );
+                          }),
+                      //       Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: Text(
+                      //           'More Results',
+                      //           style: TextStyle(
+                      //               color: Colors.black,
+                      //               fontSize: 22,
+                      //               fontWeight: FontWeight.bold),
+                      //         ),
+                      //       ),
+                      //       GridView.builder(
+                      //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      //             crossAxisCount: 2,
+                      //             childAspectRatio: 0.7,
+                      //           ),
+                      //           shrinkWrap: true,
+                      //           physics: NeverScrollableScrollPhysics(),
+                      //           itemCount: moreResults.length,
+                      //           itemBuilder: (context, index) {
+                      //             return ItemWidget(
+                      //               id: moreResults[index].id,
+                      //               itemName:
+                      //                   moreResults[index].name.toString().trimRight(),
+                      //               image: moreResults[index].images.first,
+                      //               price: moreResults[index].price,
+                      //               discount: moreResults[index].discount,
+                      //             );
+                      //           }),
+                    ],
+                  ),
+                ),
+              );
   }
 
   @override
@@ -439,61 +600,78 @@ class DataSearch extends SearchDelegate<String> {
             .where((item) =>
                 item.itemName.toLowerCase().contains(query.toLowerCase()))
             .toList();
-    return ListView.builder(
-      itemCount: searchlist.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: Icon(Ionicons.search_outline),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.north_west,
-              size: 20,
+    return (searchlist.isEmpty)
+        ? Center(
+            child: Column(
+              children: [
+                Image.asset('assets/images/search.gif'),
+                AutoSizeText(
+                  'NO RESULT!',
+                  maxFontSize: 21,
+                  minFontSize: 17,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Wavehaus',
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            onPressed: () {
-              query = searchlist[index].name;
+          )
+        : ListView.builder(
+            itemCount: searchlist.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: Icon(Ionicons.search_outline),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.north_west,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    query = searchlist[index].name;
+                  },
+                ),
+                title: AutoSizeText(
+                  searchlist[index].itemName.toString().trimRight(),
+                  maxFontSize: 21,
+                  minFontSize: 17,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Wavehaus',
+                      fontWeight: FontWeight.bold),
+                ),
+                // RichText(
+                //   text: TextSpan(
+                //       text: searchlist[index]
+                //           .name
+                //           .toString()
+                //           .substring(0, query.length),
+                //       style: TextStyle(
+                //           color: Colors.black,
+                //           fontSize: 17,
+                //           fontFamily: 'Wavehaus',
+                //           fontWeight: FontWeight.bold),
+                //       children: [
+                //         TextSpan(
+                //           text: searchlist[index]
+                //               .name
+                //               .toString()
+                //               .substring(query.length)
+                //               .trimRight(),
+                //           style: TextStyle(
+                //               color: Colors.black38,
+                //               fontFamily: 'Wavehaus',
+                //               fontSize: 17,
+                //               fontWeight: FontWeight.bold),
+                //         )
+                //       ]),
+                // ),
+                onTap: () {
+                  query = searchlist[index].itemName;
+                  showResults(context);
+                },
+              );
             },
-          ),
-          title: AutoSizeText(
-            searchlist[index].itemName.toString().trimRight(),
-            maxFontSize: 21,
-            minFontSize: 17,
-            style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'Wavehaus',
-                fontWeight: FontWeight.bold),
-          ),
-          // RichText(
-          //   text: TextSpan(
-          //       text: searchlist[index]
-          //           .name
-          //           .toString()
-          //           .substring(0, query.length),
-          //       style: TextStyle(
-          //           color: Colors.black,
-          //           fontSize: 17,
-          //           fontFamily: 'Wavehaus',
-          //           fontWeight: FontWeight.bold),
-          //       children: [
-          //         TextSpan(
-          //           text: searchlist[index]
-          //               .name
-          //               .toString()
-          //               .substring(query.length)
-          //               .trimRight(),
-          //           style: TextStyle(
-          //               color: Colors.black38,
-          //               fontFamily: 'Wavehaus',
-          //               fontSize: 17,
-          //               fontWeight: FontWeight.bold),
-          //         )
-          //       ]),
-          // ),
-          onTap: () {
-            query = searchlist[index].itemName;
-            showResults(context);
-          },
-        );
-      },
-    );
+          );
   }
 }

@@ -11,6 +11,7 @@ class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile-screen';
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<Auth>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -44,7 +45,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Edge.',
+                    user.userName,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 24,
@@ -54,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
                     height: 4.0,
                   ),
                   Text(
-                    'user@edge.com',
+                    user.email,
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16,

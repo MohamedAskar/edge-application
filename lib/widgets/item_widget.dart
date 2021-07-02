@@ -30,22 +30,27 @@ class ItemWidget extends StatelessWidget {
           children: [
             Hero(
               tag: id,
-              child: CachedNetworkImage(
-                width: (size.width - 32) / 2,
-                height: size.height / 4,
-                imageUrl: image,
-                fit: BoxFit.fitWidth,
-                filterQuality: FilterQuality.none,
-                fadeInCurve: Curves.easeInOut,
-                progressIndicatorBuilder: (context, url, progress) => Container(
-                  height: 60,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: progress.progress,
+              child: Stack(
+                children: [
+                  CachedNetworkImage(
+                    width: (size.width - 32) / 2,
+                    height: size.height / 4,
+                    imageUrl: image,
+                    fit: BoxFit.fitWidth,
+                    filterQuality: FilterQuality.none,
+                    fadeInCurve: Curves.easeInOut,
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        Container(
+                      height: 60,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value: progress.progress,
+                        ),
+                      ),
                     ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
-                ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
+                ],
               ),
             ),
             SizedBox(

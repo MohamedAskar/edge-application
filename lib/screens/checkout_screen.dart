@@ -22,8 +22,9 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final _paymenFormKey = GlobalKey<FormBuilderState>();
-  bool isCard = true;
-  bool option = true;
+  bool isCard = false;
+  bool doorOption = true;
+  bool tomorrowOption = true;
 
   CartProvider cartData;
   List<CartItem> cartItems;
@@ -108,7 +109,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             height: 12,
                           ),
                           Text(
-                            'Mohamed Askar',
+                            Provider.of<Auth>(context, listen: false).userName,
                             style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 14,
@@ -118,7 +119,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             height: 10,
                           ),
                           Text(
-                            'Tanta Qism 1, Gharbia, Egypt',
+                            'Tanta, Gharbia, Egypt',
                             style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 14,
@@ -128,7 +129,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             height: 10,
                           ),
                           Text(
-                            '+20 106 9292 154',
+                            '+20 777 5000',
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -159,6 +160,51 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                         Row(
                           children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isCard = false;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: !isCard
+                                              ? Colors.black
+                                              : Colors.black12,
+                                          width: 1),
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4))),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Ionicons.wallet_outline,
+                                        size: 28,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        'Pay With Cash',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
                             Expanded(
                               child: InkWell(
                                 onTap: () {
@@ -201,51 +247,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    isCard = false;
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: !isCard
-                                              ? Colors.black
-                                              : Colors.black12,
-                                          width: 1),
-                                      color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(4))),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Ionicons.wallet_outline,
-                                        size: 28,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Pay With Cash',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
                           ],
                         )
                       ],
@@ -278,10 +279,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     children: [
                                       FlutterSwitch(
                                         activeColor: Colors.black,
-                                        value: option,
+                                        value: doorOption,
                                         onToggle: (value) {
                                           setState(() {
-                                            option = !option;
+                                            doorOption = !doorOption;
                                           });
                                         },
                                         height: 26,
@@ -328,10 +329,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     children: [
                                       FlutterSwitch(
                                         activeColor: Colors.black,
-                                        value: option,
+                                        value: tomorrowOption,
                                         onToggle: (value) {
                                           setState(() {
-                                            option = !option;
+                                            tomorrowOption = !tomorrowOption;
                                           });
                                         },
                                         height: 26,
@@ -405,7 +406,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         totalAmount: cartData.totalAmount);
                 Navigator.pushReplacementNamed(
                     context, OrderPlacedScreen.routeName);
-                Provider.of<CartProvider>(context, listen: false).clearCart();
               },
               child: Container(
                 color: Colors.white,

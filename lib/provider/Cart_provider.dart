@@ -132,8 +132,4 @@ class CartProvider with ChangeNotifier {
     getTotalQty(userID: userID);
     notifyListeners();
   }
-
-  void clearCart() {
-    _cartItems = [];
-  }
 }

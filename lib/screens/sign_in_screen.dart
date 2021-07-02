@@ -60,9 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ], begin: Alignment.bottomCenter),
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(
-                  'https://c0.wallpaperflare.com/preview/18/521/74/grayscale-photography-of-person-wearing-sneakers.jpg',
-                ),
+                image: AssetImage('assets/images/sign.jpg'),
               ),
             ),
             height: MediaQuery.of(context).size.height,

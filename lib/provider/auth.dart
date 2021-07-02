@@ -11,8 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Auth with ChangeNotifier {
   String _jwtToken;
   String _userID;
-
-  final dio = Dio();
+  String userName;
+  String email;
 
   String get userID {
     return _userID;
@@ -22,15 +22,21 @@ class Auth with ChangeNotifier {
     return false;
   }
 
-  // String get token {
+  Future<void> getUserData() async {
+    final url = 'http://192.168.33.44:3000/api/v1/users/getuser?_id=$_userID';
+    final response = await http.get(
+      Uri.parse(url),
+    );
 
-  //   if (JwtDecoder.getExpirationDate(_jwtToken) != null &&
-  //       JwtDecoder.getExpirationDate(_jwtToken).isAfter(DateTime.now()) &&
-  //       _jwtToken != null) {
-  //     return _jwtToken;
-  //   }
-  //   return null;
-  // }
+    print(response.body);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    userName = data['data'][0]['name'];
+    print(userName);
+    email = data['data'][0]['email'];
+    print(email);
+    notifyListeners();
+  }
 
   Future<void> _authenticate(
       {String name,

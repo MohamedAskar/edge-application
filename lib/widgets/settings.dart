@@ -1,8 +1,10 @@
 import 'package:edge/screens/orders_screen.dart';
+import 'package:edge/screens/wishlist_screen.dart';
 import 'package:edge/settings_ui/settings_list.dart';
 import 'package:edge/settings_ui/settings_section.dart';
 import 'package:edge/settings_ui/settings_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -29,6 +31,17 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             SettingsTile(
+              title: 'ًWishlist',
+              enabled: true,
+              onTap: () {
+                Navigator.pushNamed(context, WishListScreen.routeName);
+              },
+              leading: Icon(
+                Ionicons.heart_outline,
+                color: Colors.black87,
+              ),
+            ),
+            SettingsTile(
               title: 'Addresses',
               enabled: true,
               onTap: () {},
@@ -37,19 +50,10 @@ class _SettingsState extends State<Settings> {
                 color: Colors.black87,
               ),
             ),
-            SettingsTile(
-              title: 'Payment',
-              enabled: true,
-              onTap: () {},
-              leading: Icon(
-                Icons.payment_outlined,
-                color: Colors.black87,
-              ),
-            ),
           ],
         ),
         SettingsSection(
-          title: 'Settings',
+          title: 'Settings  (We are not there yet!)',
           tiles: [
             SettingsTile(
               title: 'Country',
@@ -79,7 +83,7 @@ class _SettingsState extends State<Settings> {
           ],
         ),
         SettingsSection(
-          title: 'Reach out to us',
+          title: 'Reach out to us  (We are not there yet!)',
           tiles: [
             SettingsTile(
               title: 'Store Locations',
@@ -110,7 +114,7 @@ class _SettingsState extends State<Settings> {
           ],
         ),
         SettingsSection(
-          title: 'About',
+          title: 'About  (We are not there yet!)',
           tiles: [
             SettingsTile(
               title: 'About us',
