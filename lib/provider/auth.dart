@@ -22,9 +22,10 @@ class Auth with ChangeNotifier {
     return false;
   }
 
+  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+
   Future<void> getUserData() async {
-    final url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/users/getuser?_id=$_userID';
+    final url = '$URL/api/v1/users/getuser?_id=$_userID';
     final response = await http.get(
       Uri.parse(url),
     );
@@ -44,8 +45,7 @@ class Auth with ChangeNotifier {
       @required String email,
       @required String password,
       @required String urlSegment}) async {
-    final url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/users/$urlSegment';
+    final url = '$URL/api/v1/users/$urlSegment';
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map<String, String> data = {};
 

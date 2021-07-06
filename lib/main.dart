@@ -2,11 +2,13 @@ import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/provider/orders_provider.dart';
+import 'package:edge/screens/admin_dashboard.dart';
 import 'package:edge/screens/cart_screen.dart';
 import 'package:edge/screens/category_screen.dart';
 import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/item_details_page.dart';
+import 'package:edge/screens/manage_products_screen.dart';
 import 'package:edge/screens/order_placed.dart';
 import 'package:edge/screens/orders_screen.dart';
 import 'package:edge/screens/sign_in_screen.dart';
@@ -75,16 +77,17 @@ class MyApp extends StatelessWidget {
                     fontSize: 15,
                     color: Colors.black54)),
           ),
-          home: FutureBuilder(
-              future: auth.tryAutologin(),
-              builder: (context, authResult) {
-                return SplashScreen(
-                    route: !authResult.hasData
-                        ? ''
-                        : authResult.data
-                            ? HomePage.routeName
-                            : SignUpScreen.routeName);
-              }),
+          home: AdminDashboard(),
+          // FutureBuilder(
+          //     future: auth.tryAutologin(),
+          //     builder: (context, authResult) {
+          //       return SplashScreen(
+          //           route: !authResult.hasData
+          //               ? ''
+          //               : authResult.data
+          //                   ? HomePage.routeName
+          //                   : SignUpScreen.routeName);
+          //     }),
           builder: (context, child) => ResponsiveWrapper.builder(child,
               maxWidth: 1200,
               minWidth: 480,
@@ -97,17 +100,9 @@ class MyApp extends StatelessWidget {
               ],
               background: Container(color: Colors.white)),
           routes: {
-            CartScreen.routeName: (ctx) => CartScreen(),
             HomePage.routeName: (ctx) => HomePage(),
-            ItemDetailsPage.routeName: (ctx) => ItemDetailsPage(),
-            CategoryScreen.routeName: (ctx) => CategoryScreen(),
-            SignInScreen.routeName: (ctx) => SignInScreen(),
             SignUpScreen.routeName: (ctx) => SignUpScreen(),
-            ProfileScreen.routeName: (ctx) => ProfileScreen(),
-            CheckoutScreen.routeName: (ctx) => CheckoutScreen(),
-            OrdersScreen.routeName: (ctx) => OrdersScreen(),
-            OrderPlacedScreen.routeName: (ctx) => OrderPlacedScreen(),
-            WishListScreen.routeName: (ctx) => WishListScreen(),
+            ManageProductsScreen.routeName: (ctx) => ManageProductsScreen(),
           },
         );
       }),

@@ -36,7 +36,20 @@ class OrderPlacedScreen extends StatelessWidget {
             ),
             child: InkWell(
               onTap: () {
-                Navigator.pushReplacementNamed(context, HomePage.routeName);
+                Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 150),
+                        opaque: false,
+                        pageBuilder: (_, animation1, __) {
+                          return SlideTransition(
+                              position: Tween(
+                                      begin: Offset(1.0, 0.0),
+                                      end: Offset(0.0, 0.0))
+                                  .animate(animation1),
+                              child: HomePage());
+                        }));
+                ;
               },
               child: Center(
                 child: Text(

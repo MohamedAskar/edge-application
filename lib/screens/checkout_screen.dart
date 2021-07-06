@@ -437,8 +437,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             cart: cartItems,
                             totalAmount: cartData.totalAmount);
                     progress.dismiss();
-                    Navigator.pushReplacementNamed(
-                        context, OrderPlacedScreen.routeName);
+                    Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                            transitionDuration:
+                                const Duration(milliseconds: 150),
+                            opaque: false,
+                            pageBuilder: (_, animation1, __) {
+                              return SlideTransition(
+                                  position: Tween(
+                                          begin: Offset(1.0, 0.0),
+                                          end: Offset(0.0, 0.0))
+                                      .animate(animation1),
+                                  child: OrderPlacedScreen());
+                            }));
                   },
                   child: Container(
                     color: Colors.white,

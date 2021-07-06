@@ -63,7 +63,19 @@ class EdgeAppBar extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                Navigator.of(context).pushNamed(CartScreen.routeName);
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 150),
+                        opaque: false,
+                        pageBuilder: (_, animation1, __) {
+                          return SlideTransition(
+                              position: Tween(
+                                      begin: Offset(1.0, 0.0),
+                                      end: Offset(0.0, 0.0))
+                                  .animate(animation1),
+                              child: CartScreen());
+                        }));
               },
             ),
           ),
@@ -74,7 +86,20 @@ class EdgeAppBar extends StatelessWidget {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.of(context).pushNamed(ProfileScreen.routeName);
+              Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                      transitionDuration: const Duration(milliseconds: 150),
+                      opaque: false,
+                      pageBuilder: (_, animation1, __) {
+                        return SlideTransition(
+                            position: Tween(
+                                    begin: Offset(1.0, 0.0),
+                                    end: Offset(0.0, 0.0))
+                                .animate(animation1),
+                            child: ProfileScreen());
+                      }));
+              ;
             },
           )
       ],

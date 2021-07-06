@@ -13,6 +13,8 @@ class OrdersProvider with ChangeNotifier {
     return [..._orders];
   }
 
+  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+
   Order findById(String id) {
     return _orders.firstWhere((order) => order.id == id);
   }
@@ -21,8 +23,7 @@ class OrdersProvider with ChangeNotifier {
       {@required String userID,
       @required List<CartItem> cart,
       @required double totalAmount}) async {
-    final url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/order/checkout';
+    final url = '$URL/api/v1/order/checkout';
     List<Map<String, dynamic>> cartItems = [];
     cart.forEach((item) {
       cartItems.add({
@@ -65,8 +66,7 @@ class OrdersProvider with ChangeNotifier {
   }
 
   Future<void> getUserOrders({@required userID}) async {
-    final url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/order/getorder?owner=$userID';
+    final url = '$URL/api/v1/order/getorder?owner=$userID';
     print(url);
     List<Order> loadedorders = [];
 

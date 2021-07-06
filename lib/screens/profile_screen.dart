@@ -123,8 +123,25 @@ class ProfileScreen extends StatelessWidget {
                                           Provider.of<Auth>(context,
                                                   listen: false)
                                               .logout();
-                                          Navigator.pushReplacementNamed(
-                                              context, SignInScreen.routeName);
+                                          Navigator.pushReplacement(
+                                              context,
+                                              PageRouteBuilder(
+                                                  transitionDuration:
+                                                      const Duration(
+                                                          milliseconds: 150),
+                                                  opaque: false,
+                                                  pageBuilder:
+                                                      (_, animation1, __) {
+                                                    return SlideTransition(
+                                                        position: Tween(
+                                                                begin: Offset(
+                                                                    1.0, 0.0),
+                                                                end: Offset(
+                                                                    0.0, 0.0))
+                                                            .animate(
+                                                                animation1),
+                                                        child: SignInScreen());
+                                                  }));
                                         },
                                         child: Text(
                                           'Yes',

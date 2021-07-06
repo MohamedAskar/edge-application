@@ -7,12 +7,17 @@ import 'package:http/http.dart' as http;
 
 class ItemsProvider with ChangeNotifier {
   List<ItemSummary> _items = [];
+  List<ItemSummary> _recommendations = [];
   List<ItemSummary> _wishlist = [];
   Item _item;
   int totalNoItems = 0;
 
   List<ItemSummary> get items {
     return [..._items];
+  }
+
+  List<ItemSummary> get recommendations {
+    return [..._recommendations];
   }
 
   List<ItemSummary> get wishlist {
@@ -23,9 +28,34 @@ class ItemsProvider with ChangeNotifier {
     return _item;
   }
 
+  static const URL = 'http://192.168.138.44:3000';
+
+  Future<void> getAllData() async {
+    var url = '$URL/api/v1/items';
+
+    print(url);
+
+    List<ItemSummary> loadedItems = [];
+
+    var response = await http.get(Uri.parse(url));
+    print(response.body);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    final List<dynamic> extractedItems = data['data']['allItems'];
+    extractedItems.forEach((item) {
+      loadedItems.add(ItemSummary(
+        id: item['_id'].toString(),
+        itemName: item['itemName'],
+        price: item['Price'],
+        image: item['images'][0],
+      ));
+    });
+    _items = loadedItems;
+    notifyListeners();
+  }
+
   Future<void> findById({String id, String userID}) async {
-    var url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/items/filter?_id=$id';
+    var url = '$URL/api/v1/items/filter?_id=$id';
     List<Item> loadedItems = [];
 
     final body = {"owner": userID};
@@ -51,6 +81,7 @@ class ItemsProvider with ChangeNotifier {
           description: item['Description'],
           seller: item['Seller'],
           sizes: item['AvailableSizes'],
+          isFavorite: data['favorite'],
         ),
       );
     });
@@ -68,15 +99,14 @@ class ItemsProvider with ChangeNotifier {
     String url;
     if (subcategory != null && category == null) {
       url =
-          'https://shrouded-citadel-37368.herokuapp.com/api/v1/items/paginate?SubCategory=$subcategory&page=$page&limit=$limit';
+          '$URL/api/v1/items/paginate?SubCategory=$subcategory&page=$page&limit=$limit';
     }
     if (category != null) {
       url =
-          'https://shrouded-citadel-37368.herokuapp.com/api/v1/items/paginate?SubCategory=$subcategory&Category=$category&page=$page&limit=$limit';
+          '$URL/api/v1/items/paginate?SubCategory=$subcategory&Category=$category&page=$page&limit=$limit';
     }
     if (category == null && subcategory == null) {
-      url =
-          'https://shrouded-citadel-37368.herokuapp.com/api/v1/items/paginate?page=$page&limit=$limit';
+      url = '$URL/api/v1/items/paginate?page=$page&limit=$limit';
     }
 
     print(url);
@@ -103,7 +133,7 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Future<void> addToWishlist({@required Item item, @required userID}) async {
-    final url = 'https://shrouded-citadel-37368.herokuapp.com/api/v1/favorite';
+    final url = '$URL/api/v1/favorite';
     Map<String, dynamic> data = {
       'owner': userID,
       'items': [
@@ -133,8 +163,7 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Future<void> getWishList({@required String userID}) async {
-    final url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/favorite?owner=$userID';
+    final url = '$URL/api/v1/favorite?owner=$userID';
     print(url);
     List<ItemSummary> loadedItems = [];
 
@@ -163,7 +192,7 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Future<void> removeWishlist({@required userID, @required itemID}) async {
-    final url = 'https://shrouded-citadel-37368.herokuapp.com/api/v1/favorite';
+    final url = '$URL/api/v1/favorite';
 
     final body = json.encode(
       {'owner': userID, 'itemId': itemID},
@@ -178,6 +207,39 @@ class ItemsProvider with ChangeNotifier {
 
     print(response.body);
     getWishList(userID: userID);
+    findById(id: itemID, userID: userID);
+    notifyListeners();
+  }
+
+  Future<void> getUserRecommendations({String userID}) async {
+    final url = '$URL/api/v1/akin';
+    List<ItemSummary> loadedItems = [];
+
+    final body = json.encode({
+      'owner': userID,
+      'samples': 12,
+    });
+    print(body);
+    final response = await http.post(
+      Uri.parse(url),
+      body: body,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    final decodedData = json.decode(response.body) as Map<String, dynamic>;
+
+    final List<dynamic> extractedData = decodedData['recommendations'];
+
+    extractedData.forEach((recommendedItem) {
+      loadedItems.add(ItemSummary(
+        id: recommendedItem['_id'].toString(),
+        itemName: recommendedItem['itemName'],
+        price: recommendedItem['Price'],
+        image: recommendedItem['images'][0],
+      ));
+    });
+
+    _recommendations = loadedItems;
     notifyListeners();
   }
 }

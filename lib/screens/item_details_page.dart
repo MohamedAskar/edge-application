@@ -9,8 +9,10 @@ import 'package:edge/provider/items_provider.dart';
 import 'package:edge/screens/cart_screen.dart';
 import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
+import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +20,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ItemDetailsPage extends StatefulWidget {
   static final String routeName = 'Item-Details-Screen';
+  final String itemID;
+
+  ItemDetailsPage({@required this.itemID});
 
   @override
   _ItemDetailsPageState createState() => _ItemDetailsPageState();
@@ -133,7 +138,20 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         border: Border.all(color: Colors.black, width: 1.5)),
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, CartScreen.routeName);
+                        Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                                transitionDuration:
+                                    const Duration(milliseconds: 150),
+                                opaque: false,
+                                pageBuilder: (_, animation1, __) {
+                                  return SlideTransition(
+                                      position: Tween(
+                                              begin: Offset(1.0, 0.0),
+                                              end: Offset(0.0, 0.0))
+                                          .animate(animation1),
+                                      child: CartScreen());
+                                }));
                       },
                       child: Center(
                         child: Text(
@@ -173,11 +191,10 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String itemID = ModalRoute.of(context).settings.arguments;
     // ignore: unused_local_variable
     if (!isItemFetched) {
       final fetchedItem =
-          itemData.findById(id: itemID, userID: userID).whenComplete(() {
+          itemData.findById(id: widget.itemID, userID: userID).whenComplete(() {
         if (mounted) {
           setState(() {
             isCacheCleared = true;
@@ -194,6 +211,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
 
     final size = MediaQuery.of(context).size;
     final cart = Provider.of<CartProvider>(context, listen: false);
+    final recommendedItems = itemData.recommendations;
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
@@ -211,16 +229,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
           backgroundColor: Colors.white54,
           padding: const EdgeInsets.all(30),
           textStyle: TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              shadows: [
-                Shadow(
-                  blurRadius: 2,
-                  color: Color.fromRGBO(0, 0, 0, 0.25),
-                  offset: Offset(0, 4),
-                )
-              ],
-              fontWeight: FontWeight.w600),
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
           child: Builder(builder: (context) {
             return SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -254,65 +263,60 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                             height: 12,
                           ),
                           SafeArea(
-                            child: Hero(
-                              tag: itemID,
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                    height: size.height / 1.5,
-                                    child: PageView.builder(
-                                      itemCount: item.images.length,
-                                      onPageChanged: (value) {
-                                        setState(() {
-                                          _currentPage = value;
-                                        });
-                                      },
-                                      controller: _controller,
-                                      itemBuilder: (context, index) {
-                                        return PinchZoom(
-                                          zoomedBackgroundColor:
-                                              Colors.transparent,
-                                          image: CachedNetworkImage(
-                                            imageUrl: item.images[index],
-                                            fit: BoxFit.cover,
-                                            progressIndicatorBuilder:
-                                                (context, url, progress) =>
-                                                    Container(
-                                              height: 60,
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  value: progress.progress,
-                                                ),
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  height: size.height / 1.5,
+                                  child: PageView.builder(
+                                    itemCount: item.images.length,
+                                    onPageChanged: (value) {
+                                      setState(() {
+                                        _currentPage = value;
+                                      });
+                                    },
+                                    controller: _controller,
+                                    itemBuilder: (context, index) {
+                                      return PinchZoom(
+                                        zoomedBackgroundColor:
+                                            Colors.transparent,
+                                        image: CachedNetworkImage(
+                                          imageUrl: item.images[index],
+                                          fit: BoxFit.cover,
+                                          progressIndicatorBuilder:
+                                              (context, url, progress) =>
+                                                  Container(
+                                            height: 60,
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                value: progress.progress,
                                               ),
                                             ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Icon(Icons.error),
                                           ),
-                                        );
-                                      },
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  height: size.height / 1.5,
+                                  padding: const EdgeInsets.only(bottom: 18),
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: SmoothPageIndicator(
+                                      controller: _controller,
+                                      count: item.images.length,
+                                      effect: WormEffect(
+                                          activeDotColor: Colors.black,
+                                          dotColor: Colors.grey,
+                                          radius: 8.0,
+                                          dotHeight: 8.0,
+                                          dotWidth: 8.0),
                                     ),
                                   ),
-                                  Container(
-                                    height: size.height / 1.5,
-                                    padding: const EdgeInsets.only(bottom: 18),
-                                    child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: SmoothPageIndicator(
-                                        controller: _controller,
-                                        count: item.images.length,
-                                        effect: WormEffect(
-                                            activeDotColor: Colors.black,
-                                            dotColor: Colors.grey,
-                                            radius: 8.0,
-                                            dotHeight: 8.0,
-                                            dotWidth: 8.0),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                                )
+                              ],
                             ),
                           ),
                           Padding(
@@ -359,7 +363,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 SizedBox(
                                   height: 42,
                                 ),
-
                                 Text(
                                   'Color : ${item.avilableColors[selectedColor]}',
                                   style: TextStyle(
@@ -417,7 +420,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 SizedBox(
                                   height: 20,
                                 ),
-
                                 Row(children: <Widget>[
                                   Text(
                                     "SELECT YOUR SIZE",
@@ -490,7 +492,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                             ),
                                           )),
                                 ),
-
                                 SizedBox(
                                   height: 32,
                                 ),
@@ -662,40 +663,42 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                     ),
                                     onPressed: () async {
                                       final progress = ProgressHUD.of(context);
-                                      progress.showWithText('Loading....');
-                                      if (!isFavorite) {
+                                      progress.showWithText('Loading...');
+                                      if (!item.isFavorite) {
                                         print('adding');
                                         await itemData
                                             .addToWishlist(
                                                 item: item, userID: userID)
                                             .whenComplete(() {
                                           setState(() {
-                                            isFavorite = true;
+                                            item.isFavorite = true;
                                             print('Done');
                                           });
                                         });
                                         progress.dismiss();
                                       } else {
+                                        progress.showWithText('Loading...');
                                         itemData
                                             .removeWishlist(
                                                 userID: userID, itemID: item.id)
                                             .whenComplete(() {
-                                          isFavorite = false;
+                                          item.isFavorite = false;
                                           print('removed');
                                         });
+                                        progress.dismiss();
                                       }
                                       progress.dismiss();
                                     },
                                     icon: Icon(
-                                      isFavorite
+                                      item.isFavorite
                                           ? Ionicons.heart
                                           : Ionicons.heart_outline,
-                                      color: isFavorite
+                                      color: item.isFavorite
                                           ? Colors.red
                                           : Colors.black,
                                     ),
                                     label: Text(
-                                      isFavorite
+                                      item.isFavorite
                                           ? 'ADDED TO YOUR WISHLIST'
                                           : 'ADD TO WISHLIST',
                                       style: TextStyle(
@@ -741,7 +744,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 0),
                                   title: Text(
-                                    'ADDITIONAL INFORMATIONS',
+                                    'ADDITIONAL INFORMATION',
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w700),
@@ -825,28 +828,45 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                 SizedBox(
                                   height: 12,
                                 ),
-                                // FutureBuilder(
-                                //     future: fetchFromAPI,
-                                //     builder: (context, snapshot) {
-                                //       if (snapshot.connectionState ==
-                                //           ConnectionState.waiting) {
-                                //         return Center(child: CircularProgressIndicator());
-                                //       }
-                                //       return GridView.builder(
-                                //           gridDelegate:
-                                //               SliverGridDelegateWithFixedCrossAxisCount(
-                                //             crossAxisCount: 2,
-                                //             childAspectRatio: 0.7,
-                                //           ),
-                                //           shrinkWrap: true,
-                                //           physics: NeverScrollableScrollPhysics(),
-                                //           itemCount: 4,
-                                //           itemBuilder: (context, index) {
-                                //             print(snapshot.data[index].id.runtimeType);
-                                //             return ItemWidget(
-                                //                 item: snapshot.data[randomizedNumber[index]]);
-                                //           });
-                                //     }),
+                                AnimationLimiter(
+                                  child: GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 0.7,
+                                      ),
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: recommendedItems.length,
+                                      itemBuilder: (context, index) {
+                                        return AnimationConfiguration
+                                            .staggeredGrid(
+                                          columnCount: 2,
+                                          position: index,
+                                          duration: const Duration(
+                                              milliseconds: 1500),
+                                          child: ScaleAnimation(
+                                            child: FadeInAnimation(
+                                              child: ItemWidget(
+                                                id: recommendedItems[index].id,
+                                                itemName:
+                                                    recommendedItems[index]
+                                                        .itemName
+                                                        .toString()
+                                                        .trimRight(),
+                                                image: recommendedItems[index]
+                                                    .image,
+                                                price: recommendedItems[index]
+                                                    .price,
+                                                discount:
+                                                    recommendedItems[index]
+                                                        .discount,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                ),
                               ],
                             ),
                           ),

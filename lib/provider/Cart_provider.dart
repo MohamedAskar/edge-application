@@ -25,10 +25,11 @@ class CartProvider with ChangeNotifier {
     return _totalQuantity;
   }
 
+  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+
   Future<void> getTotalQty({@required String userID}) async {
     var qty = 0;
-    final url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/cart/qty?owner=$userID';
+    final url = '$URL/api/v1/cart/qty?owner=$userID';
     print(url);
 
     var response = await http.get(Uri.parse(url));
@@ -46,7 +47,7 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> addToCart({@required CartItem item, @required userID}) async {
-    final url = 'https://shrouded-citadel-37368.herokuapp.com/api/v1/cart';
+    final url = '$URL/api/v1/cart';
     Map<String, dynamic> data = {
       'owner': userID,
       'items': {
@@ -74,8 +75,7 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> getCartItems({@required String userID}) async {
-    final url =
-        'https://shrouded-citadel-37368.herokuapp.com/api/v1/cart/getcart?owner=$userID';
+    final url = '$URL/api/v1/cart/getcart?owner=$userID';
     print(url);
     List<CartItem> loadedItems = [];
 
@@ -116,7 +116,7 @@ class CartProvider with ChangeNotifier {
 
   Future<void> removeItem(String id, String userID) async {
     //_cartItems.remove(id);
-    final url = 'https://shrouded-citadel-37368.herokuapp.com/api/v1/cart';
+    final url = '$URL/api/v1/cart';
 
     final body = json.encode(
       {'owner': userID, 'itemId': id},

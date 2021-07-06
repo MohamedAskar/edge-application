@@ -22,7 +22,19 @@ class _SettingsState extends State<Settings> {
             SettingsTile(
               enabled: true,
               onTap: () {
-                Navigator.pushNamed(context, OrdersScreen.routeName);
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 150),
+                        opaque: false,
+                        pageBuilder: (_, animation1, __) {
+                          return SlideTransition(
+                              position: Tween(
+                                      begin: Offset(1.0, 0.0),
+                                      end: Offset(0.0, 0.0))
+                                  .animate(animation1),
+                              child: OrdersScreen());
+                        }));
               },
               title: 'My Orders',
               leading: Icon(
@@ -34,7 +46,19 @@ class _SettingsState extends State<Settings> {
               title: 'ًWishlist',
               enabled: true,
               onTap: () {
-                Navigator.pushNamed(context, WishListScreen.routeName);
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 150),
+                        opaque: false,
+                        pageBuilder: (_, animation1, __) {
+                          return SlideTransition(
+                              position: Tween(
+                                      begin: Offset(1.0, 0.0),
+                                      end: Offset(0.0, 0.0))
+                                  .animate(animation1),
+                              child: WishListScreen());
+                        }));
               },
               leading: Icon(
                 Ionicons.heart_outline,

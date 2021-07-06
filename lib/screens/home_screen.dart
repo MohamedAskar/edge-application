@@ -51,9 +51,11 @@ class _HomePageState extends State<HomePage> {
   ItemsProvider itemData;
   Auth auth;
   Future fetchedItems;
+  Future getRecommendations;
+  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
 
   Future getData() async {
-    var url = 'https://shrouded-citadel-37368.herokuapp.com/api/v1/items';
+    var url = '$URL/api/v1/items';
     var response = await http.get(Uri.parse(url));
     final data = json.decode(response.body) as Map<String, dynamic>;
     for (var item in data['data']['allItems']) {
@@ -77,11 +79,15 @@ class _HomePageState extends State<HomePage> {
     final qty = Provider.of<CartProvider>(context, listen: false)
         .getTotalQty(userID: userID);
 
-    print('From Home: $qty');
     itemData = Provider.of<ItemsProvider>(context, listen: false);
     fetchedItems = itemData
-        .paginateFromAPI(page: Random().nextInt(5), limit: 12)
+        .paginateFromAPI(page: Random().nextInt(14), limit: 6)
         .whenComplete(() => print('pagginated.'));
+
+    getRecommendations = itemData
+        .getUserRecommendations(userID: userID)
+        .whenComplete(() => print('done'));
+
     super.initState();
   }
 
@@ -90,6 +96,8 @@ class _HomePageState extends State<HomePage> {
     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     final items = itemData.items;
+    final recommendedItems = itemData.recommendations;
+    final length = (recommendedItems.length / 2).floor();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -142,7 +150,7 @@ class _HomePageState extends State<HomePage> {
               height: 32,
             ),
             AutoSizeText(
-              'BESTSELLERS',
+              'RECOMMENDED FOR YOU',
               maxFontSize: 26,
               minFontSize: 22,
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -150,7 +158,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 22,
             ),
-            (items.length == 0)
+            (recommendedItems.length == 0)
                 ? Center(child: CircularProgressIndicator())
                 : AnimationLimiter(
                     child: GridView.builder(
@@ -160,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: 4,
+                        itemCount: length,
                         itemBuilder: (context, index) {
                           return AnimationConfiguration.staggeredGrid(
                             columnCount: 2,
@@ -169,14 +177,14 @@ class _HomePageState extends State<HomePage> {
                             child: ScaleAnimation(
                               child: FadeInAnimation(
                                 child: ItemWidget(
-                                  id: items[index].id,
-                                  itemName: items[index]
+                                  id: recommendedItems[index].id,
+                                  itemName: recommendedItems[index]
                                       .itemName
                                       .toString()
                                       .trimRight(),
-                                  image: items[index].image,
-                                  price: items[index].price,
-                                  discount: items[index].discount,
+                                  image: recommendedItems[index].image,
+                                  price: recommendedItems[index].price,
+                                  discount: recommendedItems[index].discount,
                                 ),
                               ),
                             ),
@@ -217,7 +225,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 22,
             ),
-            (items.length == 0)
+            (recommendedItems.length == 0)
                 ? Center(child: CircularProgressIndicator())
                 : AnimationLimiter(
                     child: GridView.builder(
@@ -227,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: 4,
+                        itemCount: length,
                         itemBuilder: (context, index) {
                           return AnimationConfiguration.staggeredGrid(
                             columnCount: 2,
@@ -236,14 +244,15 @@ class _HomePageState extends State<HomePage> {
                             child: ScaleAnimation(
                               child: FadeInAnimation(
                                 child: ItemWidget(
-                                  id: items[index + 4].id,
-                                  itemName: items[index + 4]
+                                  id: recommendedItems[index + length].id,
+                                  itemName: recommendedItems[index + length]
                                       .itemName
                                       .toString()
                                       .trimRight(),
-                                  image: items[index + 4].image,
-                                  price: items[index + 4].price,
-                                  discount: items[index + 4].discount,
+                                  image: recommendedItems[index + length].image,
+                                  price: recommendedItems[index + length].price,
+                                  discount:
+                                      recommendedItems[index + length].discount,
                                 ),
                               ),
                             ),
@@ -294,7 +303,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: 4,
+                        itemCount: items.length,
                         itemBuilder: (context, index) {
                           return AnimationConfiguration.staggeredGrid(
                             columnCount: 2,
@@ -303,14 +312,14 @@ class _HomePageState extends State<HomePage> {
                             child: ScaleAnimation(
                               child: FadeInAnimation(
                                 child: ItemWidget(
-                                  id: items[index + 8].id,
-                                  itemName: items[index + 8]
+                                  id: items[index].id,
+                                  itemName: items[index]
                                       .itemName
                                       .toString()
                                       .trimRight(),
-                                  image: items[index + 8].image,
-                                  price: items[index + 8].price,
-                                  discount: items[index + 8].discount,
+                                  image: items[index].image,
+                                  price: items[index].price,
+                                  discount: items[index].discount,
                                 ),
                               ),
                             ),
@@ -390,7 +399,17 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 onTap: () {
-                  Navigator.of(context).pushNamed(ProfileScreen.routeName);
+                  Navigator.of(context).push(PageRouteBuilder(
+                      transitionDuration: const Duration(milliseconds: 150),
+                      opaque: false,
+                      pageBuilder: (_, animation1, __) {
+                        return SlideTransition(
+                            position: Tween(
+                                    begin: Offset(1.0, 0.0),
+                                    end: Offset(0.0, 0.0))
+                                .animate(animation1),
+                            child: ProfileScreen());
+                      }));
                 },
               ),
               ListTile(
@@ -403,7 +422,19 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 onTap: () {
-                  Navigator.pushNamed(context, WishListScreen.routeName);
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                          transitionDuration: const Duration(milliseconds: 150),
+                          opaque: false,
+                          pageBuilder: (_, animation1, __) {
+                            return SlideTransition(
+                                position: Tween(
+                                        begin: Offset(1.0, 0.0),
+                                        end: Offset(0.0, 0.0))
+                                    .animate(animation1),
+                                child: WishListScreen());
+                          }));
                 },
               ),
               ListTile(

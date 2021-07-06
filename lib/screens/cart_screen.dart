@@ -86,13 +86,6 @@ class _CartScreenState extends State<CartScreen> {
                   textStyle: TextStyle(
                       color: Colors.black,
                       fontSize: 18,
-                      shadows: [
-                        Shadow(
-                          blurRadius: 2,
-                          color: Color.fromRGBO(0, 0, 0, 0.25),
-                          offset: Offset(0, 4),
-                        )
-                      ],
                       fontWeight: FontWeight.w600),
                   child: Builder(builder: (context) {
                     return SingleChildScrollView(
@@ -682,8 +675,18 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    Navigator.pushNamed(
-                                        context, CheckoutScreen.routeName);
+                                    Navigator.of(context).push(PageRouteBuilder(
+                                        transitionDuration:
+                                            const Duration(milliseconds: 150),
+                                        opaque: false,
+                                        pageBuilder: (_, animation1, __) {
+                                          return SlideTransition(
+                                              position: Tween(
+                                                      begin: Offset(1.0, 0.0),
+                                                      end: Offset(0.0, 0.0))
+                                                  .animate(animation1),
+                                              child: CheckoutScreen());
+                                        }));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(

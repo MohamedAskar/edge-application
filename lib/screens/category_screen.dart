@@ -14,6 +14,8 @@ import 'cart_screen.dart';
 
 class CategoryScreen extends StatefulWidget {
   static final String routeName = 'Category-Screen';
+  final String category;
+  CategoryScreen({@required this.category});
 
   @override
   _CategoryScreenState createState() => _CategoryScreenState();
@@ -47,11 +49,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
     final result = itemData.totalNoItems;
     final pages = getNoPages(result, 16);
     final Map<String, String> args = ModalRoute.of(context).settings.arguments;
-    final subcategory = args['category'];
-    final image = args['image'];
     if (!_isPaginated) {
       final fetchedItems = itemData
-          .paginateFromAPI(page: page, limit: 16, subcategory: subcategory)
+          .paginateFromAPI(page: page, limit: 16, subcategory: widget.category)
           .whenComplete(() {
         setState(() {
           isCacheCleared = true;
@@ -71,7 +71,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         centerTitle: false,
         iconTheme: IconThemeData(color: Colors.black),
         title: Text(
-          subcategory,
+          widget.category,
           style: TextStyle(
               fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -103,7 +103,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 Ionicons.bag_handle_outline,
               ),
               onPressed: () {
-                Navigator.of(context).pushNamed(CartScreen.routeName);
+                Navigator.of(context)
+                  ..push(PageRouteBuilder(
+                      transitionDuration: const Duration(milliseconds: 150),
+                      opaque: false,
+                      pageBuilder: (_, animation1, __) {
+                        return SlideTransition(
+                            position: Tween(
+                                    begin: Offset(1.0, 0.0),
+                                    end: Offset(0.0, 0.0))
+                                .animate(animation1),
+                            child: CartScreen());
+                      }));
               },
             ),
           ),
@@ -113,7 +124,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.of(context).pushNamed(ProfileScreen.routeName);
+              Navigator.of(context)
+                ..push(PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 150),
+                    opaque: false,
+                    pageBuilder: (_, animation1, __) {
+                      return SlideTransition(
+                          position: Tween(
+                                  begin: Offset(1.0, 0.0),
+                                  end: Offset(0.0, 0.0))
+                              .animate(animation1),
+                          child: ProfileScreen());
+                    }));
             },
           )
         ],

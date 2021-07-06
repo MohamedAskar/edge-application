@@ -6,6 +6,7 @@
 
    <application
         android:label="edge"
+        android:testOnly="false"
         android:usesCleartextTraffic="true" 
         android:icon="@mipmap/ic_launcher">
         <activity

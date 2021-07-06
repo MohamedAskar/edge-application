@@ -21,8 +21,20 @@ class CategoryWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed(CategoryScreen.routeName,
-              arguments: {'category': category, 'image': image});
+          Navigator.push(
+              context,
+              PageRouteBuilder(
+                  transitionDuration: const Duration(milliseconds: 150),
+                  opaque: false,
+                  pageBuilder: (_, animation1, __) {
+                    return SlideTransition(
+                        position: Tween(
+                                begin: Offset(1.0, 0.0), end: Offset(0.0, 0.0))
+                            .animate(animation1),
+                        child: CategoryScreen(
+                          category: category,
+                        ));
+                  }));
         },
         child: Stack(
           children: [

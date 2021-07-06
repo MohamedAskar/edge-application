@@ -251,8 +251,20 @@ class _SignInScreenState extends State<SignInScreen> {
 
                               print('user logged in');
                               progress.dismiss();
-                              Navigator.pushReplacementNamed(
-                                  context, HomePage.routeName);
+                              Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                      transitionDuration:
+                                          const Duration(milliseconds: 150),
+                                      opaque: false,
+                                      pageBuilder: (_, animation1, __) {
+                                        return SlideTransition(
+                                            position: Tween(
+                                                    begin: Offset(1.0, 0.0),
+                                                    end: Offset(0.0, 0.0))
+                                                .animate(animation1),
+                                            child: HomePage());
+                                      }));
                             } on HttpException catch (e) {
                               progress.dismiss();
                               showDialog(
@@ -400,8 +412,20 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.of(context)
-                                  .pushReplacementNamed(SignUpScreen.routeName);
+                              Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                      transitionDuration:
+                                          const Duration(milliseconds: 150),
+                                      opaque: false,
+                                      pageBuilder: (_, animation1, __) {
+                                        return SlideTransition(
+                                            position: Tween(
+                                                    begin: Offset(1.0, 0.0),
+                                                    end: Offset(0.0, 0.0))
+                                                .animate(animation1),
+                                            child: SignUpScreen());
+                                      }));
                             },
                             child: Text(
                               'Create one!',

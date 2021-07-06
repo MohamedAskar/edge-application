@@ -20,38 +20,48 @@ class ItemWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.of(context)
-            .pushNamed(ItemDetailsPage.routeName, arguments: id);
+        Navigator.push(
+            context,
+            PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 150),
+                opaque: false,
+                pageBuilder: (_, animation1, __) {
+                  return SlideTransition(
+                      position:
+                          Tween(begin: Offset(1.0, 0.0), end: Offset(0.0, 0.0))
+                              .animate(animation1),
+                      child: ItemDetailsPage(
+                        itemID: id,
+                      ));
+                }));
+        ;
       },
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Hero(
-              tag: id,
-              child: Stack(
-                children: [
-                  CachedNetworkImage(
-                    width: (size.width - 32) / 2,
-                    height: size.height / 4,
-                    imageUrl: image,
-                    fit: BoxFit.fitWidth,
-                    filterQuality: FilterQuality.none,
-                    fadeInCurve: Curves.easeInOut,
-                    progressIndicatorBuilder: (context, url, progress) =>
-                        Container(
-                      height: 60,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: progress.progress,
-                        ),
+            Stack(
+              children: [
+                CachedNetworkImage(
+                  width: (size.width - 32) / 2,
+                  height: size.height / 4,
+                  imageUrl: image,
+                  fit: BoxFit.fitWidth,
+                  filterQuality: FilterQuality.none,
+                  fadeInCurve: Curves.easeInOut,
+                  progressIndicatorBuilder: (context, url, progress) =>
+                      Container(
+                    height: 60,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: progress.progress,
                       ),
                     ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
-                ],
-              ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ],
             ),
             SizedBox(
               height: 8,

@@ -20,20 +20,23 @@ class _WishListScreenState extends State<WishListScreen> {
   String userID;
   List<ItemSummary> wishlist = [];
   bool check = false;
+  bool isBackPressed = true;
 
   @override
   void initState() {
     userID = Provider.of<Auth>(context, listen: false).userID;
     itemsProvider = Provider.of<ItemsProvider>(context, listen: false);
-    getWishlist = itemsProvider.getWishList(userID: userID).whenComplete(() {
-      check = true;
-      wishlist = itemsProvider.wishlist;
-    });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    getWishlist = itemsProvider.getWishList(userID: userID).whenComplete(() {
+      check = true;
+      wishlist = itemsProvider.wishlist;
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
