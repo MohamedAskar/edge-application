@@ -17,6 +17,7 @@ class AdminDashboard extends StatelessWidget {
             cart: false,
             profile: true,
             search: false,
+            addItem: false,
           )),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),

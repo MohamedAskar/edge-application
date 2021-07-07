@@ -6,11 +6,17 @@ class ItemSummary with ChangeNotifier {
   final dynamic price;
   final String image;
   final dynamic discount;
+  final String category;
+  final String subcategory;
+  final String description;
 
   ItemSummary({
     @required this.id,
     @required this.itemName,
     @required this.image,
+    this.category,
+    this.description,
+    this.subcategory,
     this.discount,
     @required this.price,
   });

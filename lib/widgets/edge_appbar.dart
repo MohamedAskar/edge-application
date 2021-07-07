@@ -13,12 +13,14 @@ class EdgeAppBar extends StatelessWidget {
       {this.listsearch,
       @required this.cart,
       @required this.profile,
+      this.addItem,
       @required this.search});
 
   final List<ItemSummary> listsearch;
   final bool cart;
   final bool search;
   final bool profile;
+  final bool addItem;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +103,14 @@ class EdgeAppBar extends StatelessWidget {
                       }));
               ;
             },
-          )
+          ),
+        if (addItem)
+          IconButton(
+              icon: Icon(
+                Ionicons.add_outline,
+                color: Colors.black,
+              ),
+              onPressed: () {})
       ],
     );
   }

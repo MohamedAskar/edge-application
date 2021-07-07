@@ -23,22 +23,28 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
 
   @override
   void initState() {
-    itemsProvider = Provider.of<ItemsProvider>(context, listen: false);
-    final getData =
-        itemsProvider.paginateFromAPI(limit: 8, page: 1).whenComplete(() {
+    Provider.of<ItemsProvider>(context, listen: false)
+        .paginateFromAPI(limit: 12, page: 1)
+        .whenComplete(() {
       print('done');
     });
     super.initState();
   }
 
   Widget build(BuildContext context) {
+    final itemsProvider = Provider.of<ItemsProvider>(context);
     final list = itemsProvider.items;
 
     print(list.length);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
-        child: EdgeAppBar(cart: false, profile: true, search: true),
+        child: EdgeAppBar(
+          cart: false,
+          profile: true,
+          search: true,
+          addItem: true,
+        ),
       ),
       body: (list.isEmpty)
           ? Center(
