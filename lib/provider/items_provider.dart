@@ -28,7 +28,7 @@ class ItemsProvider with ChangeNotifier {
     return _item;
   }
 
-  static const URL = 'http://127.0.0.1:3000';
+  static const URL = 'http://192.168.189.44:3000';
 
   Future<void> getAllData() async {
     var url = '$URL/api/v1/items';

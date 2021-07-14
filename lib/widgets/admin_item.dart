@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:edge/screens/Edit_item_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
@@ -9,145 +11,129 @@ class AdminItem extends StatelessWidget {
       {@required this.title, @required this.imageUrl, @required this.price});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    height: 160,
-                    width: 145,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.fitWidth,
-                    ),
+    return Card(
+      child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.fitWidth,
+                            image: CachedNetworkImageProvider(imageUrl)),
+                        borderRadius: BorderRadius.circular(6)),
+                    height: 120,
+                    width: 100,
                   ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: () {},
-                        child: Text(title,
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title.trimRight(),
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w700)),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: SizedBox(
+                        SizedBox(
                           height: 10,
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Text(price.toString() + ' LE',
+                        Text('\$${price.toString()}',
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 22,
                               fontWeight: FontWeight.w700,
                             )),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          TextButton.icon(
-                              onPressed: () {
-                                // Navigator.of(context).pushNamed(
-                                //     EditProduct.routeName,
-                                //     arguments: product.id);
-                              },
-                              icon: Icon(
-                                Icons.edit_outlined,
-                                color: Colors.black,
-                              ),
-                              label: Text(
-                                'Edit Item',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 10),
-                              )),
-                          TextButton.icon(
-                              onPressed: () {
-                                showDialog<Null>(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: Text(
-                                      'Are you sure ?',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    content: Text(
-                                        'If this item is deleted, it will disapear from your database.'),
-                                    actions: <Widget>[
-                                      // ignore: deprecated_member_use
-                                      Row(
-                                        children: [
-                                          FlatButton(
-                                              onPressed: () {
-                                                Toast.show(
-                                                  'Deleting...',
-                                                  context,
-                                                  duration: 2,
-                                                  gravity: Toast.CENTER,
-                                                );
-                                                // Provider.of<Products>(context,
-                                                //         listen: false)
-                                                //     .deleteProduct(
-                                                //         product.id);
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text('Yes',
+                        Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(EditItemScreen.routeName);
+                                },
+                                icon: Icon(
+                                  Icons.edit_outlined,
+                                  color: Colors.black,
+                                ),
+                                label: Text(
+                                  'Edit Item',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13),
+                                )),
+                            TextButton.icon(
+                                onPressed: () {
+                                  showDialog<Null>(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text(
+                                        'Are you sure ?',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      content: Text(
+                                          'If this item is deleted, it will disapear from your database.'),
+                                      actions: <Widget>[
+                                        // ignore: deprecated_member_use
+                                        Row(
+                                          children: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Toast.show(
+                                                    'Deleting...',
+                                                    context,
+                                                    duration: 2,
+                                                    gravity: Toast.CENTER,
+                                                  );
+                                                  // Provider.of<Products>(context,
+                                                  //         listen: false)
+                                                  //     .deleteProduct(
+                                                  //         product.id);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('Yes',
+                                                    style: TextStyle(
+                                                        color: Colors.black))),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(ctx).pop();
+                                                },
+                                                child: Text(
+                                                  'No',
                                                   style: TextStyle(
-                                                      color: Colors.black))),
-                                          FlatButton(
-                                              onPressed: () {
-                                                Navigator.of(ctx).pop();
-                                              },
-                                              child: Text(
-                                                'No',
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                              )),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.delete_outlined,
-                                color: Colors.red,
-                              ),
-                              label: Text(
-                                'Remove Item',
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 10),
-                              )),
-                        ],
-                      )
-                    ],
+                                                      color: Colors.black),
+                                                )),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.delete_outlined,
+                                  color: Colors.red,
+                                ),
+                                label: Text(
+                                  'Remove Item',
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12),
+                                )),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Divider(
-              color: Colors.black,
-              thickness: 0.3,
-            )
-          ],
-        ));
+                ],
+              ),
+            ],
+          )),
+    );
   }
 }

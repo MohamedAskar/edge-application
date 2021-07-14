@@ -2,6 +2,7 @@ import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/provider/orders_provider.dart';
+import 'package:edge/screens/Edit_item_screen.dart';
 import 'package:edge/screens/admin_dashboard.dart';
 import 'package:edge/screens/cart_screen.dart';
 import 'package:edge/screens/category_screen.dart';
@@ -9,6 +10,7 @@ import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/item_details_page.dart';
 import 'package:edge/screens/manage_products_screen.dart';
+import 'package:edge/screens/manage_users.dart';
 import 'package:edge/screens/order_placed.dart';
 import 'package:edge/screens/orders_screen.dart';
 import 'package:edge/screens/sign_in_screen.dart';
@@ -78,7 +80,7 @@ class MyApp extends StatelessWidget {
                     color: Colors.black54)),
           ),
           home: AdminDashboard(),
-          // FutureBuilder(
+          // home: FutureBuilder(
           //     future: auth.tryAutologin(),
           //     builder: (context, authResult) {
           //       return SplashScreen(
@@ -87,7 +89,7 @@ class MyApp extends StatelessWidget {
           //               : authResult.data
           //                   ? HomePage.routeName
           //                   : SignUpScreen.routeName);
-          //     }),
+          // }),
           builder: (context, child) => ResponsiveWrapper.builder(child,
               maxWidth: 1200,
               minWidth: 480,
@@ -103,6 +105,8 @@ class MyApp extends StatelessWidget {
             HomePage.routeName: (ctx) => HomePage(),
             SignUpScreen.routeName: (ctx) => SignUpScreen(),
             ManageProductsScreen.routeName: (ctx) => ManageProductsScreen(),
+            ManageUsersScreen.routename: (ctx) => ManageUsersScreen(),
+            EditItemScreen.routeName: (ctx) => EditItemScreen(),
           },
         );
       }),

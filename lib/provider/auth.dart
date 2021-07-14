@@ -8,11 +8,29 @@ import 'package:flutter/widgets.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class User {
+  final String id;
+  final String name;
+  final String email;
+  final String role;
+
+  User(
+      {@required this.name,
+      @required this.email,
+      @required this.id,
+      @required this.role});
+}
+
 class Auth with ChangeNotifier {
   String _jwtToken;
   String _userID;
   String userName;
   String email;
+  List<User> _users;
+
+  List<User> get users {
+    return [..._users];
+  }
 
   String get userID {
     return _userID;
@@ -23,6 +41,28 @@ class Auth with ChangeNotifier {
   }
 
   static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+
+  Future<void> getAllUsers() async {
+    final url = '$URL/api/v1/users';
+    final response = await http.get(Uri.parse(url));
+
+    List<User> loadedUsers = [];
+
+    print(response.body);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    final List<dynamic> users = data['data']['users'];
+
+    users.forEach((user) {
+      loadedUsers.add(User(
+          name: user['name'],
+          email: user['email'],
+          id: user['_id'],
+          role: user['role']));
+    });
+    _users = loadedUsers;
+    notifyListeners();
+  }
 
   Future<void> getUserData() async {
     final url = '$URL/api/v1/users/getuser?_id=$_userID';

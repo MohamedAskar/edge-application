@@ -260,8 +260,13 @@ class _CartScreenState extends State<CartScreen> {
                                                 progress
                                                     .showWithText('Loading...');
                                                 await cart.removeItem(
-                                                    cartItems[index].id,
-                                                    userID);
+                                                  userID: userID,
+                                                  itemID: cartItems[index].id,
+                                                  color: cartItems[index]
+                                                      .selectedColor,
+                                                  size: cartItems[index]
+                                                      .selectedSize,
+                                                );
                                                 progress.dismiss();
                                               },
                                             )

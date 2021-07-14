@@ -25,7 +25,7 @@ class CartProvider with ChangeNotifier {
     return _totalQuantity;
   }
 
-  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+  static const URL = 'http://192.168.189.44:3000';
 
   Future<void> getTotalQty({@required String userID}) async {
     var qty = 0;
@@ -114,12 +114,21 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removeItem(String id, String userID) async {
+  Future<void> removeItem(
+      {@required String itemID,
+      @required String userID,
+      @required String color,
+      @required String size}) async {
     //_cartItems.remove(id);
     final url = '$URL/api/v1/cart';
 
     final body = json.encode(
-      {'owner': userID, 'itemId': id},
+      {
+        'owner': userID,
+        'itemId': itemID,
+        "color": color,
+        "size": size,
+      },
     );
 
     print(body);

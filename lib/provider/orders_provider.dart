@@ -13,7 +13,7 @@ class OrdersProvider with ChangeNotifier {
     return [..._orders];
   }
 
-  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+  static const URL = 'https://192.168.189.44:3000';
 
   Order findById(String id) {
     return _orders.firstWhere((order) => order.id == id);

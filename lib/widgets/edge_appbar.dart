@@ -104,13 +104,13 @@ class EdgeAppBar extends StatelessWidget {
               ;
             },
           ),
-        if (addItem)
-          IconButton(
-              icon: Icon(
-                Ionicons.add_outline,
-                color: Colors.black,
-              ),
-              onPressed: () {})
+        // if (addItem)
+        //   IconButton(
+        //       icon: Icon(
+        //         Ionicons.add_outline,
+        //         color: Colors.black,
+        //       ),
+        //       onPressed: () {})
       ],
     );
   }
