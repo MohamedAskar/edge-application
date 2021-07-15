@@ -509,6 +509,81 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                     fontWeight: FontWeight.w600),
                               ),
                             ),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            FormBuilderCheckboxGroup(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            style: BorderStyle.solid,
+                                            width: 3,
+                                            color: Colors.black)),
+                                    labelText: 'Available Sizes',
+                                    labelStyle: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600)),
+                                name: 'AvailableSizes',
+                                options: [
+                                  FormBuilderFieldOption(
+                                    value: 'XS',
+                                    child: Text('XS'),
+                                  ),
+                                  FormBuilderFieldOption(
+                                    value: 'S',
+                                    child: Text('S'),
+                                  ),
+                                  FormBuilderFieldOption(
+                                      value: 'M', child: Text('M')),
+                                  FormBuilderFieldOption(
+                                      value: 'L', child: Text('L')),
+                                  FormBuilderFieldOption(
+                                      value: 'XL', child: Text('XL')),
+                                ]),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            FormBuilderCheckboxGroup(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            style: BorderStyle.solid,
+                                            width: 3,
+                                            color: Colors.black)),
+                                    labelText: 'Available Colors',
+                                    labelStyle: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600)),
+                                name: 'Availablecolors',
+                                options: [
+                                  FormBuilderFieldOption(
+                                    value: 'red',
+                                    child: Text('Red'),
+                                  ),
+                                  FormBuilderFieldOption(
+                                    value: 'white',
+                                    child: Text('White'),
+                                  ),
+                                  FormBuilderFieldOption(
+                                      value: 'black', child: Text('Black')),
+                                  FormBuilderFieldOption(
+                                      value: 'Blue', child: Text('Blue')),
+                                  FormBuilderFieldOption(
+                                      value: 'green', child: Text('Green')),
+                                  FormBuilderFieldOption(
+                                      value: 'yellow', child: Text('Yellow')),
+                                  FormBuilderFieldOption(
+                                      value: 'brown', child: Text('Brown')),
+                                  FormBuilderFieldOption(
+                                      value: 'orange', child: Text('Orange')),
+                                  FormBuilderFieldOption(
+                                      value: 'Pink', child: Text('Pink')),
+                                  FormBuilderFieldOption(
+                                      value: 'darkblue',
+                                      child: Text('Dark Blue')),
+                                ]),
 
                             // FormBuilderFilterChip(
                             //   initialValue: !edit ? null : _editedItem.sizes,
