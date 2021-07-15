@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/widgets/edge_appbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -35,6 +36,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
   //   String url = await taskSnapshot.ref.getDownloadURL();
   //   return url;
   // }
+  final List<String> categories = ['Men', 'Woman'];
 
   final List<String> sizes = [
     '37',
@@ -232,6 +234,39 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                 SizedBox(
                                   width: 30,
                                 ),
+                                Flexible(
+                                  child: FormBuilderDropdown(
+                                    name: 'Category',
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              style: BorderStyle.solid,
+                                              width: 3,
+                                              color: Colors.black)),
+                                      fillColor: Colors.black,
+                                      hintStyle: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                      labelText: 'Category',
+                                      labelStyle: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    allowClear: true,
+                                    hint: Text('Select Category'),
+                                    dropdownColor: Colors.white,
+                                    items: categories
+                                        // ignore: non_constant_identifier_names
+                                        .map((Category) => DropdownMenuItem(
+                                              value: Category,
+                                              child: Text('$Category'),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+
                                 // Flexible(
                                 //   child: FormBuilderTypeAhead(
                                 //     initialValue:
@@ -387,10 +422,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                         style: BorderStyle.solid,
                                         width: 3,
                                         color: Colors.black)),
-                                prefixIcon: Icon(
-                                  Icons.description_outlined,
-                                  color: Colors.black54,
-                                ),
                                 fillColor: Colors.black,
                                 hintText: 'Enter item Description',
                                 hintStyle: TextStyle(
@@ -404,6 +435,81 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                     fontWeight: FontWeight.w600),
                               ),
                             ),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            FormBuilderRadioGroup(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            style: BorderStyle.solid,
+                                            width: 3,
+                                            color: Colors.black)),
+                                    labelText: 'SubCategory',
+                                    labelStyle: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600)),
+                                name: 'Subcategory',
+                                options: [
+                                  FormBuilderFieldOption(
+                                    value: 'Pants',
+                                    child: Text('Pants'),
+                                  ),
+                                  FormBuilderFieldOption(
+                                    value: 'Tops',
+                                    child: Text('Tops'),
+                                  ),
+                                  FormBuilderFieldOption(
+                                      value: 'T-shirt', child: Text('T-shirt')),
+                                  FormBuilderFieldOption(
+                                      value: 'Jacket', child: Text('Jacket')),
+                                  FormBuilderFieldOption(
+                                      value: 'Shorts', child: Text('Shorts')),
+                                  FormBuilderFieldOption(
+                                      value: 'SweetShirt',
+                                      child: Text('Sweet-shirt')),
+                                  FormBuilderFieldOption(
+                                      value: 'Shoes', child: Text('Shoes'))
+                                ]),
+                            SizedBox(
+                              height: 16,
+                            ),
+
+                            FormBuilderTextField(
+                              initialValue: !edit ? null : _editedItem.name,
+                              name: 'Seller',
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.maxLength(context, 20),
+                                FormBuilderValidators.required(context),
+                              ]),
+                              keyboardType: TextInputType.name,
+                              textInputAction: TextInputAction.next,
+                              style: Theme.of(context).textTheme.bodyText1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        style: BorderStyle.solid,
+                                        width: 3,
+                                        color: Colors.black)),
+                                prefixIcon: Icon(
+                                  Icons.branding_watermark_outlined,
+                                  color: Colors.black54,
+                                ),
+                                fillColor: Colors.black,
+                                hintText: ' enter name of seller',
+                                hintStyle: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                                labelText: 'Seller',
+                                labelStyle: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+
                             // FormBuilderFilterChip(
                             //   initialValue: !edit ? null : _editedItem.sizes,
                             //   alignment: WrapAlignment.start,
