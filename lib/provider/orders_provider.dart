@@ -13,7 +13,7 @@ class OrdersProvider with ChangeNotifier {
     return [..._orders];
   }
 
-  static const URL = 'https://192.168.189.44:3000';
+  static const URL = 'http://192.168.220.44:3000';
 
   Order findById(String id) {
     return _orders.firstWhere((order) => order.id == id);
@@ -75,8 +75,6 @@ class OrdersProvider with ChangeNotifier {
     );
 
     final decodedData = json.decode(response.body) as Map<dynamic, dynamic>;
-
-    print(decodedData['data']);
 
     if (decodedData['data'].isEmpty) {
       _orders = [];

@@ -1,4 +1,5 @@
 import 'package:edge/provider/auth.dart';
+import 'package:edge/screens/manage_orders.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -7,6 +8,8 @@ import 'package:provider/provider.dart';
 
 class ManageUsersScreen extends StatefulWidget {
   static const routename = 'manage-users';
+  final bool isOrders;
+  ManageUsersScreen({this.isOrders});
   @override
   _ManageUsersScreenState createState() => _ManageUsersScreenState();
 }
@@ -31,13 +34,24 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffF4F4F4),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: EdgeAppBar(
-          cart: false,
-          profile: false,
-          search: false,
+      appBar: AppBar(
+        centerTitle: false,
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'edge.',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Ionicons.search),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -55,7 +69,28 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                       position: i,
                       child: ScaleAnimation(
                         child: FadeInAnimation(
-                          child: Container(
+                          child: InkWell(
+                            onTap: widget.isOrders
+                                ? () {
+                                    Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                            transitionDuration: const Duration(
+                                                milliseconds: 150),
+                                            opaque: false,
+                                            pageBuilder: (_, animation1, __) {
+                                              return SlideTransition(
+                                                  position: Tween(
+                                                          begin:
+                                                              Offset(1.0, 0.0),
+                                                          end: Offset(0.0, 0.0))
+                                                      .animate(animation1),
+                                                  child: ManageOrdersPage(
+                                                    userID: users[i].id,
+                                                  ));
+                                            }));
+                                  }
+                                : null,
                             child: Card(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(

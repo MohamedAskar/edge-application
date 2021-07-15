@@ -26,6 +26,7 @@ class Auth with ChangeNotifier {
   String _userID;
   String userName;
   String email;
+  bool isAdmin;
   List<User> _users;
 
   List<User> get users {
@@ -40,15 +41,13 @@ class Auth with ChangeNotifier {
     return false;
   }
 
-  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+  static const URL = 'http://192.168.220.44:3000';
 
   Future<void> getAllUsers() async {
     final url = '$URL/api/v1/users';
     final response = await http.get(Uri.parse(url));
 
     List<User> loadedUsers = [];
-
-    print(response.body);
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     final List<dynamic> users = data['data']['users'];
@@ -77,6 +76,7 @@ class Auth with ChangeNotifier {
     print(userName);
     email = data['data'][0]['email'];
     print(email);
+
     notifyListeners();
   }
 
@@ -119,6 +119,8 @@ class Auth with ChangeNotifier {
       } else {
         _userID = JwtDecoder.decode(responseData['token'])['id'];
         _jwtToken = responseData['token'];
+        isAdmin = (responseData['role'] == 'admin') ? true : false;
+        print('isAdmin: $isAdmin');
         print(responseData);
         print(JwtDecoder.decode(responseData['token']));
         print(JwtDecoder.isExpired(responseData['token']));
@@ -128,7 +130,8 @@ class Auth with ChangeNotifier {
       }
       _autoLogout();
       notifyListeners();
-      sharedPreferences.setString('jwt', responseData['token']);
+      sharedPreferences.setString('jwt', _jwtToken);
+      sharedPreferences.setBool('isAdmin', isAdmin);
     } catch (e) {
       throw e;
     }
@@ -166,6 +169,7 @@ class Auth with ChangeNotifier {
     }
 
     _jwtToken = sharedPreferences.getString('jwt');
+    isAdmin = sharedPreferences.getBool('isAdmin');
 
     if (JwtDecoder.isExpired(_jwtToken)) {
       return false;
@@ -181,6 +185,7 @@ class Auth with ChangeNotifier {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     _jwtToken = null;
     _userID = null;
+    isAdmin = null;
     notifyListeners();
     sharedPreferences.clear();
   }

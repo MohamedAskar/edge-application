@@ -28,7 +28,7 @@ class ItemsProvider with ChangeNotifier {
     return _item;
   }
 
-  static const URL = 'http://192.168.189.44:3000';
+  static const URL = 'http://192.168.220.44:3000';
 
   Future<void> getAllData() async {
     var url = '$URL/api/v1/items';
@@ -38,7 +38,6 @@ class ItemsProvider with ChangeNotifier {
     List<ItemSummary> loadedItems = [];
 
     var response = await http.get(Uri.parse(url));
-    print(response.body);
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     final List<dynamic> extractedItems = data['data']['allItems'];
@@ -119,6 +118,7 @@ class ItemsProvider with ChangeNotifier {
     _items = [];
     final data = json.decode(response.body) as Map<String, dynamic>;
     totalNoItems = data['results'];
+    print(totalNoItems);
     final List<dynamic> extractedItems = data['data']['paginatedItems'];
     extractedItems.forEach((item) {
       loadedItems.add(ItemSummary(

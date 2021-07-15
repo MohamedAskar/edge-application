@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/auth.dart';
+import 'package:edge/screens/admin_screen.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/sign_in_screen.dart';
 import 'package:flutter/material.dart';
@@ -265,10 +266,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         context, pattern,
                                         errorText:
                                             'Password should contain at least one digit. \n'
-                                            'Password should contain at least 6 characters. \n'
-                                            'Password should contain at least one upper case. \n'
-                                            'Password should contain at least one lower case. \n'
-                                            'Password should contain at least one special charactar.')
+                                            'Password should contain at least 6 characters. \n')
                                   ]),
                                   keyboardType: TextInputType.visiblePassword,
                                   style: Theme.of(context).textTheme.bodyText1,
@@ -369,20 +367,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                               print('user signed up');
                               progress.dismiss();
-                              Navigator.pushReplacement(
-                                  context,
-                                  PageRouteBuilder(
-                                      transitionDuration:
-                                          const Duration(milliseconds: 150),
-                                      opaque: false,
-                                      pageBuilder: (_, animation1, __) {
-                                        return SlideTransition(
-                                            position: Tween(
-                                                    begin: Offset(1.0, 0.0),
-                                                    end: Offset(0.0, 0.0))
-                                                .animate(animation1),
-                                            child: HomePage());
-                                      }));
+                              if (auth.isAdmin) {
+                                Navigator.pushReplacement(
+                                    context,
+                                    PageRouteBuilder(
+                                        transitionDuration:
+                                            const Duration(milliseconds: 150),
+                                        opaque: false,
+                                        pageBuilder: (_, animation1, __) {
+                                          return SlideTransition(
+                                              position: Tween(
+                                                      begin: Offset(1.0, 0.0),
+                                                      end: Offset(0.0, 0.0))
+                                                  .animate(animation1),
+                                              child: AdminPage());
+                                        }));
+                              } else {
+                                Navigator.pushReplacement(
+                                    context,
+                                    PageRouteBuilder(
+                                        transitionDuration:
+                                            const Duration(milliseconds: 150),
+                                        opaque: false,
+                                        pageBuilder: (_, animation1, __) {
+                                          return SlideTransition(
+                                              position: Tween(
+                                                      begin: Offset(1.0, 0.0),
+                                                      end: Offset(0.0, 0.0))
+                                                  .animate(animation1),
+                                              child: HomePage());
+                                        }));
+                              }
                             } on HttpException catch (e) {
                               progress.dismiss();
                               showDialog(

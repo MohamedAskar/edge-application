@@ -103,18 +103,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 Ionicons.bag_handle_outline,
               ),
               onPressed: () {
-                Navigator.of(context)
-                  ..push(PageRouteBuilder(
-                      transitionDuration: const Duration(milliseconds: 150),
-                      opaque: false,
-                      pageBuilder: (_, animation1, __) {
-                        return SlideTransition(
-                            position: Tween(
-                                    begin: Offset(1.0, 0.0),
-                                    end: Offset(0.0, 0.0))
-                                .animate(animation1),
-                            child: CartScreen());
-                      }));
+                Navigator.of(context).push(PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 150),
+                    opaque: false,
+                    pageBuilder: (_, animation1, __) {
+                      return SlideTransition(
+                          position: Tween(
+                                  begin: Offset(1.0, 0.0),
+                                  end: Offset(0.0, 0.0))
+                              .animate(animation1),
+                          child: CartScreen());
+                    }));
               },
             ),
           ),
@@ -124,18 +123,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.of(context)
-                ..push(PageRouteBuilder(
-                    transitionDuration: const Duration(milliseconds: 150),
-                    opaque: false,
-                    pageBuilder: (_, animation1, __) {
-                      return SlideTransition(
-                          position: Tween(
-                                  begin: Offset(1.0, 0.0),
-                                  end: Offset(0.0, 0.0))
-                              .animate(animation1),
-                          child: ProfileScreen());
-                    }));
+              Navigator.of(context).push(PageRouteBuilder(
+                  transitionDuration: const Duration(milliseconds: 150),
+                  opaque: false,
+                  pageBuilder: (_, animation1, __) {
+                    return SlideTransition(
+                        position: Tween(
+                                begin: Offset(1.0, 0.0), end: Offset(0.0, 0.0))
+                            .animate(animation1),
+                        child: ProfileScreen());
+                  }));
             },
           )
         ],

@@ -37,13 +37,20 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     final itemsProvider = Provider.of<ItemsProvider>(context);
     final list = itemsProvider.items;
 
-    print(list.length);
     return Scaffold(
       backgroundColor: Color(0xffF4F4F4),
       appBar: AppBar(
         centerTitle: false,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text('edge.', style: Theme.of(context).textTheme.headline1),
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'edge.',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(Ionicons.search),
@@ -56,24 +63,29 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
               child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
-              child: AnimationLimiter(
-                child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(10.0),
-                    itemCount: list.length,
-                    shrinkWrap: true,
-                    itemBuilder: (ctx, i) =>
-                        AnimationConfiguration.staggeredList(
-                          position: i,
-                          child: ScaleAnimation(
-                            child: FadeInAnimation(
-                              child: AdminItem(
-                                  title: list[i].itemName,
-                                  imageUrl: list[i].image,
-                                  price: list[i].price.toString()),
-                            ),
-                          ),
-                        )),
+              padding: const EdgeInsets.only(bottom: 60),
+              child: Column(
+                children: [
+                  AnimationLimiter(
+                    child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(10.0),
+                        itemCount: list.length,
+                        shrinkWrap: true,
+                        itemBuilder: (ctx, i) =>
+                            AnimationConfiguration.staggeredList(
+                              position: i,
+                              child: ScaleAnimation(
+                                child: FadeInAnimation(
+                                  child: AdminItem(
+                                      title: list[i].itemName,
+                                      imageUrl: list[i].image,
+                                      price: list[i].price.toString()),
+                                ),
+                              ),
+                            )),
+                  ),
+                ],
               ),
             ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

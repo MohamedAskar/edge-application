@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/auth.dart';
+import 'package:edge/screens/admin_screen.dart';
 import 'package:edge/screens/home_screen.dart';
 import 'package:edge/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
@@ -251,20 +252,37 @@ class _SignInScreenState extends State<SignInScreen> {
 
                               print('user logged in');
                               progress.dismiss();
-                              Navigator.pushReplacement(
-                                  context,
-                                  PageRouteBuilder(
-                                      transitionDuration:
-                                          const Duration(milliseconds: 150),
-                                      opaque: false,
-                                      pageBuilder: (_, animation1, __) {
-                                        return SlideTransition(
-                                            position: Tween(
-                                                    begin: Offset(1.0, 0.0),
-                                                    end: Offset(0.0, 0.0))
-                                                .animate(animation1),
-                                            child: HomePage());
-                                      }));
+                              if (auth.isAdmin) {
+                                Navigator.pushReplacement(
+                                    context,
+                                    PageRouteBuilder(
+                                        transitionDuration:
+                                            const Duration(milliseconds: 150),
+                                        opaque: false,
+                                        pageBuilder: (_, animation1, __) {
+                                          return SlideTransition(
+                                              position: Tween(
+                                                      begin: Offset(1.0, 0.0),
+                                                      end: Offset(0.0, 0.0))
+                                                  .animate(animation1),
+                                              child: AdminPage());
+                                        }));
+                              } else {
+                                Navigator.pushReplacement(
+                                    context,
+                                    PageRouteBuilder(
+                                        transitionDuration:
+                                            const Duration(milliseconds: 150),
+                                        opaque: false,
+                                        pageBuilder: (_, animation1, __) {
+                                          return SlideTransition(
+                                              position: Tween(
+                                                      begin: Offset(1.0, 0.0),
+                                                      end: Offset(0.0, 0.0))
+                                                  .animate(animation1),
+                                              child: HomePage());
+                                        }));
+                              }
                             } on HttpException catch (e) {
                               progress.dismiss();
                               showDialog(

@@ -3,21 +3,14 @@ import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/provider/orders_provider.dart';
 import 'package:edge/screens/Edit_item_screen.dart';
-import 'package:edge/screens/admin_dashboard.dart';
-import 'package:edge/screens/cart_screen.dart';
-import 'package:edge/screens/category_screen.dart';
-import 'package:edge/screens/checkout_screen.dart';
+import 'package:edge/screens/admin_screen.dart';
+
 import 'package:edge/screens/home_screen.dart';
-import 'package:edge/screens/item_details_page.dart';
 import 'package:edge/screens/manage_products_screen.dart';
 import 'package:edge/screens/manage_users.dart';
-import 'package:edge/screens/order_placed.dart';
-import 'package:edge/screens/orders_screen.dart';
-import 'package:edge/screens/sign_in_screen.dart';
+
 import 'package:edge/screens/sign_up_screen.dart';
-import 'package:edge/screens/profile_screen.dart';
 import 'package:edge/screens/splash_screen.dart';
-import 'package:edge/screens/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +21,18 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  String routeMe(bool isLogged, bool isAdmin) {
+    String route;
+    if (isLogged) {
+      if (isAdmin) {
+        route = AdminPage.routeName;
+      } else
+        route = HomePage.routeName;
+    } else
+      route = SignUpScreen.routeName;
+    return route;
+  }
+
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
@@ -79,17 +84,14 @@ class MyApp extends StatelessWidget {
                     fontSize: 15,
                     color: Colors.black54)),
           ),
-          home: AdminDashboard(),
-          // home: FutureBuilder(
-          //     future: auth.tryAutologin(),
-          //     builder: (context, authResult) {
-          //       return SplashScreen(
-          //           route: !authResult.hasData
-          //               ? ''
-          //               : authResult.data
-          //                   ? HomePage.routeName
-          //                   : SignUpScreen.routeName);
-          // }),
+          home: FutureBuilder(
+              future: auth.tryAutologin(),
+              builder: (context, authResult) {
+                return SplashScreen(
+                    route: !authResult.hasData
+                        ? ''
+                        : routeMe(authResult.data, auth.isAdmin));
+              }),
           builder: (context, child) => ResponsiveWrapper.builder(child,
               maxWidth: 1200,
               minWidth: 480,
@@ -107,6 +109,7 @@ class MyApp extends StatelessWidget {
             ManageProductsScreen.routeName: (ctx) => ManageProductsScreen(),
             ManageUsersScreen.routename: (ctx) => ManageUsersScreen(),
             EditItemScreen.routeName: (ctx) => EditItemScreen(),
+            AdminPage.routeName: (ctx) => AdminPage(),
           },
         );
       }),

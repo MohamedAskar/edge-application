@@ -25,7 +25,7 @@ class CartProvider with ChangeNotifier {
     return _totalQuantity;
   }
 
-  static const URL = 'http://192.168.189.44:3000';
+  static const URL = 'http://192.168.220.44:3000';
 
   Future<void> getTotalQty({@required String userID}) async {
     var qty = 0;
