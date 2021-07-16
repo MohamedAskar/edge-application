@@ -25,24 +25,28 @@ class CartProvider with ChangeNotifier {
     return _totalQuantity;
   }
 
-  static const URL = 'http://192.168.220.44:3000';
+  static const URL = 'http://192.168.173.44:3000';
 
   Future<void> getTotalQty({@required String userID}) async {
     var qty = 0;
     final url = '$URL/api/v1/cart/qty?owner=$userID';
     print(url);
 
-    var response = await http.get(Uri.parse(url));
-    final responseData = json.decode(response.body) as Map<String, dynamic>;
-    print(responseData);
+    try {
+      var response = await http.get(Uri.parse(url));
+      final responseData = json.decode(response.body) as Map<String, dynamic>;
+      print(responseData);
 
-    if (responseData['status'] == 'error') {
-      qty = 0;
-    } else {
-      qty = responseData['quantity'];
+      if (responseData['status'] == 'error') {
+        qty = 0;
+      } else {
+        qty = responseData['quantity'];
+      }
+
+      _totalQuantity = qty;
+    } catch (e) {
+      throw e;
     }
-
-    _totalQuantity = qty;
     notifyListeners();
   }
 
@@ -62,14 +66,18 @@ class CartProvider with ChangeNotifier {
         'SubCategory': item.subCategory
       }
     };
-    final body = json.encode(data);
-    final response = await http.post(
-      Uri.parse(url),
-      body: body,
-      headers: {"Content-Type": "application/json"},
-    );
-    print(response.body);
-    getTotalQty(userID: userID);
+    try {
+      final body = json.encode(data);
+      final response = await http.post(
+        Uri.parse(url),
+        body: body,
+        headers: {"Content-Type": "application/json"},
+      );
+      print(response.body);
+      getTotalQty(userID: userID);
+    } catch (e) {
+      throw e;
+    }
 
     notifyListeners();
   }
@@ -79,37 +87,41 @@ class CartProvider with ChangeNotifier {
     print(url);
     List<CartItem> loadedItems = [];
 
-    final response = await http.get(
-      Uri.parse(url),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
 
-    final decodedData = json.decode(response.body) as Map<String, dynamic>;
-    print(decodedData);
+      final decodedData = json.decode(response.body) as Map<String, dynamic>;
+      print(decodedData);
 
-    final List<dynamic> extractedData = decodedData['data']['items'];
-    if (extractedData == []) {
-      _cartItems = [];
-      _totalAmount = 0.0;
-    } else {
-      extractedData.forEach((cartItem) {
-        if (cartItem != null) {
-          loadedItems.add(
-            CartItem(
-              id: cartItem['itemId'].toString(),
-              quantity: cartItem['qty'],
-              name: cartItem['itemName'],
-              price: cartItem["price"],
-              image: cartItem['images'],
-              selectedColor: cartItem['color'],
-              selectedSize: cartItem['size'],
-              seller: cartItem['seller'],
-              subCategory: cartItem['SubCategory'],
-            ),
-          );
-        }
-      });
-      _totalAmount = decodedData['data']['totalPrice'];
-      _cartItems = loadedItems;
+      final List<dynamic> extractedData = decodedData['data']['items'];
+      if (extractedData == []) {
+        _cartItems = [];
+        _totalAmount = 0.0;
+      } else {
+        extractedData.forEach((cartItem) {
+          if (cartItem != null) {
+            loadedItems.add(
+              CartItem(
+                id: cartItem['itemId'].toString(),
+                quantity: cartItem['qty'],
+                name: cartItem['itemName'],
+                price: cartItem["price"],
+                image: cartItem['images'],
+                selectedColor: cartItem['color'],
+                selectedSize: cartItem['size'],
+                seller: cartItem['seller'],
+                subCategory: cartItem['SubCategory'],
+              ),
+            );
+          }
+        });
+        _totalAmount = decodedData['data']['totalPrice'];
+        _cartItems = loadedItems;
+      }
+    } catch (e) {
+      throw e;
     }
     notifyListeners();
   }
@@ -132,15 +144,19 @@ class CartProvider with ChangeNotifier {
     );
 
     print(body);
-    final response = await http.delete(
-      Uri.parse(url),
-      body: body,
-      headers: {"Content-Type": "application/json"},
-    );
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        body: body,
+        headers: {"Content-Type": "application/json"},
+      );
 
-    print(response.body);
-    getCartItems(userID: userID);
-    getTotalQty(userID: userID);
+      print(response.body);
+      getCartItems(userID: userID);
+      getTotalQty(userID: userID);
+    } catch (e) {
+      throw e;
+    }
     notifyListeners();
   }
 }

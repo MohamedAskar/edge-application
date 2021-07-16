@@ -1,17 +1,14 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/item.dart';
-import 'package:edge/provider/items_provider.dart';
+import 'package:edge/provider/color_picker.dart';
+import 'package:edge/screens/admin_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
-import 'package:flutter/foundation.dart';
+import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
-import 'package:provider/provider.dart';
-
-import 'package:path/path.dart' as path;
+import 'package:ionicons/ionicons.dart';
 
 class EditItemScreen extends StatefulWidget {
   static const routeName = '/edit-item-screen';
@@ -22,8 +19,6 @@ class EditItemScreen extends StatefulWidget {
 
 class _EditItemScreenState extends State<EditItemScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-
-  final _categoryController = TextEditingController();
 
   // Future<String> uploadImage(File file, String folderName) async {
   //   FirebaseStorage firebaseStorage =
@@ -37,20 +32,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
   //   return url;
   // }
   final List<String> categories = ['Men', 'Woman'];
-
-  final List<String> sizes = [
-    '37',
-    '38',
-    '39',
-    '40',
-    '41',
-    '42',
-    '43',
-    '44',
-    '45',
-    '46',
-    '47'
-  ];
 
   Item _editedItem = Item(
     id: null,
@@ -68,6 +49,15 @@ class _EditItemScreenState extends State<EditItemScreen> {
   var _isInit = true;
 
   var edit = false;
+  String category;
+  List<String> menCategories = ['T-Shirt', 'Shirt', 'Jeans', 'Polo', 'Tie Dye'];
+  List<String> womenCategories = [
+    'T-Shirt',
+    'Dress',
+    'Pants',
+    'Tops',
+    'Tie Dye'
+  ];
 
   @override
   void didChangeDependencies() {
@@ -85,13 +75,19 @@ class _EditItemScreenState extends State<EditItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: EdgeAppBar(
-          cart: false,
-          profile: false,
-          search: false,
+      appBar: AppBar(
+        centerTitle: false,
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'edge.',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
         ),
       ),
       body: ProgressHUD(
@@ -174,7 +170,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                         color: Colors.black)),
                                 prefixIcon: Icon(
                                   Icons.title,
-                                  color: Colors.black54,
+                                  color: Colors.black,
                                 ),
                                 fillColor: Colors.black,
                                 hintText: 'Please enter item name',
@@ -184,7 +180,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                     fontWeight: FontWeight.w600),
                                 labelText: 'Name*',
                                 labelStyle: TextStyle(
-                                    color: Colors.black54,
+                                    color: Colors.black,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600),
                               ),
@@ -215,7 +211,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                               color: Colors.black)),
                                       prefixIcon: Icon(
                                         Icons.attach_money_outlined,
-                                        color: Colors.black54,
+                                        color: Colors.black,
                                       ),
                                       fillColor: Colors.black,
                                       hintText: 'Please enter item price',
@@ -225,18 +221,24 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                           fontWeight: FontWeight.w600),
                                       labelText: 'Price',
                                       labelStyle: TextStyle(
-                                          color: Colors.black54,
+                                          color: Colors.black,
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600),
                                     ),
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 30,
+                                  width: 16,
                                 ),
                                 Flexible(
                                   child: FormBuilderDropdown(
                                     name: 'Category',
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        category = newValue;
+                                        print(category);
+                                      });
+                                    },
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                           borderSide: BorderSide(
@@ -250,160 +252,76 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                           fontWeight: FontWeight.w600),
                                       labelText: 'Category',
                                       labelStyle: TextStyle(
-                                          color: Colors.black54,
+                                          color: Colors.black,
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600),
                                     ),
                                     allowClear: true,
-                                    hint: Text('Select Category'),
+                                    hint: Text(
+                                      'Select Category',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                     dropdownColor: Colors.white,
                                     items: categories
                                         // ignore: non_constant_identifier_names
                                         .map((Category) => DropdownMenuItem(
                                               value: Category,
-                                              child: Text('$Category'),
+                                              child: Text(
+                                                '$Category',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
                                             ))
                                         .toList(),
                                   ),
                                 ),
-
-                                // Flexible(
-                                //   child: FormBuilderTypeAhead(
-                                //     initialValue:
-                                //         !edit ? null : _editedItem.category,
-                                //     validators: [
-                                //       FormBuilderValidators.required(),
-                                //       (category) {
-                                //         if (CategoryService.category
-                                //             .contains(category)) {
-                                //           return null;
-                                //         } else {
-                                //           return 'Choose a valid category';
-                                //         }
-                                //       }
-                                //     ],
-                                //     attribute: 'Category',
-                                //     decoration: InputDecoration(
-                                //       fillColor: Colors.black,
-                                //       labelText: 'Category',
-                                //       hintText: 'Enter item Category',
-                                //       hintStyle: TextStyle(
-                                //           color: Colors.black54,
-                                //           fontSize: 16,
-                                //           fontWeight: FontWeight.w600),
-                                //       prefixIcon: Icon(
-                                //         Icons.category_outlined,
-                                //         color: Colors.black,
-                                //       ),
-                                //       suffixIcon: Icon(
-                                //         Icons.arrow_drop_down,
-                                //         color: Colors.black,
-                                //       ),
-                                //       labelStyle: TextStyle(
-                                //           color: Colors.black54,
-                                //           fontWeight: FontWeight.w600),
-                                //     ),
-                                //     suggestionsBoxDecoration:
-                                //         SuggestionsBoxDecoration(
-                                //             hasScrollbar: true),
-                                //     textFieldConfiguration:
-                                //         TextFieldConfiguration(
-                                //       textInputAction: TextInputAction.next,
-                                //       controller: this._categoryController,
-                                //       style: TextStyle(
-                                //           color: Colors.black,
-                                //           fontWeight: FontWeight.w600),
-                                //     ),
-                                //     itemBuilder: (context, suggestion) {
-                                //       return ListTile(
-                                //         title: Text(
-                                //           suggestion,
-                                //           style: TextStyle(
-                                //               color: Colors.black,
-                                //               fontWeight: FontWeight.w600),
-                                //         ),
-                                //       );
-                                //     },
-                                //     suggestionsCallback: (pattern) {
-                                //       return CategoryService.getSuggestions(
-                                //           pattern);
-                                //     },
-                                //     onSuggestionSelected: (suggestion) {
-                                //       this._categoryController.text =
-                                //           suggestion;
-                                //     },
-                                //   ),
-                                // ),
                               ],
                             ),
                             SizedBox(
                               height: 16,
                             ),
-                            // FormBuilderImagePicker(
-                            //   attribute: 'pick',
-                            //   initialValue: [
-                            //     edit
-                            //         ? CachedNetworkImage(
-                            //             imageUrl: _editedItem.images[0],
-                            //             progressIndicatorBuilder: (context, url,
-                            //                     downloadProgress) =>
-                            //                 CircularProgressIndicator(
-                            //                     value:
-                            //                         downloadProgress.progress),
-                            //             errorWidget: (context, url, error) =>
-                            //                 Icon(Icons.error),
-                            //           )
-                            //         : null,
-                            //     edit
-                            //         ? CachedNetworkImage(
-                            //             imageUrl: _editedItem.images[1],
-                            //             progressIndicatorBuilder: (context, url,
-                            //                     downloadProgress) =>
-                            //                 CircularProgressIndicator(
-                            //                     value:
-                            //                         downloadProgress.progress),
-                            //             errorWidget: (context, url, error) =>
-                            //                 Icon(Icons.error),
-                            //           )
-                            //         : null,
-                            //     edit
-                            //         ? CachedNetworkImage(
-                            //             imageUrl: _editedItem.images[2],
-                            //             progressIndicatorBuilder: (context, url,
-                            //                     downloadProgress) =>
-                            //                 CircularProgressIndicator(
-                            //                     value:
-                            //                         downloadProgress.progress),
-                            //             errorWidget: (context, url, error) =>
-                            //                 Icon(Icons.error),
-                            //           )
-                            //         : null,
-                            //   ],
-                            //   cameraIcon: Icon(Icons.add_a_photo_outlined),
-                            //   galleryIcon: Icon(Icons.image_outlined),
-                            //   imageMargin: const EdgeInsets.only(right: 10),
-                            //   decoration: const InputDecoration(
-                            //     labelText: 'Images',
-                            //     labelStyle: TextStyle(
-                            //         color: Colors.black54,
-                            //         fontWeight: FontWeight.w600),
-                            //   ),
-
-                            //   maxImages: 3,
-
-                            //   iconColor: Colors.black,
-                            //   // readOnly: true,
-                            //   validators: [
-                            //     FormBuilderValidators.required(),
-                            //     FormBuilderValidators.minLength(3),
-                            //     (images) {
-                            //       if (images.length < 2) {
-                            //         return 'Two or more images required.';
-                            //       }
-                            //       return null;
-                            //     }
-                            //   ],
-                            // ),
+                            FormBuilderTextField(
+                              initialValue: !edit ? null : _editedItem.name,
+                              name: 'Image',
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.url(context),
+                                FormBuilderValidators.required(context),
+                              ]),
+                              keyboardType: TextInputType.name,
+                              textInputAction: TextInputAction.next,
+                              style: Theme.of(context).textTheme.bodyText1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        style: BorderStyle.solid,
+                                        width: 3,
+                                        color: Colors.black)),
+                                prefixIcon: Icon(
+                                  Icons.image_outlined,
+                                  color: Colors.black,
+                                ),
+                                fillColor: Colors.black,
+                                hintText: 'Please enter image URL',
+                                hintStyle: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                                labelText: 'Image URL*',
+                                labelStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 16,
+                            ),
                             FormBuilderTextField(
                               initialValue:
                                   !edit ? null : _editedItem.description,
@@ -430,7 +348,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                     fontWeight: FontWeight.w600),
                                 labelText: 'Description',
                                 labelStyle: TextStyle(
-                                    color: Colors.black54,
+                                    color: Colors.black,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600),
                               ),
@@ -438,76 +356,115 @@ class _EditItemScreenState extends State<EditItemScreen> {
                             SizedBox(
                               height: 16,
                             ),
-                            FormBuilderRadioGroup(
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            style: BorderStyle.solid,
-                                            width: 3,
-                                            color: Colors.black)),
-                                    labelText: 'SubCategory',
-                                    labelStyle: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600)),
-                                name: 'Subcategory',
-                                options: [
-                                  FormBuilderFieldOption(
-                                    value: 'Pants',
-                                    child: Text('Pants'),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: FormBuilderTextField(
+                                    initialValue:
+                                        !edit ? null : _editedItem.name,
+                                    name: 'Seller',
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.maxLength(
+                                          context, 20),
+                                      FormBuilderValidators.required(context),
+                                    ]),
+                                    keyboardType: TextInputType.name,
+                                    textInputAction: TextInputAction.next,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              style: BorderStyle.solid,
+                                              width: 3,
+                                              color: Colors.black)),
+                                      prefixIcon: Icon(
+                                        Icons.branding_watermark_outlined,
+                                        color: Colors.black,
+                                      ),
+                                      fillColor: Colors.black,
+                                      hintText: 'Enter name of seller',
+                                      hintStyle: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                      labelText: 'Seller',
+                                      labelStyle: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
-                                  FormBuilderFieldOption(
-                                    value: 'Tops',
-                                    child: Text('Tops'),
-                                  ),
-                                  FormBuilderFieldOption(
-                                      value: 'T-shirt', child: Text('T-shirt')),
-                                  FormBuilderFieldOption(
-                                      value: 'Jacket', child: Text('Jacket')),
-                                  FormBuilderFieldOption(
-                                      value: 'Shorts', child: Text('Shorts')),
-                                  FormBuilderFieldOption(
-                                      value: 'SweetShirt',
-                                      child: Text('Sweet-shirt')),
-                                  FormBuilderFieldOption(
-                                      value: 'Shoes', child: Text('Shoes'))
-                                ]),
-                            SizedBox(
-                              height: 16,
-                            ),
-
-                            FormBuilderTextField(
-                              initialValue: !edit ? null : _editedItem.name,
-                              name: 'Seller',
-                              validator: FormBuilderValidators.compose([
-                                FormBuilderValidators.maxLength(context, 20),
-                                FormBuilderValidators.required(context),
-                              ]),
-                              keyboardType: TextInputType.name,
-                              textInputAction: TextInputAction.next,
-                              style: Theme.of(context).textTheme.bodyText1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        style: BorderStyle.solid,
-                                        width: 3,
-                                        color: Colors.black)),
-                                prefixIcon: Icon(
-                                  Icons.branding_watermark_outlined,
-                                  color: Colors.black54,
                                 ),
-                                fillColor: Colors.black,
-                                hintText: ' enter name of seller',
-                                hintStyle: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                                labelText: 'Seller',
-                                labelStyle: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Flexible(
+                                  child: FormBuilderDropdown(
+                                    name: 'Category',
+                                    onSaved: (newValue) {
+                                      setState(() {
+                                        category = newValue;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              style: BorderStyle.solid,
+                                              width: 3,
+                                              color: Colors.black)),
+                                      fillColor: Colors.black,
+                                      hintStyle: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                      labelText: 'SubCategory',
+                                      labelStyle: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    allowClear: true,
+                                    hint: Text(
+                                      'Select Subcategory',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    dropdownColor: Colors.white,
+                                    items: (category == 'Men')
+                                        ? menCategories
+                                            // ignore: non_constant_identifier_names
+                                            .map((Category) => DropdownMenuItem(
+                                                  value: Category,
+                                                  child: Text(
+                                                    '$Category',
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ))
+                                            .toList()
+                                        : womenCategories
+                                            // ignore: non_constant_identifier_names
+                                            .map((Category) => DropdownMenuItem(
+                                                  value: Category,
+                                                  child: Text(
+                                                    '$Category',
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ))
+                                            .toList(),
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(
                               height: 16,
@@ -521,25 +478,58 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                             color: Colors.black)),
                                     labelText: 'Available Sizes',
                                     labelStyle: TextStyle(
-                                        color: Colors.black54,
+                                        color: Colors.black,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600)),
                                 name: 'AvailableSizes',
                                 options: [
                                   FormBuilderFieldOption(
                                     value: 'XS',
-                                    child: Text('XS'),
+                                    child: Text(
+                                      'XS',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                   FormBuilderFieldOption(
                                     value: 'S',
-                                    child: Text('S'),
+                                    child: Text(
+                                      'S',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                   FormBuilderFieldOption(
-                                      value: 'M', child: Text('M')),
+                                      value: 'M',
+                                      child: Text(
+                                        'M',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
+                                      )),
                                   FormBuilderFieldOption(
-                                      value: 'L', child: Text('L')),
+                                      value: 'L',
+                                      child: Text(
+                                        'L',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
+                                      )),
                                   FormBuilderFieldOption(
-                                      value: 'XL', child: Text('XL')),
+                                      value: 'XL',
+                                      child: Text(
+                                        'XL',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
+                                      )),
                                 ]),
                             SizedBox(
                               height: 16,
@@ -553,61 +543,45 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                             color: Colors.black)),
                                     labelText: 'Available Colors',
                                     labelStyle: TextStyle(
-                                        color: Colors.black54,
+                                        color: Colors.black,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600)),
                                 name: 'Availablecolors',
                                 options: [
                                   FormBuilderFieldOption(
-                                    value: 'red',
-                                    child: Text('Red'),
+                                      value: 'black',
+                                      child: ColorWidget(color: 'black')),
+                                  FormBuilderFieldOption(
+                                    value: 'blanchedalmond',
+                                    child: ColorWidget(color: 'blanchedalmond'),
                                   ),
                                   FormBuilderFieldOption(
-                                    value: 'white',
-                                    child: Text('White'),
+                                    value: 'ghostwhite',
+                                    child: ColorWidget(color: 'ghostwhite'),
                                   ),
                                   FormBuilderFieldOption(
-                                      value: 'black', child: Text('Black')),
+                                      value: 'stone',
+                                      child: ColorWidget(color: 'stone')),
                                   FormBuilderFieldOption(
-                                      value: 'Blue', child: Text('Blue')),
+                                      value: 'sage green',
+                                      child: ColorWidget(color: 'sage green')),
                                   FormBuilderFieldOption(
-                                      value: 'green', child: Text('Green')),
+                                      value: 'khaki',
+                                      child: ColorWidget(color: 'khaki')),
                                   FormBuilderFieldOption(
-                                      value: 'yellow', child: Text('Yellow')),
+                                      value: 'darkslateblue',
+                                      child:
+                                          ColorWidget(color: 'darkslateblue')),
                                   FormBuilderFieldOption(
-                                      value: 'brown', child: Text('Brown')),
+                                      value: 'lilac',
+                                      child: ColorWidget(color: 'lilac')),
                                   FormBuilderFieldOption(
-                                      value: 'orange', child: Text('Orange')),
+                                      value: 'lightpink',
+                                      child: ColorWidget(color: 'lightpink')),
                                   FormBuilderFieldOption(
-                                      value: 'Pink', child: Text('Pink')),
-                                  FormBuilderFieldOption(
-                                      value: 'darkblue',
-                                      child: Text('Dark Blue')),
+                                      value: 'chrome blue',
+                                      child: ColorWidget(color: 'chrome blue')),
                                 ]),
-
-                            // FormBuilderFilterChip(
-                            //   initialValue: !edit ? null : _editedItem.sizes,
-                            //   alignment: WrapAlignment.start,
-                            //   spacing: 20,
-                            //   backgroundColor: Colors.white,
-                            //   selectedColor: Colors.black12,
-                            //   decoration: InputDecoration(
-                            //     fillColor: Colors.black,
-                            //     labelText: 'Available Sizes',
-                            //     labelStyle: TextStyle(
-                            //         color: Colors.black54,
-                            //         fontWeight: FontWeight.w600),
-                            //   ),
-                            //   name: 'Size',
-                            //   options: [
-                            //     ...sizes.map(
-                            //       (e) => FormBuilderFieldOption(
-                            //         value: e,
-                            //         child: Text('EU ' + e),
-                            //       ),
-                            //     )
-                            //   ],
-                            // ),
                           ],
                         ),
                       ),
@@ -618,7 +592,228 @@ class _EditItemScreenState extends State<EditItemScreen> {
                   ),
                   Center(
                     child: MaterialButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        if (_formKey.currentState.saveAndValidate()) {
+                          final inputValues = _formKey.currentState.value;
+                          print(inputValues);
+
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                backgroundColor: Colors.white,
+                                child: Container(
+                                  height: 700,
+                                  width: size.width - 48,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 24),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              'Hurray!',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w800),
+                                            ),
+                                            SizedBox(
+                                              height: 16,
+                                            ),
+                                            Text(
+                                              'Your Item will be published as soon as possible',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      Divider(),
+                                      Center(
+                                        child: ItemWidget(
+                                          id: 'id',
+                                          itemName: inputValues['Name'],
+                                          image: inputValues['Image'],
+                                          price: inputValues['Price'],
+                                        ),
+                                      ),
+                                      Row(children: <Widget>[
+                                        Text(
+                                          "AVAILABLE COLORS",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        Expanded(
+                                          child: new Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 20.0, right: 10.0),
+                                              child: Divider(
+                                                color: Colors.black,
+                                                height: 36,
+                                              )),
+                                        ),
+                                      ]),
+                                      SizedBox(
+                                        height: 60,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount:
+                                              inputValues['Availablecolors']
+                                                  .length,
+                                          itemBuilder: (context, index) =>
+                                              Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(2),
+                                              width: 36,
+                                              height: 36,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                      color: Colors.black,
+                                                      width: 1.5,
+                                                      style:
+                                                          BorderStyle.solid)),
+                                              child: CircleAvatar(
+                                                backgroundColor: Color(
+                                                    ColorPicker().hexColorToInt(
+                                                        inputValues[
+                                                                'Availablecolors']
+                                                            [index])),
+                                                radius: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Row(children: <Widget>[
+                                        Text(
+                                          "AVAILABLE SIZES",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        Expanded(
+                                          child: new Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 20.0, right: 10.0),
+                                              child: Divider(
+                                                color: Colors.black,
+                                                height: 36,
+                                              )),
+                                        ),
+                                      ]),
+                                      SizedBox(
+                                        height: 40,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount:
+                                              inputValues['AvailableSizes']
+                                                  .length,
+                                          itemBuilder: (context, index) =>
+                                              Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4),
+                                            child: Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.black,
+                                                        width: 1.5,
+                                                        style:
+                                                            BorderStyle.solid)),
+                                                child: Center(
+                                                  child: Text(
+                                                    inputValues[
+                                                            'AvailableSizes']
+                                                        [index],
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                )),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 32,
+                                      ),
+                                      Center(
+                                        child: Container(
+                                          width: size.width / 4,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.black,
+                                                  width: 1.5)),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                      transitionDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  150),
+                                                      opaque: false,
+                                                      pageBuilder:
+                                                          (_, animation1, __) {
+                                                        return SlideTransition(
+                                                            position: Tween(
+                                                                    begin:
+                                                                        Offset(
+                                                                            1.0,
+                                                                            0.0),
+                                                                    end: Offset(
+                                                                        0.0,
+                                                                        0.0))
+                                                                .animate(
+                                                                    animation1),
+                                                            child: AdminPage());
+                                                      }));
+                                            },
+                                            child: Center(
+                                              child: Text(
+                                                'Okay',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
                       child: Container(
                         width: MediaQuery.of(context).size.width - 32,
                         padding: const EdgeInsets.all(16),
@@ -646,15 +841,25 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 }
 
-class CategoryService {
-  static final List<String> category = ['Men', 'Women', 'Kids'];
+class ColorWidget extends StatelessWidget {
+  final String color;
 
-  static List<String> getSuggestions(String query) {
-    // ignore: deprecated_member_use
-    List<String> matches = List();
-    matches.addAll(category);
+  ColorWidget({@required this.color});
 
-    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
-    return matches;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(2),
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: Colors.black, width: 1.5, style: BorderStyle.solid)),
+      child: CircleAvatar(
+        backgroundColor: Color(ColorPicker().hexColorToInt(color)),
+        radius: 16,
+      ),
+    );
   }
 }

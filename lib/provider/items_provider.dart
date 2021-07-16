@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:edge/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +27,7 @@ class ItemsProvider with ChangeNotifier {
     return _item;
   }
 
-  static const URL = 'http://192.168.220.44:3000';
+  static const URL = 'http://192.168.173.44:3000';
 
   Future<void> getAllData() async {
     var url = '$URL/api/v1/items';
@@ -37,19 +36,23 @@ class ItemsProvider with ChangeNotifier {
 
     List<ItemSummary> loadedItems = [];
 
-    var response = await http.get(Uri.parse(url));
+    try {
+      var response = await http.get(Uri.parse(url));
 
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    final List<dynamic> extractedItems = data['data']['allItems'];
-    extractedItems.forEach((item) {
-      loadedItems.add(ItemSummary(
-        id: item['_id'].toString(),
-        itemName: item['itemName'],
-        price: item['Price'],
-        image: item['images'][0],
-      ));
-    });
-    _items = loadedItems;
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final List<dynamic> extractedItems = data['data']['allItems'];
+      extractedItems.forEach((item) {
+        loadedItems.add(ItemSummary(
+          id: item['_id'].toString(),
+          itemName: item['itemName'],
+          price: item['Price'],
+          image: item['images'][0],
+        ));
+      });
+      _items = loadedItems;
+    } catch (e) {
+      throw e;
+    }
     notifyListeners();
   }
 
@@ -59,33 +62,37 @@ class ItemsProvider with ChangeNotifier {
 
     final body = {"owner": userID};
 
-    var response = await http.post(
-      Uri.parse(url),
-      body: json.encode(body),
-      headers: {"Content-Type": "application/json"},
-    );
-
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    final List<dynamic> extractedDate = data['data']['filteredItems'];
-    extractedDate.forEach((item) {
-      loadedItems.add(
-        Item(
-          id: item['_id'].toString(),
-          name: item['itemName'],
-          price: item['Price'],
-          images: item['images'],
-          category: item['Category'],
-          subcategory: item['SubCategory'],
-          avilableColors: item['availableColors'],
-          description: item['Description'],
-          seller: item['Seller'],
-          sizes: item['AvailableSizes'],
-          isFavorite: data['favorite'],
-        ),
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        body: json.encode(body),
+        headers: {"Content-Type": "application/json"},
       );
-    });
 
-    _item = loadedItems.toSet().toList().first;
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final List<dynamic> extractedDate = data['data']['filteredItems'];
+      extractedDate.forEach((item) {
+        loadedItems.add(
+          Item(
+            id: item['_id'].toString(),
+            name: item['itemName'],
+            price: item['Price'],
+            images: item['images'],
+            category: item['Category'],
+            subcategory: item['SubCategory'],
+            avilableColors: item['availableColors'],
+            description: item['Description'],
+            seller: item['Seller'],
+            sizes: item['AvailableSizes'],
+            isFavorite: data['favorite'],
+          ),
+        );
+      });
+
+      _item = loadedItems.toSet().toList().first;
+    } catch (e) {
+      throw e;
+    }
     notifyListeners();
   }
 
@@ -112,23 +119,27 @@ class ItemsProvider with ChangeNotifier {
 
     List<ItemSummary> loadedItems = [];
 
-    var response = await http.get(Uri.parse(url));
-    //print(response.data);
+    try {
+      var response = await http.get(Uri.parse(url));
+      //print(response.data);
 
-    _items = [];
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    totalNoItems = data['results'];
-    print(totalNoItems);
-    final List<dynamic> extractedItems = data['data']['paginatedItems'];
-    extractedItems.forEach((item) {
-      loadedItems.add(ItemSummary(
-        id: item['_id'].toString(),
-        itemName: item['itemName'],
-        price: item['Price'],
-        image: item['images'][0],
-      ));
-      _items = loadedItems.toSet().toList();
-    });
+      _items = [];
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      totalNoItems = data['results'];
+      print(totalNoItems);
+      final List<dynamic> extractedItems = data['data']['paginatedItems'];
+      extractedItems.forEach((item) {
+        loadedItems.add(ItemSummary(
+          id: item['_id'].toString(),
+          itemName: item['itemName'],
+          price: item['Price'],
+          image: item['images'][0],
+        ));
+        _items = loadedItems.toSet().toList();
+      });
+    } catch (e) {
+      throw e;
+    }
     notifyListeners();
   }
 
@@ -151,15 +162,19 @@ class ItemsProvider with ChangeNotifier {
     };
     print(url);
     print(data);
-    final body = json.encode(data);
-    final response = await http.post(
-      Uri.parse(url),
-      body: body,
-      headers: {"Content-Type": "application/json"},
-    );
-    print(response.body);
+    try {
+      final body = json.encode(data);
+      final response = await http.post(
+        Uri.parse(url),
+        body: body,
+        headers: {"Content-Type": "application/json"},
+      );
+      print(response.body);
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> getWishList({@required String userID}) async {
@@ -167,27 +182,31 @@ class ItemsProvider with ChangeNotifier {
     print(url);
     List<ItemSummary> loadedItems = [];
 
-    final response = await http.get(
-      Uri.parse(url),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
 
-    final decodedData = json.decode(response.body) as Map<String, dynamic>;
-    print(decodedData);
+      final decodedData = json.decode(response.body) as Map<String, dynamic>;
+      print(decodedData);
 
-    final List<dynamic> extractedData = decodedData['data']['items'];
-    if (extractedData == []) {
-      _wishlist = [];
-    } else {
-      extractedData.forEach((item) {
-        loadedItems.add(ItemSummary(
-          id: item['itemId'].toString(),
-          itemName: item['itemName'],
-          price: item['price'],
-          image: item['images'][0],
-        ));
-      });
+      final List<dynamic> extractedData = decodedData['data']['items'];
+      if (extractedData == []) {
+        _wishlist = [];
+      } else {
+        extractedData.forEach((item) {
+          loadedItems.add(ItemSummary(
+            id: item['itemId'].toString(),
+            itemName: item['itemName'],
+            price: item['price'],
+            image: item['images'][0],
+          ));
+        });
+      }
+      _wishlist = loadedItems;
+    } catch (e) {
+      throw e;
     }
-    _wishlist = loadedItems;
     notifyListeners();
   }
 
@@ -199,15 +218,19 @@ class ItemsProvider with ChangeNotifier {
     );
 
     print(body);
-    final response = await http.delete(
-      Uri.parse(url),
-      body: body,
-      headers: {"Content-Type": "application/json"},
-    );
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        body: body,
+        headers: {"Content-Type": "application/json"},
+      );
 
-    print(response.body);
-    getWishList(userID: userID);
-    findById(id: itemID, userID: userID);
+      print(response.body);
+      getWishList(userID: userID);
+      findById(id: itemID, userID: userID);
+    } catch (e) {
+      throw e;
+    }
     notifyListeners();
   }
 
@@ -220,26 +243,30 @@ class ItemsProvider with ChangeNotifier {
       'samples': 12,
     });
     print(body);
-    final response = await http.post(
-      Uri.parse(url),
-      body: body,
-      headers: {"Content-Type": "application/json"},
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: body,
+        headers: {"Content-Type": "application/json"},
+      );
 
-    final decodedData = json.decode(response.body) as Map<String, dynamic>;
+      final decodedData = json.decode(response.body) as Map<String, dynamic>;
 
-    final List<dynamic> extractedData = decodedData['recommendations'];
+      final List<dynamic> extractedData = decodedData['recommendations'];
 
-    extractedData.forEach((recommendedItem) {
-      loadedItems.add(ItemSummary(
-        id: recommendedItem['_id'].toString(),
-        itemName: recommendedItem['itemName'],
-        price: recommendedItem['Price'],
-        image: recommendedItem['images'][0],
-      ));
-    });
+      extractedData.forEach((recommendedItem) {
+        loadedItems.add(ItemSummary(
+          id: recommendedItem['_id'].toString(),
+          itemName: recommendedItem['itemName'],
+          price: recommendedItem['Price'],
+          image: recommendedItem['images'][0],
+        ));
+      });
 
-    _recommendations = loadedItems;
+      _recommendations = loadedItems;
+    } catch (e) {
+      throw e;
+    }
     notifyListeners();
   }
 }

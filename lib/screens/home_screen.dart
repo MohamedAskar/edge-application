@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -71,22 +72,50 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    getData();
     auth = Provider.of<Auth>(context, listen: false);
-    final userData = auth.getUserData();
-    final userID = auth.userID;
-    print(userID);
-    final qty = Provider.of<CartProvider>(context, listen: false)
-        .getTotalQty(userID: userID);
+    try {
+      getData();
+      final userData = auth.getUserData();
+      final userID = auth.userID;
+      print(userID);
+      final qty = Provider.of<CartProvider>(context, listen: false)
+          .getTotalQty(userID: userID);
 
-    itemData = Provider.of<ItemsProvider>(context, listen: false);
-    fetchedItems = itemData
-        .paginateFromAPI(page: Random().nextInt(14), limit: 6)
-        .whenComplete(() => print('pagginated.'));
+      itemData = Provider.of<ItemsProvider>(context, listen: false);
+      fetchedItems = itemData
+          .paginateFromAPI(page: Random().nextInt(14), limit: 6)
+          .whenComplete(() => print('pagginated.'));
 
-    getRecommendations = itemData
-        .getUserRecommendations(userID: userID)
-        .whenComplete(() => print('done'));
+      getRecommendations = itemData
+          .getUserRecommendations(userID: userID)
+          .whenComplete(() => print('done'));
+    } on HttpException {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('An error occurred!',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              content: Text(
+                'Something went wrong! Please try again later.',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            );
+          });
+    }
 
     super.initState();
   }

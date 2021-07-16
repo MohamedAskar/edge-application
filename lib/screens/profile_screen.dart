@@ -3,7 +3,6 @@ import 'package:edge/screens/sign_in_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 

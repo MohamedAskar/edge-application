@@ -1,9 +1,9 @@
+import 'dart:io';
+
 import 'package:badges/badges.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/screens/profile_screen.dart';
-import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -48,19 +48,47 @@ class _CategoryScreenState extends State<CategoryScreen> {
     final itemData = Provider.of<ItemsProvider>(context);
     final result = itemData.totalNoItems;
     final pages = getNoPages(result, 16);
-    final Map<String, String> args = ModalRoute.of(context).settings.arguments;
     if (!_isPaginated) {
-      final fetchedItems = itemData
-          .paginateFromAPI(page: page, limit: 16, subcategory: widget.category)
-          .whenComplete(() {
-        setState(() {
-          isCacheCleared = true;
+      try {
+        final fetchedItems = itemData
+            .paginateFromAPI(
+                page: page, limit: 16, subcategory: widget.category)
+            .whenComplete(() {
+          setState(() {
+            isCacheCleared = true;
+          });
+          setState(() {
+            _isPaginated = true;
+          });
+          print('pagginated.');
         });
-        setState(() {
-          _isPaginated = true;
-        });
-        print('pagginated.');
-      });
+      } on HttpException {
+        showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('An error occurred!',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold)),
+                content: Text(
+                  'Something went wrong! Please try again later.',
+                  style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('Okay',
+                        style: Theme.of(context).textTheme.bodyText1),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              );
+            });
+      }
     }
     final items = itemData.items;
     final size = MediaQuery.of(context).size;

@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:edge/models/cart_item.dart';
 import 'package:edge/provider/Cart_provider.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/color_picker.dart';
@@ -19,7 +20,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final _couponFormKey = GlobalKey<FormBuilderState>();
+  //final _couponFormKey = GlobalKey<FormBuilderState>();
   final _addressFormKey = GlobalKey<FormBuilderState>();
   bool _expanded = false;
   Future<void> cartData;
@@ -32,8 +33,36 @@ class _CartScreenState extends State<CartScreen> {
     super.initState();
     userID = Provider.of<Auth>(context, listen: false).userID;
     cart = Provider.of<CartProvider>(context, listen: false);
-    cartData =
-        cart.getCartItems(userID: userID).whenComplete(() => check = true);
+    try {
+      cartData =
+          cart.getCartItems(userID: userID).whenComplete(() => check = true);
+    } on HttpException {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('An error occurred!',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              content: Text(
+                'Something went wrong! Please try again later.',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            );
+          });
+    }
   }
 
   @override

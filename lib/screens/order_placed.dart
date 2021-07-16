@@ -49,7 +49,6 @@ class OrderPlacedScreen extends StatelessWidget {
                                   .animate(animation1),
                               child: HomePage());
                         }));
-                ;
               },
               child: Center(
                 child: Text(

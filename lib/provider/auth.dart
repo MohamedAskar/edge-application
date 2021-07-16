@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -41,7 +39,7 @@ class Auth with ChangeNotifier {
     return false;
   }
 
-  static const URL = 'http://192.168.220.44:3000';
+  static const URL = 'http://192.168.173.44:3000';
 
   Future<void> getAllUsers() async {
     final url = '$URL/api/v1/users';
@@ -49,33 +47,41 @@ class Auth with ChangeNotifier {
 
     List<User> loadedUsers = [];
 
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    final List<dynamic> users = data['data']['users'];
+    try {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final List<dynamic> users = data['data']['users'];
 
-    users.forEach((user) {
-      loadedUsers.add(User(
-          name: user['name'],
-          email: user['email'],
-          id: user['_id'],
-          role: user['role']));
-    });
-    _users = loadedUsers;
+      users.forEach((user) {
+        loadedUsers.add(User(
+            name: user['name'],
+            email: user['email'],
+            id: user['_id'],
+            role: user['role']));
+      });
+      _users = loadedUsers;
+    } catch (e) {
+      throw e;
+    }
     notifyListeners();
   }
 
   Future<void> getUserData() async {
     final url = '$URL/api/v1/users/getuser?_id=$_userID';
-    final response = await http.get(
-      Uri.parse(url),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
 
-    print(response.body);
+      print(response.body);
 
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    userName = data['data'][0]['name'];
-    print(userName);
-    email = data['data'][0]['email'];
-    print(email);
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      userName = data['data'][0]['name'];
+      print(userName);
+      email = data['data'][0]['email'];
+      print(email);
+    } catch (e) {
+      throw e;
+    }
 
     notifyListeners();
   }

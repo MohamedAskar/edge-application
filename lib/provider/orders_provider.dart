@@ -13,7 +13,7 @@ class OrdersProvider with ChangeNotifier {
     return [..._orders];
   }
 
-  static const URL = 'http://192.168.220.44:3000';
+  static const URL = 'http://192.168.173.44:3000';
 
   Order findById(String id) {
     return _orders.firstWhere((order) => order.id == id);
@@ -55,12 +55,16 @@ class OrdersProvider with ChangeNotifier {
 
     final body = json.encode(data);
     print(body);
-    final response = await http.post(
-      Uri.parse(url),
-      body: body,
-      headers: {"Content-Type": "application/json"},
-    );
-    print(response.body);
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: body,
+        headers: {"Content-Type": "application/json"},
+      );
+      print(response.body);
+    } catch (e) {
+      throw e;
+    }
 
     notifyListeners();
   }
@@ -70,42 +74,46 @@ class OrdersProvider with ChangeNotifier {
     print(url);
     List<Order> loadedorders = [];
 
-    final response = await http.get(
-      Uri.parse(url),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
 
-    final decodedData = json.decode(response.body) as Map<dynamic, dynamic>;
+      final decodedData = json.decode(response.body) as Map<dynamic, dynamic>;
 
-    if (decodedData['data'].isEmpty) {
-      _orders = [];
-    } else {
-      final List<dynamic> orders = decodedData['data'][0]['orders'];
+      if (decodedData['data'].isEmpty) {
+        _orders = [];
+      } else {
+        final List<dynamic> orders = decodedData['data'][0]['orders'];
 
-      orders.forEach((order) {
-        List<CartItem> cartItems = [];
-        List<dynamic> orderItems = order['order'];
-        orderItems.forEach((cartItem) {
-          cartItems.add(CartItem(
-            id: cartItem['itemId'].toString(),
-            quantity: cartItem['qty'],
-            name: cartItem['itemName'],
-            price: cartItem["price"],
-            image: cartItem['images'],
-            selectedColor: cartItem['color'],
-            selectedSize: cartItem['size'],
-            seller: cartItem['seller'],
-            subCategory: cartItem['SubCategory'],
-          ));
+        orders.forEach((order) {
+          List<CartItem> cartItems = [];
+          List<dynamic> orderItems = order['order'];
+          orderItems.forEach((cartItem) {
+            cartItems.add(CartItem(
+              id: cartItem['itemId'].toString(),
+              quantity: cartItem['qty'],
+              name: cartItem['itemName'],
+              price: cartItem["price"],
+              image: cartItem['images'],
+              selectedColor: cartItem['color'],
+              selectedSize: cartItem['size'],
+              seller: cartItem['seller'],
+              subCategory: cartItem['SubCategory'],
+            ));
+          });
+          loadedorders.add(Order(
+              id: order['orderID'],
+              items: cartItems,
+              dateTime: order['date'],
+              totalPrice: order['totalPrice']));
         });
-        loadedorders.add(Order(
-            id: order['orderID'],
-            items: cartItems,
-            dateTime: order['date'],
-            totalPrice: order['totalPrice']));
-      });
+      }
+      print(loadedorders.length);
+      _orders = loadedorders;
+    } catch (e) {
+      throw e;
     }
-    print(loadedorders.length);
-    _orders = loadedorders;
     notifyListeners();
   }
 }

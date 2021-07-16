@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/cart_item.dart';
@@ -7,7 +9,6 @@ import 'package:edge/provider/auth.dart';
 import 'package:edge/provider/color_picker.dart';
 import 'package:edge/provider/items_provider.dart';
 import 'package:edge/screens/cart_screen.dart';
-import 'package:edge/screens/checkout_screen.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
@@ -193,17 +194,46 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     if (!isItemFetched) {
-      final fetchedItem =
-          itemData.findById(id: widget.itemID, userID: userID).whenComplete(() {
-        if (mounted) {
-          setState(() {
-            isCacheCleared = true;
-            isItemFetched = true;
-          });
-          item = itemData.item;
-        }
-        //itemData.clear();
-      });
+      try {
+        final fetchedItem = itemData
+            .findById(id: widget.itemID, userID: userID)
+            .whenComplete(() {
+          if (mounted) {
+            setState(() {
+              isCacheCleared = true;
+              isItemFetched = true;
+            });
+            item = itemData.item;
+          }
+          //itemData.clear();
+        });
+      } on HttpException {
+        showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('An error occurred!',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold)),
+                content: Text(
+                  'Something went wrong! Please try again later.',
+                  style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('Okay',
+                        style: Theme.of(context).textTheme.bodyText1),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              );
+            });
+      }
     }
     //item = itemData.item;
 

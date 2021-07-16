@@ -1,9 +1,8 @@
-import 'dart:convert';
+import 'dart:io';
 
-import 'package:edge/models/item.dart';
 import 'package:edge/provider/items_provider.dart';
+import 'package:edge/screens/Edit_item_screen.dart';
 import 'package:edge/widgets/admin_item.dart';
-import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
@@ -25,11 +24,39 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
 
   @override
   void initState() {
-    Provider.of<ItemsProvider>(context, listen: false)
-        .getAllData()
-        .whenComplete(() {
-      print('done');
-    });
+    try {
+      Provider.of<ItemsProvider>(context, listen: false)
+          .paginateFromAPI(page: 1, limit: 25)
+          .whenComplete(() {
+        print('done');
+      });
+    } on HttpException {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('An error occurred!',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              content: Text(
+                'Something went wrong! Please try again later.',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            );
+          });
+    }
     super.initState();
   }
 
@@ -91,7 +118,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.pushNamed(context, 'routeName');
+          Navigator.pushNamed(context, EditItemScreen.routeName);
         },
         label: Text(
           'ADD ITEM',

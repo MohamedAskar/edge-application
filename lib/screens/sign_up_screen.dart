@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/auth.dart';
 import 'package:edge/screens/admin_screen.dart';
 import 'package:edge/screens/home_screen.dart';

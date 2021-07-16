@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:edge/provider/auth.dart';
 import 'package:edge/screens/manage_orders.dart';
-import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
@@ -21,11 +22,39 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   @override
   void initState() {
     final auth = Provider.of<Auth>(context, listen: false);
-    auth.getAllUsers().whenComplete(() {
-      print('done');
-      users = auth.users;
-      isLoading = false;
-    });
+    try {
+      auth.getAllUsers().whenComplete(() {
+        print('done');
+        users = auth.users;
+        isLoading = false;
+      });
+    } on HttpException {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('An error occurred!',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              content: Text(
+                'Something went wrong! Please try again later.',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            );
+          });
+    }
 
     super.initState();
   }

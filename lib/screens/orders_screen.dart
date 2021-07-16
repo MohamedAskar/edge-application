@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/cart_item.dart';
@@ -25,10 +27,39 @@ class _OrdersScreenState extends State<OrdersScreen> {
   void initState() {
     userID = Provider.of<Auth>(context, listen: false).userID;
     ordersData = Provider.of<OrdersProvider>(context, listen: false);
-    final getOrders = ordersData.getUserOrders(userID: userID).whenComplete(() {
-      check = true;
-      orders = ordersData.orders;
-    });
+    try {
+      final getOrders =
+          ordersData.getUserOrders(userID: userID).whenComplete(() {
+        check = true;
+        orders = ordersData.orders;
+      });
+    } on HttpException {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('An error occurred!',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              content: Text(
+                'Something went wrong! Please try again later.',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            );
+          });
+    }
     super.initState();
   }
 

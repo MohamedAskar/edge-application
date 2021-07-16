@@ -34,7 +34,6 @@ class ItemWidget extends StatelessWidget {
                         itemID: id,
                       ));
                 }));
-        ;
       },
       child: Padding(
         padding: const EdgeInsets.all(8),

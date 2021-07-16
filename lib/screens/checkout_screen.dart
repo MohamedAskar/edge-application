@@ -7,7 +7,6 @@ import 'package:edge/screens/order_placed.dart';
 import 'package:edge/widgets/edge_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +21,6 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  final _paymenFormKey = GlobalKey<FormBuilderState>();
   bool isCard = false;
   bool doorOption = true;
   bool tomorrowOption = true;
@@ -43,7 +41,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color(0xffF4F4F4),
       appBar: PreferredSize(

@@ -101,7 +101,6 @@ class EdgeAppBar extends StatelessWidget {
                                 .animate(animation1),
                             child: ProfileScreen());
                       }));
-              ;
             },
           ),
         // if (addItem)

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/auth.dart';
@@ -32,10 +34,38 @@ class _WishListScreenState extends State<WishListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getWishlist = itemsProvider.getWishList(userID: userID).whenComplete(() {
-      check = true;
-      wishlist = itemsProvider.wishlist;
-    });
+    try {
+      getWishlist = itemsProvider.getWishList(userID: userID).whenComplete(() {
+        check = true;
+        wishlist = itemsProvider.wishlist;
+      });
+    } on HttpException {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('An error occurred!',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              content: Text(
+                'Something went wrong! Please try again later.',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            );
+          });
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,

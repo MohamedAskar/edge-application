@@ -51,8 +51,38 @@ class AdminItem extends StatelessWidget {
                           children: [
                             TextButton.icon(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pushNamed(EditItemScreen.routeName);
+                                  showDialog<Null>(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text(
+                                        'Alert',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      content: Text(
+                                        'Sorry, we restrict editing items right now. We do not want to mess the data up.',
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      actions: <Widget>[
+                                        // ignore: deprecated_member_use
+
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.of(ctx).pop();
+                                            },
+                                            child: Text(
+                                              'Okay',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1,
+                                            )),
+                                      ],
+                                    ),
+                                  );
                                 },
                                 icon: Icon(
                                   Icons.edit_outlined,
@@ -77,7 +107,12 @@ class AdminItem extends StatelessWidget {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       content: Text(
-                                          'If this item is deleted, it will disapear from your database.'),
+                                        'If this item is deleted, it will disapear from your database.',
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
                                       actions: <Widget>[
                                         // ignore: deprecated_member_use
                                         Row(
@@ -96,17 +131,21 @@ class AdminItem extends StatelessWidget {
                                                   //         product.id);
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text('Yes',
-                                                    style: TextStyle(
-                                                        color: Colors.black))),
+                                                child: Text(
+                                                  'Yes',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1,
+                                                )),
                                             TextButton(
                                                 onPressed: () {
                                                   Navigator.of(ctx).pop();
                                                 },
                                                 child: Text(
                                                   'No',
-                                                  style: TextStyle(
-                                                      color: Colors.black),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1,
                                                 )),
                                           ],
                                         )
