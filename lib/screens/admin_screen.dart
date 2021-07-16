@@ -16,10 +16,17 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
+  bool isLoaded = false;
+
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.black);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+    if (!isLoaded) {
+      FlutterStatusbarcolor.setStatusBarColor(Colors.black);
+      FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+      setState(() {
+        isLoaded = true;
+      });
+    }
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,

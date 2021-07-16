@@ -24,11 +24,17 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   bool _hidePassword = true;
+  bool isLoaded = false;
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.black);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+    if (!isLoaded) {
+      FlutterStatusbarcolor.setStatusBarColor(Colors.black);
+      FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+      setState(() {
+        isLoaded = true;
+      });
+    }
     final auth = Provider.of<Auth>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,

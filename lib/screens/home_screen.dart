@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   Auth auth;
   Future fetchedItems;
   Future getRecommendations;
-  static const URL = 'https://rugged-lake-clark-44526.herokuapp.com';
+  static const URL = 'https://evening-cliffs-75470.herokuapp.com';
 
   Future getData() async {
     var url = '$URL/api/v1/items';
@@ -120,10 +120,17 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  bool isLoaded = false;
+
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.white);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+    if (!isLoaded) {
+      FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+      FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+      setState(() {
+        isLoaded = true;
+      });
+    }
     final items = itemData.items;
     final recommendedItems = itemData.recommendations;
     final length = (recommendedItems.length / 2).floor();

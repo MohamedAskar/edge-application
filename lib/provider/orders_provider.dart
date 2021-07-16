@@ -13,7 +13,7 @@ class OrdersProvider with ChangeNotifier {
     return [..._orders];
   }
 
-  static const URL = 'http://192.168.173.44:3000';
+  static const URL = 'https://evening-cliffs-75470.herokuapp.com';
 
   Order findById(String id) {
     return _orders.firstWhere((order) => order.id == id);

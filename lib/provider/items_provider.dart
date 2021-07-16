@@ -27,7 +27,7 @@ class ItemsProvider with ChangeNotifier {
     return _item;
   }
 
-  static const URL = 'http://192.168.173.44:3000';
+  static const URL = 'https://evening-cliffs-75470.herokuapp.com';
 
   Future<void> getAllData() async {
     var url = '$URL/api/v1/items';

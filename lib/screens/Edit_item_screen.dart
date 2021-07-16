@@ -17,17 +17,6 @@ class EditItemScreen extends StatefulWidget {
 class _EditItemScreenState extends State<EditItemScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  // Future<String> uploadImage(File file, String folderName) async {
-  //   FirebaseStorage firebaseStorage =
-  //       FirebaseStorage(storageBucket: 'gs://store-ef99f.appspot.com');
-  //   StorageReference reference = firebaseStorage
-  //       .ref()
-  //       .child('shoes/$folderName/${path.basename(file.path)}');
-  //   StorageUploadTask storageUploadTask = reference.putFile(file);
-  //   StorageTaskSnapshot taskSnapshot = await storageUploadTask.onComplete;
-  //   String url = await taskSnapshot.ref.getDownloadURL();
-  //   return url;
-  // }
   final List<String> categories = ['Men', 'Woman'];
 
   Item _editedItem = Item(

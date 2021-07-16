@@ -59,20 +59,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    Future.delayed(Duration.zero, () {
-      _showBetaDialog();
-    });
-  }
+  bool isLoaded = false;
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.black);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+    if (!isLoaded) {
+      FlutterStatusbarcolor.setStatusBarColor(Colors.black);
+      FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+      setState(() {
+        isLoaded = true;
+      });
+    }
     final auth = Provider.of<Auth>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,

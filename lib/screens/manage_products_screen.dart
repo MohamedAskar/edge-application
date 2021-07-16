@@ -26,7 +26,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
   void initState() {
     try {
       Provider.of<ItemsProvider>(context, listen: false)
-          .paginateFromAPI(page: 1, limit: 25)
+          .paginateFromAPI(page: 1, limit: 30)
           .whenComplete(() {
         print('done');
       });

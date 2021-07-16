@@ -85,8 +85,12 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: (isLoading)
-            ? Center(
-                child: CircularProgressIndicator(),
+            ? Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               )
             : AnimationLimiter(
                 child: ListView.builder(

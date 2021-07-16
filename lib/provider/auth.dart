@@ -39,7 +39,7 @@ class Auth with ChangeNotifier {
     return false;
   }
 
-  static const URL = 'http://192.168.173.44:3000';
+  static const URL = 'https://evening-cliffs-75470.herokuapp.com';
 
   Future<void> getAllUsers() async {
     final url = '$URL/api/v1/users';
