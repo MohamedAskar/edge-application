@@ -1,14 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/models/item.dart';
 import 'package:edge/provider/color_picker.dart';
 import 'package:edge/screens/admin_screen.dart';
-import 'package:edge/widgets/edge_appbar.dart';
 import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
-import 'package:ionicons/ionicons.dart';
 
 class EditItemScreen extends StatefulWidget {
   static const routeName = '/edit-item-screen';

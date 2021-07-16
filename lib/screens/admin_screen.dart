@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:edge/provider/auth.dart';
-import 'package:edge/provider/color_picker.dart';
 import 'package:edge/screens/manage_products_screen.dart';
 import 'package:edge/screens/manage_users.dart';
 import 'package:edge/screens/sign_in_screen.dart';
-import 'package:edge/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ionicons/ionicons.dart';
