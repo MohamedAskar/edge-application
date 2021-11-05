@@ -7,5 +7,5 @@ We have used Flutter as our Framework of Choice to build a cutting-edge cross pl
 ## Screenshots
 
 1. ### Auth page
-![](https://user-images.githubusercontent.com/47199425/140514968-3fa8569a-a914-4bf0-b9e4-f1091be3901c.png)
+![1](https://user-images.githubusercontent.com/47199425/140515066-eec1a611-38c1-4d5c-9f22-da15d7edc93d.png)
 
