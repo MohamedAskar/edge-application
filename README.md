@@ -20,6 +20,9 @@ We also get to see ML-based recommendations based on the user interactions with 
 ![4](https://user-images.githubusercontent.com/47199425/140517528-6aae26b2-06ca-4c82-b084-e726a7f90c6f.jpg)
 
 4. ### Cart Page
-![5](https://user-images.githubusercontent.com/47199425/140517864-5dd9fff1-4d53-40ec-8ce0-6b4490f4ab77.png)    ![6](https://user-images.githubusercontent.com/47199425/140517905-e97a3c0b-378d-4fd9-8558-630c8e58256a.png)
+![Screenshot_20210714-134936](https://user-images.githubusercontent.com/47199425/140518184-cc7bc05e-e022-4fd6-8397-1990f67357b2.jpg)
+      ![5](https://user-images.githubusercontent.com/47199425/140517864-5dd9fff1-4d53-40ec-8ce0-6b4490f4ab77.png)      ![6](https://user-images.githubusercontent.com/47199425/140517905-e97a3c0b-378d-4fd9-8558-630c8e58256a.png)
+      
+      
 
 
