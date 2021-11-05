@@ -6,6 +6,8 @@ We have used Flutter as our Framework of Choice to build a cutting-edge cross pl
 
 ## Screenshots
 
+## User UI
+
 1. ### Auth page
 ![1](https://user-images.githubusercontent.com/47199425/140517267-61f85677-bf2b-4b56-8339-f060137fc9c4.png)
 
@@ -24,5 +26,8 @@ We also get to see ML-based recommendations based on the user interactions with 
       ![5](https://user-images.githubusercontent.com/47199425/140517864-5dd9fff1-4d53-40ec-8ce0-6b4490f4ab77.png)      ![6](https://user-images.githubusercontent.com/47199425/140517905-e97a3c0b-378d-4fd9-8558-630c8e58256a.png)
       
       
+5. ### Checkout Page
+![7](https://user-images.githubusercontent.com/47199425/140518461-f75ebf15-9d73-4b5d-8607-0d47144f1fb9.jpg) ![8](https://user-images.githubusercontent.com/47199425/140518476-90fe51ae-7b3d-41fd-84d7-120b53165e58.png)
 
-
+6. ### Profile Page
+![9](https://user-images.githubusercontent.com/47199425/140518740-6acc9084-e858-489d-9d89-5afe72829b9f.jpg) ![10](https://user-images.githubusercontent.com/47199425/140518764-b165b4c1-e899-4b3c-9ac9-a42499fb80ab.jpg)
