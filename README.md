@@ -31,3 +31,18 @@ We also get to see ML-based recommendations based on the user interactions with 
 
 6. ### Profile Page
 ![9](https://user-images.githubusercontent.com/47199425/140518740-6acc9084-e858-489d-9d89-5afe72829b9f.jpg) ![10](https://user-images.githubusercontent.com/47199425/140518764-b165b4c1-e899-4b3c-9ac9-a42499fb80ab.jpg)
+
+
+# Admin UI
+
+1. ### Home Page
+![Screenshot_20211105-154436](https://user-images.githubusercontent.com/47199425/140520533-44b0d8f1-afaf-4d9f-a54e-4d156c0dac9d.jpg)
+
+2. ### Manage Items Page
+![Screenshot_20211105-154450](https://user-images.githubusercontent.com/47199425/140520818-8f10a7c9-d7c4-4d7a-ac35-612c9534cd93.jpg) ![Screenshot_20210716-021015](https://user-images.githubusercontent.com/47199425/140520846-1f9d33fa-83d9-4fbf-a66c-d02f4dd4f0b7.jpg) ![Screenshot_20210716-021020](https://user-images.githubusercontent.com/47199425/140520864-dc9d8aae-ed28-4faf-a3dc-abdd59ed22b9.jpg)
+
+3. ### Manage Users Page
+![Screenshot_20210715-012246](https://user-images.githubusercontent.com/47199425/140520962-51220d02-c5df-4155-b997-2223227bd2f7.jpg)
+
+
+And of course there is a lot more than that!
